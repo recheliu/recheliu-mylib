@@ -57,6 +57,9 @@ typedef struct CImage{
 		return true;
 	}
 		
+	// ADD-BY-LEETEN 11/30/2006-BEGIN
+	float* PFConvertToRgb();	// convert to a buffer in floating point format in RGB format
+	// ADD-BY-LEETEN 11/30/2006-END
 		
 } CImage;
 
@@ -65,5 +68,10 @@ typedef struct CImage{
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.1.1.1  2006/09/07 18:51:44  leeten
+
+[09/07/2006]
+1. First time checkin. 
+
 
 */
