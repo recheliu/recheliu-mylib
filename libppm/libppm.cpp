@@ -1,5 +1,8 @@
 #include <stdio.h>
 #include <string.h>
+// ADD-BY-LEETEN 11/30/2006-BEGIN
+#include <assert.h>
+// ADD-BY-LEETEN 11/30/2006-END
 
 #include "libppm.h"
 
@@ -70,9 +73,22 @@ bool CImage::BRead(const char szFileName[])
 				int iColor = 0;
 				if( bBin )
 				{
+					// ADD-BY-LEETEN 11/30/2006-BEGIN
+					if( iRange == 65535 )
+					{
+						unsigned short usColor;
+						fread(&usColor, sizeof(usColor), 1, fpImage);
+						iColor = usColor;
+					}
+					else if( iRange==255 )
+					{
+					// ADD-BY-LEETEN 11/30/2006-END
 					unsigned char ubColor;
 					fread(&ubColor, sizeof(ubColor), 1, fpImage);
 					iColor = ubColor;
+					// ADD-BY-LEETEN 11/30/2006-BEGIN
+					}
+					// ADD-BY-LEETEN 11/30/2006-END
 				}
 				else 
 				{
@@ -88,8 +104,33 @@ bool CImage::BRead(const char szFileName[])
 	return true;
 }
 
+// ADD-BY-LEETEN 11/30/2006-BEGIN
+// convert to a buffer in floating point format in RGB format
+float* 
+CImage::PFConvertToRgb()
+{
+	float *pfRgb;
+	if(!uWidth || !uHeight || !pfBuffer )
+		return NULL;
+
+	size_t uP, uH, uW, uC;
+	assert( pfRgb = (float*)calloc(sizeof(float)*3, uWidth * uHeight) );
+	for(uP=0, uH=0; uH<uHeight; uH++)
+		for(uW=0; uW<uWidth; uW++, uP++)
+			for(uC=0; uC<3; uC++)
+				pfRgb[3*uP+uC] = pfBuffer[uP][uC];
+
+	return pfRgb;
+}
+// ADD-BY-LEETEN 11/30/2006-END
+
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.1.1.1  2006/09/07 18:51:44  leeten
+
+[09/07/2006]
+1. First time checkin. 
+
 
 */
