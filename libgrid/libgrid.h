@@ -53,6 +53,11 @@ typedef struct CGrid
 	bool BLoad(char* szGridName, char* szSolnName);
 	void _FindBBox(int iTriangleIndex = -1);
 	bool BAllocPlot3D();
+	
+	// ADD-By-LEETEN 12/25/2006-BEGIN
+	float FNormalizeScalar(const float& fValue)			{	return 1.0f/255.0f + (fValue - fMinV)/(fMaxV - fMinV) * 254.0f / 255.0f; }
+	float FGetNormalizedScalar(const size_t& uIndex)	{	return FNormalizeScalar(pfVerticesV[uIndex]);	}
+	// ADD-By-LEETEN 12/25/2006-END
 
 } CGrid;
 
