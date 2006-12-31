@@ -4,7 +4,10 @@
 #include "libgrid.h"
 
 bool 
-CGrid::BLoad(char* szGridName, char* szSolnName)
+// MOD-BY-LEETEN 12/30/2006-BEGIN
+/* FROM: CGrid::BLoad(char* szGridName, char* szSolnName) TO: */
+CGrid::BLoad(char* szGridName, char* szSolnName, EGridScalar eScalar)
+// MOD-BY-LEETEN 12/30/2006-END
 {
 	FILE *fpGrid;
 	FILE *fpSoln;
@@ -16,11 +19,16 @@ CGrid::BLoad(char* szGridName, char* szSolnName)
 		return false;
 	}
 
+	// DEL-BY-LEETEN 12/30/2006-BEGIN
+	// the reading of .SOLN file is moved to later
+	#if 0
 	fpSoln = fopen(szSolnName, "r+b");
 	if( !fpSoln) {
 		perror(szSolnName);
 		return false;
 	}
+	#endif 
+	// DEL-BY-LEETEN 12/30/2006-END
 
 	printf("Reading %s\n", szGridName);
 
@@ -49,13 +57,49 @@ CGrid::BLoad(char* szGridName, char* szSolnName)
 
 	fclose(fpGrid);
 
+	// ADD-BY-LEETEN 12/30/2006-BEGIN
+	if( GRID_SCALAR_NONE == eScalar ) 
+	{
+		fprintf(stderr, "Warning!!! no scalar field will be read. Sure???\n");
+	}
+	else
+	{
+		fpSoln = fopen(szSolnName, "r+b");
+		if( !fpSoln) {
+			perror(szSolnName);
+			return false;
+		}
+	// ADD-BY-LEETEN 12/30/2006-END
+
 	printf("Reading %s\n", szSolnName);
 
+	// skip the field for number of points
 	fseek(fpSoln, sizeof(size_t), SEEK_CUR);
+
+	// MOD-BY-LEETEN 12/30/2006-BEGIN
+	// read the interesting scalar field
+	// since the order in the .SOLN file is density, energy, pressure and magnitude of velocity, 
+	// the checking order is inversed so the correct number of field could be skipped
+	/* FROM:
 	fseek(fpSoln, sizeof(float) * uNrOfNodes, SEEK_CUR);
 	fread(pfVerticesV, sizeof(*pfVerticesV), uNrOfNodes, fpSoln);
+	TO: */
+	switch( eScalar ) 
+	{
+	case GRID_SCALAR_VELOCITY_MAGNITUDE:	fseek(fpSoln, sizeof(float) * uNrOfNodes, SEEK_CUR); 
+	case GRID_SCALAR_PRESSURE:				fseek(fpSoln, sizeof(float) * uNrOfNodes, SEEK_CUR);
+	case GRID_SCALAR_ENERGY:				fseek(fpSoln, sizeof(float) * uNrOfNodes, SEEK_CUR);
+	case GRID_SCALAR_DENSITY:				
+		fread(pfVerticesV, sizeof(*pfVerticesV), uNrOfNodes, fpSoln);
+		break;
+	}
+	// MOD-BY-LEETEN 12/30/2006-END
 
 	fclose(fpSoln);
+	// ADD-BY-LEETEN 12/30/2006-BEGIN
+	}
+	// ADD-BY-LEETEN 12/30/2006-END
+
 
 	_FindBBox();	
 	return true;
