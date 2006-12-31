@@ -6,6 +6,17 @@
 
 #include "triangle.h"
 
+// ADD-BY-LEETEN 12/30/2006-BEGIN
+// define the interesting scalar field
+typedef enum {
+	GRID_SCALAR_NONE,	// if this flag is given, the .soln file will be ignored
+	GRID_SCALAR_DENSITY, 
+	GRID_SCALAR_ENERGY, 
+	GRID_SCALAR_PRESSURE, 
+	GRID_SCALAR_VELOCITY_MAGNITUDE
+} EGridScalar;
+// ADD-BY-LEETEN 12/30/2006-END
+
 typedef struct CGrid
 {
 	size_t uNrOfNodes, uNrOfTriangles, uNrOfTets;
@@ -50,7 +61,10 @@ typedef struct CGrid
 			free(pcTriangles);
 	} 
 
-	bool BLoad(char* szGridName, char* szSolnName);
+	// MOD-BY-LEETEN 12/30/2006-BEGIN
+	/* FROM: bool BLoad(char* szGridName, char* szSolnName); TO: */
+	bool BLoad(char* szGridName, char* szSolnName, EGridScalar=GRID_SCALAR_NONE); 
+	// MOD-BY-LEETEN 12/30/2006-END
 	void _FindBBox(int iTriangleIndex = -1);
 	bool BAllocPlot3D();
 	
