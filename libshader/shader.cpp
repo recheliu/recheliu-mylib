@@ -70,6 +70,7 @@ CSetShaders(const char* szVertex, const char* szFragment)
 	if( szVertex ) 
 	{
 		strcpy(szShaderPath, szVertex);
+		fprintf(stderr, "Parsing %s\n", szShaderPath);
 		if( !(szFileContext = SzTextFileRead(szShaderPath)) )
 		{
 			fprintf(stderr, "Error: could not find vertex shader %s\n", szShaderPath);
@@ -90,6 +91,7 @@ CSetShaders(const char* szVertex, const char* szFragment)
 	if( szFragment ) 
 	{
 		strcpy(szShaderPath, szFragment);
+		fprintf(stderr, "Parsing %s\n", szShaderPath);
 		if( !(szFileContext = SzTextFileRead(szShaderPath)) )
 		{
 			fprintf(stderr, "Error: could not find fragment shader %s\n", szShaderPath);
@@ -127,6 +129,11 @@ CSetShaders(const char* szVertex, const char* szFragment)
 /*
 
   $Log: not supported by cvs2svn $
+  Revision 1.1.1.1  2006/11/09 19:20:04  leeten
+
+  [11/09/2006]
+  1. First time checkin.
+
   Revision 1.1.1.1  2006/09/13 19:49:26  leeten
 
   [09/13/2006]
