@@ -8,9 +8,9 @@ bool BCheckObject(GLhandleARB obj);
 GLhandleARB CSetShaders(const char* szVertex, const char* szFragment);
 
 // ADD-BY-LEETY 09/15/2006-BEGIN
-#define PRINT_WARNING_INVALID_LOC	\
+#define PRINT_WARNING_INVALID_LOC(loc)	\
 	{	\
-		fprintf(stderr, "%s(%d) Warning: location is invalid.\n", __FILE__, __LINE__);	\
+		fprintf(stderr, "%s(%d) Warning: location %s is invalid.\n", __FILE__, __LINE__, #loc);	\
 	}	
 
 #define GET_LOC(SHADER, NAME, VAR)	\
@@ -22,7 +22,7 @@ GLhandleARB CSetShaders(const char* szVertex, const char* szFragment);
 #define SET_1I_VALUE_BY_LOC(LOC, VALUE)	\
 	{	\
 		if( (LOC) < 0 )	\
-			PRINT_WARNING_INVALID_LOC	\
+			PRINT_WARNING_INVALID_LOC(LOC)	\
 		else	\
 			glUniform1iARB(LOC, VALUE);	\
 	}
@@ -30,7 +30,7 @@ GLhandleARB CSetShaders(const char* szVertex, const char* szFragment);
 #define SET_1IV_VALUE_BY_LOC(LOC, LEN, PVALUES)	\
 	{	\
 		if( (LOC) < 0 )	\
-			PRINT_WARNING_INVALID_LOC	\
+			PRINT_WARNING_INVALID_LOC(LOC)	\
 		else	\
 			glUniform1ivARB(LOC, LEN, PVALUES);	\
 	}
@@ -38,7 +38,7 @@ GLhandleARB CSetShaders(const char* szVertex, const char* szFragment);
 #define SET_1F_VALUE_BY_LOC(LOC, VALUE)	\
 	{	\
 		if( (LOC) < 0 )	\
-			PRINT_WARNING_INVALID_LOC	\
+			PRINT_WARNING_INVALID_LOC(LOC)	\
 		else	\
 			glUniform1fARB(LOC, VALUE);	\
 	}
@@ -46,7 +46,7 @@ GLhandleARB CSetShaders(const char* szVertex, const char* szFragment);
 #define SET_2FV_VALUE_BY_LOC(LOC, LEN, PVALUES)	\
 	{	\
 		if( (LOC) < 0 )	\
-			PRINT_WARNING_INVALID_LOC	\
+			PRINT_WARNING_INVALID_LOC(LOC)	\
 		else	\
 			glUniform2fvARB(LOC, LEN, PVALUES);	\
 	}
@@ -54,7 +54,7 @@ GLhandleARB CSetShaders(const char* szVertex, const char* szFragment);
 #define SET_3FV_VALUE_BY_LOC(LOC, LEN, PVALUES)	\
 	{	\
 		if( (LOC) < 0 )	\
-			PRINT_WARNING_INVALID_LOC	\
+			PRINT_WARNING_INVALID_LOC(LOC)	\
 		else	\
 			glUniform3fvARB(LOC, LEN, PVALUES);	\
 	}
@@ -62,7 +62,7 @@ GLhandleARB CSetShaders(const char* szVertex, const char* szFragment);
 #define SET_4FV_VALUE_BY_LOC(LOC, LEN, PVALUES)	\
 	{	\
 		if( (LOC) < 0 )	\
-			PRINT_WARNING_INVALID_LOC	\
+			PRINT_WARNING_INVALID_LOC(LOC)	\
 		else	\
 			glUniform4fvARB(LOC, LEN, PVALUES);	\
 	}
@@ -95,6 +95,11 @@ GLhandleARB CSetShaders(const char* szVertex, const char* szFragment);
 /*
 
   $Log: not supported by cvs2svn $
+  Revision 1.1.1.1  2006/11/09 19:20:04  leeten
+
+  [11/09/2006]
+  1. First time checkin.
+
   Revision 1.3  2006/09/22 13:52:58  leeten
 
   [09/22/2006]
