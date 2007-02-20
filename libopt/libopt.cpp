@@ -80,13 +80,13 @@ int my_stricmp(const char* sz1, const char* sz2)
 
 			if( c1 == c2 )
 				continue;
-
-			if( *cp1 < *cp2 )
-				return -1;
-
-			if( *cp1 > *cp2 )
-				return 1;
 		}
+
+		if( *cp1 < *cp2 )
+			return -1;
+
+		if( *cp1 > *cp2 )
+			return 1;
 	}
 	return 0;
 }
@@ -201,7 +201,7 @@ bool BOPTParse(char* argv[], int argc, int iBegin, int *piEnd)
 						*(float*)pvcOptEntry->ppParameters[iP] = (float)atof(argv[++iA]);	
 						break;
 					case OPT_TYPE_STRING:
-						*(char**)pvcOptEntry->ppParameters[iP] = argv[++iA];	
+						*(char**)pvcOptEntry->ppParameters[iP] = argv[++iA];
 						break;
 					}
 
