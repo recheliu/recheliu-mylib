@@ -3,6 +3,7 @@
 
 #include <math.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "triangle.h"
 
@@ -16,6 +17,26 @@ typedef enum {
 	GRID_SCALAR_VELOCITY_MAGNITUDE
 } EGridScalar;
 // ADD-BY-LEETEN 12/30/2006-END
+
+// ADD-BY-LEETEN 01/07/2006-BEGIN
+inline EGridScalar EGetScalarField(const char* szField)
+{
+	EGridScalar eField = GRID_SCALAR_NONE;
+
+	if( !szField )
+		return eField;
+
+	if( !strcmp(szField, "density") )
+		eField  = GRID_SCALAR_DENSITY;
+	if( !strcmp(szField, "pressure") )
+		eField = GRID_SCALAR_PRESSURE;
+	if( !strcmp(szField, "energy") )
+		eField = GRID_SCALAR_ENERGY;
+	if( !strcmp(szField, "velocity_magnitude") )
+		eField = GRID_SCALAR_VELOCITY_MAGNITUDE;
+	return eField;
+}
+// ADD-BY-LEETEN 01/07/2006-END
 
 typedef struct CGrid
 {
