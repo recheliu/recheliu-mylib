@@ -75,7 +75,7 @@ typedef struct CTransferFunction1D
 		GLuint uTidTf = 0;
 		glGenTextures(1, &uTidTf);
 		glBindTexture(GL_TEXTURE_1D, uTidTf);
-		glTexParameteri( GL_TEXTURE_1D, GL_TEXTURE_WRAP_S, GL_CLAMP );
+		glTexParameteri( GL_TEXTURE_1D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
 		glTexParameteri( GL_TEXTURE_1D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
 		glTexParameteri( GL_TEXTURE_1D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
 		glTexImage1D( GL_TEXTURE_1D, 0, GL_RGBA, uNrOfEntries, 0, GL_RGBA, GL_FLOAT, pfEntries);
@@ -111,5 +111,11 @@ typedef struct CTransferFunction1D
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.2  2007/02/20 18:07:34  leeten
+
+[02/20/2007]
+1. Decalre method _Default() and BLoadCMap().
+2. Define method ULoad1D() to convert the transfer function to a OpenGL handle.
+
 
 */
