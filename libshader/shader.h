@@ -2,7 +2,6 @@
 #define __SHADER__H__
 
 #include <GL/glew.h>
-#include <GL/glut.h>
 
 bool BCheckObject(GLhandleARB obj);
 GLhandleARB CSetShaders(const char* szVertex, const char* szFragment);
@@ -88,6 +87,13 @@ GLhandleARB CSetShaders(const char* szVertex, const char* szFragment);
 		SET_1IV_VALUE_BY_LOC(iLoc, LEN, PVALUES);	\
 	}
 
+#define SET_3FV_VALUE_BY_NAME(SHADER, NAME, LEN, PVALUES)	\
+	{	\
+		int iLoc;	\
+		GET_LOC(SHADER, NAME, iLoc);	\
+		SET_3FV_VALUE_BY_LOC(iLoc, LEN, PVALUES);	\
+	}
+
 // ADD-BY-LEETY 09/15/2006-END
 
 #endif	// __SHADER__H__
@@ -95,6 +101,11 @@ GLhandleARB CSetShaders(const char* szVertex, const char* szFragment);
 /*
 
   $Log: not supported by cvs2svn $
+  Revision 1.2  2007/02/20 18:03:53  leeten
+
+  [02/20/2007]
+  1. Output the name of the invalid variable in macro PRINT_WARNING_INVALID_LOC.
+
   Revision 1.1.1.1  2006/11/09 19:20:04  leeten
 
   [11/09/2006]
