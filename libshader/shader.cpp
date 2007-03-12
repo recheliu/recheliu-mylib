@@ -1,5 +1,4 @@
 #include <gl/glew.h>
-#include <gl/glut.h>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -129,6 +128,11 @@ CSetShaders(const char* szVertex, const char* szFragment)
 /*
 
   $Log: not supported by cvs2svn $
+  Revision 1.2  2007/02/20 18:04:36  leeten
+
+  [02/20/2007]
+  1. Output the path of the shader program during parsing.
+
   Revision 1.1.1.1  2006/11/09 19:20:04  leeten
 
   [11/09/2006]
