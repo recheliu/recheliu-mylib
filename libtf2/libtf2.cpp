@@ -1,8 +1,22 @@
 #include "stdafx.h"
 #include "libtf2.h"
 
-#define SAMPLING_FREQUENCIES	1024
+#define SAMPLING_FREQUENCIES	256
 #define SUPER_SAMPLING_FACTOR	16
+
+// ADD-BY-LEETEN 04/03/2007-BEGIN
+CColorAlpha
+CAssociateColor(const CColorAlpha& cCa)
+{
+	CColorAlpha cColorAlpha;
+	for(size_t c=0; c<3; c++)
+		cColorAlpha.pdColor[c] = cCa.pdColor[c] * cCa.dAlpha;
+	cColorAlpha.dAlpha = cCa.dAlpha;
+
+	return cColorAlpha;
+}
+// ADD-BY-LEETEN 04/03/2007-END
+
 
 CColorAlpha
 CInterpolate(double dV, double dLeft, double dRight, CColorAlpha cLeft, CColorAlpha cRight)
@@ -20,7 +34,10 @@ CFrontToBackComposition(CColorAlpha cFront, CColorAlpha cBack)
 {
 	CColorAlpha cColorAlpha;
 	for(size_t c=0; c<3; c++)
-		cColorAlpha.pdColor[c] = cFront.pdColor[c] + (1.0 - cFront.dAlpha) * cBack.dAlpha * cBack.pdColor[c];
+		// MOD-BY-LEETEN 04/03/2007-BEGIN
+		/* FROM: cColorAlpha.pdColor[c] = cFront.pdColor[c] + (1.0 - cFront.dAlpha) * cBack.dAlpha * cBack.pdColor[c]; TO: */
+		cColorAlpha.pdColor[c] = cFront.pdColor[c] + (1.0 - cFront.dAlpha) * cBack.pdColor[c]; 
+		// MOD-BY-LEETEN 04/03/2007-END
 	cColorAlpha.dAlpha = 1.0 - (1.0 - cFront.dAlpha) * (1.0 - cBack.dAlpha);
 
 	return cColorAlpha;
@@ -296,8 +313,13 @@ CTransferFunction::CIntegrate(double dFrontScalar, double dBackScalar, double dI
 		dAlpha = 1.0 - pow(1.0 - dAlpha, dIntervalDepth);
 
 		cSum.dAlpha = dAlpha;
+		// MOD-BY-LEETEN 04/03/2007-BEGIN
+		/* FROM:
 		for(size_t c=0; c<3; c++)
 			cSum.pdColor[c] *= dAlpha;
+		TO: */
+		cSum = CAssociateColor(cSum);
+		// MOD-BY-LEETEN 04/03/2007-END
 	}
 	else
 	{
@@ -319,6 +341,7 @@ CTransferFunction::CIntegrate(double dFrontScalar, double dBackScalar, double dI
 				viFront->cColorAlpha, (viFront+1)->cColorAlpha);
 
 			dPrevDepth = 0.0;
+#if 01// 04/02/TEST
 			for(vi = viFront+1; vi != viBack + 1; vi++)
 			{
 				dDepth = INTERP(
@@ -332,6 +355,7 @@ CTransferFunction::CIntegrate(double dFrontScalar, double dBackScalar, double dI
 				dPrevDepth = dDepth;
 				cPrev = *vi;
 			}
+#endif	// #if 0	// 04/02/TEST
 
 			dDepth = dIntervalDepth;
 
@@ -345,18 +369,23 @@ CTransferFunction::CIntegrate(double dFrontScalar, double dBackScalar, double dI
 			for(size_t s=0; s<SUPER_SAMPLING_FACTOR; s++)
 			{
 				cCA = CInterpolate(
-					(double)(s+1), (double)0, (double)SUPER_SAMPLING_FACTOR, 
+					// 04/02/TEST	(double)(s+1), (double)0, (double)SUPER_SAMPLING_FACTOR, 
+					0.5 + (double)s, (double)0, (double)SUPER_SAMPLING_FACTOR, // 04/02/TEST
 					cPrev.cColorAlpha, cEnd.cColorAlpha);
 
 				// adjust alpha by depth
 				cCA.dAlpha = 1.0 - pow(1.0 - cCA.dAlpha, dD);
 
+				// ADD-BY-LEETEN 04/03/2007-BEGIN
+				cCA = CAssociateColor(cCA);
+				// ADD-BY-LEETEN 04/03/2007-END
+
 				// apply front-to-back composistion
 				cSum = CFrontToBackComposition(cSum, cCA);
 			}
 		}
-
-		if( dFrontScalar > dBackScalar ) 
+		else
+		// if( dFrontScalar > dBackScalar ) 
 		{
 			vcaRiterator vi, viFront, viBack, viEntry;
 			double dPrevDepth, dDepth;
@@ -373,6 +402,7 @@ CTransferFunction::CIntegrate(double dFrontScalar, double dBackScalar, double dI
 				viFront->cColorAlpha, (viFront+1)->cColorAlpha);
 
 			dPrevDepth = 0.0;
+#if 1	// 04/02/TEST
 			for(vi = viFront+1; vi != viBack+1; vi++)
 			{
 				double dScalar = vi->dScalar;
@@ -387,6 +417,7 @@ CTransferFunction::CIntegrate(double dFrontScalar, double dBackScalar, double dI
 				dPrevDepth = dDepth;
 				cPrev = *vi;
 			}
+#endif	//	#if 0	// 04/02/TEST
 
 			dDepth = dIntervalDepth;
 
@@ -407,11 +438,16 @@ CTransferFunction::CIntegrate(double dFrontScalar, double dBackScalar, double dI
 			for(size_t s=0; s<uNrOfSamples; s++)
 			{
 				cCA = CInterpolate(
-					(double)(s+1), (double)0, (double)SUPER_SAMPLING_FACTOR, 
+					// 04/02/TEST	(double)(s+1), (double)0, (double)SUPER_SAMPLING_FACTOR, 
+					0.5 + (double)s, (double)0, (double)SUPER_SAMPLING_FACTOR,// 04/02
 					cPrev.cColorAlpha, cEnd.cColorAlpha);
 
 				// adjust alpha by depth
 				cCA.dAlpha = 1.0 - pow(1.0 - cCA.dAlpha, dD);
+
+				// ADD-BY-LEETEN 04/03/2007-BEGIN
+				cCA = CAssociateColor(cCA);
+				// ADD-BY-LEETEN 04/03/2007-END
 
 				// apply front-to-back composistion
 				cSum = CFrontToBackComposition(cSum, cCA);
@@ -428,7 +464,7 @@ CTransferFunction::CFindEntry(double dScalar)
 {
 	vcaIterator vi;
 	for(vi=vcFunction.begin(); vi != vcFunction.end(); vi++)
-		if( vi->dScalar >= dScalar ) 
+		if( dScalar <= vi->dScalar ) 
 		{
 			vi--;
 			break;
@@ -526,7 +562,8 @@ CTransferFunction::PFGet3DPreIntegratedTable(
 					// if depth is zero, there is no color/alpha
 					switch(d)
 					{
-#if 1
+					#if 1
+
 					case 1:	// exactly compute the integral from front to back over the unit depth d
 						cCA = pcCAOverUnitDepth[p2] = CIntegrate(dFront, dBack, dDepthUnit);
 						break;
@@ -553,10 +590,11 @@ CTransferFunction::PFGet3DPreIntegratedTable(
 								pcCAOverPrevDepth[ f	   * uNrOfBackValues + i + j],
 								pcCAOverUnitDepth[ (i + j) * uNrOfBackValues + b    ]);
 						cCA = pcCAOverLastDepth[p2] = CInterpolate(dIndex, (double)i, (double)i+1, pcCAs[0], pcCAs[1]);
-#else
+
+					#else
 					default: // exactly compute the integral from front to back over nd
 						cCA = CIntegrate(dFront, dBack, dDepthUnit * (double)d);
-#endif
+					#endif
 				} // switch
 
 				// assign the integrated result to the pre-integrated table
@@ -580,5 +618,10 @@ CTransferFunction::PFGet3DPreIntegratedTable(
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.1  2007/03/12 23:44:40  leeten
+
+[03/12/2007]
+1. First time checkin. This is a new version of transfer function library.
+
 
 */
