@@ -5,7 +5,7 @@
 #include <vector>
 using namespace std;
 
-#define INTERP(d, dmin, dmax, vmin, vmax)	((vmin) + ((vmax) - (vmin)) * ((d) - (dmin)) / ((dmax) - (dmin)))
+#define INTERP(d, dmin, dmax, vmin, vmax)	((vmin) + ((vmax) - (vmin)) * ((d) - (dmin)) / ((dmax) - (dmin))) 
 
 typedef struct CColorAlpha{
 	double pdColor[3];
@@ -29,6 +29,9 @@ typedef struct CColorAlpha{
 
 CColorAlpha CInterpolate(double dV, double dLeft, double dRight, CColorAlpha cLeft, CColorAlpha cRight);
 CColorAlpha CFrontToBackComposition(CColorAlpha cFront, CColorAlpha cBack);
+// ADD-BY-LEETEN 04/03/2007-BEGIN
+CColorAlpha CAssociateColor(const CColorAlpha& cCa);
+// ADD-BY-LEETEN 04/03/2007-END
 
 typedef struct CColorAlphaEntry{
 	double dScalar;
@@ -69,13 +72,31 @@ public:
 		pfPreIntegratedTable = NULL;
 	}
 
+	void _Clear()
+	{
+		if ( pfLookupTable )
+		{
+			delete [] pfLookupTable;
+			pfLookupTable = NULL;
+		}
+
+		if( pfPreIntegratedTable )
+		{
+			delete [] pfPreIntegratedTable;
+			pfPreIntegratedTable = NULL;
+		}
+	}
+	
 	~CTransferFunction () 
 	{
+		/*
 		if ( pfLookupTable )
 			delete [] pfLookupTable;
 
 		if( pfPreIntegratedTable )
 			delete [] pfPreIntegratedTable;
+		*/
+		_Clear();
 	}
 
 	// load the transfer function 
@@ -121,5 +142,10 @@ public:
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.1  2007/03/12 23:44:40  leeten
+
+[03/12/2007]
+1. First time checkin. This is a new version of transfer function library.
+
 
 */
