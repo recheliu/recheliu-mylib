@@ -42,6 +42,11 @@ parsing is succesfull.
 #define OPT_FALSE	0
 #define OPT_TRUE	1
 
+// ADD-BY-LEETEN 04/11/2007-BEGIN
+// declare a boolean variable
+void _OPTAddBoolean(const char* szArgName, int *piParameter, int iDefaultValue = OPT_FALSE);
+// ADD-BY-LEETEN 04/11/2007-END
+
 // specify a flag. If the flag is given the variable *pbParameter is set as bValue (otherwise it is set as the default balue bDefault)
 void _OPTAddFlag(const char* szArgName, int *piParameter, int iValue, int iDefault);
 
