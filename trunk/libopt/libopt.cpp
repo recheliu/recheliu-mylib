@@ -32,7 +32,11 @@
 	}
 
 //////////////////////////////////////////////////////////////////////////
-typedef enum {OPT_TYPE_FLAG, OPT_TYPE_INT, OPT_TYPE_FLOAT, OPT_TYPE_STRING} EOptType;
+// MOD-BY-LEETEN 04/11/2007-FROM: 
+// typedef enum {OPT_TYPE_FLAG, OPT_TYPE_INT, OPT_TYPE_FLOAT, OPT_TYPE_STRING} EOptType;
+// MOD-BY-LEETEN 04/11/2007-TO: 
+typedef enum {OPT_TYPE_FLAG, OPT_TYPE_INT, OPT_TYPE_FLOAT, OPT_TYPE_STRING, OPT_TYPE_BOOL} EOptType;
+// MOD-BY-LEETEN 04/11/2007-END
 
 typedef struct COptEntry 
 {
@@ -90,6 +94,23 @@ int my_stricmp(const char* sz1, const char* sz2)
 	}
 	return 0;
 }
+
+// ADD-BY-LEETEN 04/11/2007-BEGIN
+// declare a boolean variable
+void 
+_OPTAddBoolean(const char* szArgName, int *piParameter, int iDefaultValue)
+{
+	CHECK_ARGUMENT_PREFIX(szArgName);
+
+	*piParameter = iDefaultValue;
+
+	int** ppiParameters = (int**)calloc(sizeof(int**), 1);
+	assert(ppiParameters);
+	ppiParameters[0] = piParameter;
+
+	ADD_ENTRY(szArgName, 1, ppiParameters, OPT_TYPE_BOOL);
+}
+// ADD-BY-LEETEN 04/11/2007-END
 
 ////////////////////////////////////////////////////////////////////////////////////////////
 void 
@@ -194,6 +215,11 @@ bool BOPTParse(char* argv[], int argc, int iBegin, int *piEnd)
 				for(int iP=0; iP<pvcOptEntry->iNrOfParameters; iP++)
 					switch( pvcOptEntry->eType )
 					{
+					// ADD-BY-LEETEN 04/11/2007-BEGIN
+					case OPT_TYPE_BOOL:
+						*(int*)pvcOptEntry->ppParameters[iP] = (!strcmp_func(argv[++iA], "true"))?OPT_TRUE:OPT_FALSE;	
+						break;
+					// ADD-BY-LEETEN 04/11/2007-END
 					case OPT_TYPE_INT:	
 						*(int*)pvcOptEntry->ppParameters[iP] = atoi(argv[++iA]);	
 						break;
@@ -234,5 +260,10 @@ bool BOPTParse(char* argv[], int argc, int iBegin, int *piEnd)
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.2  2007/02/20 18:01:35  leeten
+
+[02/20/2007]
+1. Debug the error to comparte the string.
+
 
 */
