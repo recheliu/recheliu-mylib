@@ -37,14 +37,13 @@ BCheckObject(GLhandleARB obj)
 {
 	int infologLength = 0;
 	int charsWritten  = 0;
-	char *infoLog;
 
 	glGetObjectParameterivARB(obj, GL_OBJECT_INFO_LOG_LENGTH_ARB,
 					 &infologLength);
 
 	if (infologLength > 1)
 	{
-		infoLog = (char *)malloc(infologLength);
+		char *infoLog = (char *)malloc(infologLength);
 		glGetInfoLogARB(obj, infologLength, &charsWritten, infoLog);
 		fprintf(stderr, "%s\n",infoLog);
 		bool bNoError = (strstr(infoLog, "ERROR")||strstr(infoLog, "error"))?false:true;
@@ -59,8 +58,8 @@ CSetShaders(const char* szVertex, const char* szFragment)
 {
 	char *vs = NULL, *fs = NULL;
 	static char szShaderPath[128+1];
-	char* szFileContext;
-	const char* szFileContext2;
+//	char* szFileContext;
+//	const char* szFileContext2;
 	GLhandleARB hFragmentShader, hVertexShader;
 
 	GLhandleARB 
@@ -68,6 +67,8 @@ CSetShaders(const char* szVertex, const char* szFragment)
 
 	if( szVertex ) 
 	{
+		char* szFileContext;
+
 		strcpy(szShaderPath, szVertex);
 		fprintf(stderr, "Parsing %s\n", szShaderPath);
 		if( !(szFileContext = SzTextFileRead(szShaderPath)) )
@@ -76,7 +77,7 @@ CSetShaders(const char* szVertex, const char* szFragment)
 			return false;
 		}
 		hVertexShader = glCreateShaderObjectARB(GL_VERTEX_SHADER_ARB);
-		szFileContext2 = szFileContext;
+		const char* szFileContext2 = szFileContext;
 		glShaderSourceARB(hVertexShader, 1, &szFileContext2, NULL);
 		glCompileShaderARB(hVertexShader);
 		if( !BCheckObject(hVertexShader) ) 
@@ -89,6 +90,8 @@ CSetShaders(const char* szVertex, const char* szFragment)
 
 	if( szFragment ) 
 	{
+		char* szFileContext;
+
 		strcpy(szShaderPath, szFragment);
 		fprintf(stderr, "Parsing %s\n", szShaderPath);
 		if( !(szFileContext = SzTextFileRead(szShaderPath)) )
@@ -97,7 +100,7 @@ CSetShaders(const char* szVertex, const char* szFragment)
 			return false;
 		}
 		hFragmentShader = glCreateShaderObjectARB(GL_FRAGMENT_SHADER_ARB);
-		szFileContext2 = szFileContext;
+		const char* szFileContext2 = szFileContext;
 		glShaderSourceARB(hFragmentShader, 1, &szFileContext2, NULL);
 		glCompileShaderARB(hFragmentShader);
 		if( !BCheckObject(hFragmentShader) ) 
@@ -105,6 +108,7 @@ CSetShaders(const char* szVertex, const char* szFragment)
 			fprintf(stderr, "Error during compiling %s\n", szShaderPath);
 			return false;
 		}
+		free(szFileContext);
 	}
 
 	if( szVertex )
@@ -120,7 +124,7 @@ CSetShaders(const char* szVertex, const char* szFragment)
 		fprintf(stderr, "Error during linking shaders\n");
 		return false;
 	}
-	free(szFileContext);
+//	free(szFileContext);
 
 	return hProgramHandle;
 }
@@ -128,6 +132,11 @@ CSetShaders(const char* szVertex, const char* szFragment)
 /*
 
   $Log: not supported by cvs2svn $
+  Revision 1.3  2007/03/12 23:40:37  leeten
+
+  [03/12/2007]
+  1. Add macro SET_3FV_VALUE_BY_NAME.
+
   Revision 1.2  2007/02/20 18:04:36  leeten
 
   [02/20/2007]
