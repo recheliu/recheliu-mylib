@@ -42,6 +42,10 @@ parsing is succesfull.
 #define OPT_FALSE	0
 #define OPT_TRUE	1
 
+// ADD-BY-LEETEN 02/22/2008-BEGIN
+void _OPTAlign(const char* szArgName, const char* szNewArgName);
+// ADD-BY-LEETEN 02/22/2008-END
+
 // ADD-BY-LEETEN 04/11/2007-BEGIN
 // declare a boolean variable
 void _OPTAddBoolean(const char* szArgName, int *piParameter, int iDefaultValue = OPT_FALSE);
@@ -72,6 +76,11 @@ bool BOPTParse(char* argv[], int argc, int iBegin, int *piEnd = NULL);
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.2  2007/04/12 19:03:16  leeten
+
+[04/12/2007]
+1. [ADDED] Declare new function OptAddBoolean().
+
 
 */
 
