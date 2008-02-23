@@ -112,6 +112,35 @@ _OPTAddBoolean(const char* szArgName, int *piParameter, int iDefaultValue)
 }
 // ADD-BY-LEETEN 04/11/2007-END
 
+// ADD-BY-LEETEN 02/22/2008-BEGIN
+void 
+_OPTAlign(const char* szArgName, const char* szNewArgName)
+{
+	CHECK_ARGUMENT_PREFIX(szNewArgName);
+
+	// allocate the space to hold the address of the variable
+	// search if the argument is already added
+	for(pvcOptEntry=vcOptTable.begin(); pvcOptEntry != vcOptTable.end(); pvcOptEntry++) 
+		if( 0 == strcmp_func(szArgName, pvcOptEntry->szArgName) )
+			break;
+
+	// if the entry w/ the old argument name is found, add a new one w/ the different name
+	if( vcOptTable.end() != pvcOptEntry )
+	{
+		COptEntry cEntry = *pvcOptEntry;
+		cEntry.szArgName = szNewArgName;
+		cEntry.ppParameters = (void**)calloc(sizeof(void*), cEntry.iNrOfParameters);
+		assert(cEntry.ppParameters);
+		memcpy(cEntry.ppParameters, pvcOptEntry->ppParameters, sizeof(void*) * cEntry.iNrOfParameters);
+		vcOptTable.push_back(cEntry);	
+	} 
+	else 
+	{
+		fprintf(stderr, "LIBOPT:_OPTAlign(): argument %s does not exist\n", szArgName);
+	}
+}
+// ADD-BY-LEETEN 02/22/2008-END
+
 ////////////////////////////////////////////////////////////////////////////////////////////
 void 
 _OPTAddFlag(const char* szArgName, int *piParameter, int iValue, int iDefault)
@@ -260,6 +289,11 @@ bool BOPTParse(char* argv[], int argc, int iBegin, int *piEnd)
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.3  2007/04/12 19:03:02  leeten
+
+[04/12/2007]
+1. [ADDED] Define new type of option: OPT_TYPE_BOOLEAN and new function OptAddBoolean().
+
 Revision 1.2  2007/02/20 18:01:35  leeten
 
 [02/20/2007]
