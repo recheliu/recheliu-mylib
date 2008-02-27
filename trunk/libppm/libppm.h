@@ -45,6 +45,17 @@ typedef struct CImage{
 		pfBuffer[uI][3] = 1.0f;
 		return true;
 	}
+	// ADD-BY-LEETEN 02/25/2008-BEGIN
+	bool BSetPixelAlpha(size_t uW, size_t uH, float fA) 
+	{	
+		if(uW>=uWidth || uH>uHeight)
+			return false;
+
+		size_t uI = uH * uWidth + uW;
+		pfBuffer[uI][3] = fA;
+		return true;
+	}
+	// ADD-BY-LEETEN 02/25/2008-END
 	bool BGetPixel(size_t uW, size_t uH, float *pfR, float *pfG, float *pfB) 
 	{	
 		// if(uW>=uWidth || uH>uHeight)
@@ -68,6 +79,11 @@ typedef struct CImage{
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.2  2006/12/02 01:45:59  leeten
+
+[12/01/2006]
+1. Declare new function PFConvertToRgb() to return the pixels as a array, where each element has three componenet as RGB.
+
 Revision 1.1.1.1  2006/09/07 18:51:44  leeten
 
 [09/07/2006]
