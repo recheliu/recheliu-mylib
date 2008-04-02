@@ -66,7 +66,12 @@ int (*strcmp_func)(const char*, const char*);
 int my_stricmp(const char* sz1, const char* sz2)
 {
 	char c1, c2;
-	for(const char *cp1 = sz1, *cp2 = sz2;
+	// MOD-BY-LEETEN 03/31/2008-BEGIN
+	// FROM: for(const char *cp1 = sz1, *cp2 = sz2;
+	// TO:
+	const char *cp1 = sz1, *cp2 = sz2;
+	for(;
+	// MOD-BY-LEETEN 03/31/2008-END
 		*cp1 && *cp2; cp1++, cp2++) 
 	{
 		if( *cp1 == *cp2 )
@@ -86,12 +91,30 @@ int my_stricmp(const char* sz1, const char* sz2)
 				continue;
 		}
 
+		#if	0	// MOD-BY-LEETEN 03/31/2008-FROM:
+
 		if( *cp1 < *cp2 )
 			return -1;
 
 		if( *cp1 > *cp2 )
 			return 1;
+
+		#else	// MOD-BY-LEETEN 03/31/2008-TO:
+
+		if( *cp1 !=  *cp2 )
+			break;
+
+		#endif	// MOD-BY-LEETEN 03/31/2008-END
 	}
+
+	// ADD-BY-LEETEN 03/31/2008-BEGIN
+	if( *cp1 < *cp2 )
+		return -1;
+
+	if( *cp1 > *cp2 )
+		return 1;
+	// ADD-BY-LEETEN 03/31/2008-END
+
 	return 0;
 }
 
@@ -289,6 +312,11 @@ bool BOPTParse(char* argv[], int argc, int iBegin, int *piEnd)
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.4  2008/02/23 05:16:50  leeten
+
+[02/23/2008]
+1. Define a new function _OPTAlign() to align an argument to an existed one.
+
 Revision 1.3  2007/04/12 19:03:02  leeten
 
 [04/12/2007]
