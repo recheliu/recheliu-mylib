@@ -65,6 +65,14 @@ void _OPTAddIntegerVector(const char *szArgName, int iNrOfParameters, ...);
 // All of them will be pointed to the pointers in the argument list
 void _OPTAddStringVector(const char *szArgName, int iNrOfParameters, ...);
 
+// ADD-BY-LEETEN 07/02/2008-BEGIN
+void _OPTAddEnum(const char* szArgName, int *piParameter, int iDefault, int iNrOfEnumValues, ...);
+
+void _OPTAddComment(const char* szArgName, const char *szComment);
+
+void _OptPrintComment();
+// ADD-BY-LEETEN 07/02/2008-END
+
 // initialize the parse of arguments
 void _OPTInit(bool bCaseInsentive=true);
 
@@ -76,6 +84,11 @@ bool BOPTParse(char* argv[], int argc, int iBegin, int *piEnd = NULL);
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.3  2008/02/23 05:16:38  leeten
+
+[02/23/2008]
+1. Declare a new function _OPTAlign() to align an argument to an existed one.
+
 Revision 1.2  2007/04/12 19:03:16  leeten
 
 [04/12/2007]
