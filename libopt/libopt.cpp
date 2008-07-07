@@ -10,6 +10,7 @@
 		cEntry.szArgName = arg_name;	\
 		cEntry.iNrOfParameters = nr_of_parameters;	\
 		cEntry.ppParameters = (void**)parameter_list;	\
+		cEntry.szComment = "";	\
 		vcOptTable.push_back(cEntry);	\
 	}
 
@@ -32,11 +33,27 @@
 	}
 
 //////////////////////////////////////////////////////////////////////////
-// MOD-BY-LEETEN 04/11/2007-FROM: 
-// typedef enum {OPT_TYPE_FLAG, OPT_TYPE_INT, OPT_TYPE_FLOAT, OPT_TYPE_STRING} EOptType;
-// MOD-BY-LEETEN 04/11/2007-TO: 
-typedef enum {OPT_TYPE_FLAG, OPT_TYPE_INT, OPT_TYPE_FLOAT, OPT_TYPE_STRING, OPT_TYPE_BOOL} EOptType;
-// MOD-BY-LEETEN 04/11/2007-END
+// MOD-BY-LEETEN 07/02/2008-FROM:
+// typedef enum {OPT_TYPE_FLAG, OPT_TYPE_INT, OPT_TYPE_FLOAT, OPT_TYPE_STRING, OPT_TYPE_BOOL} EOptType;
+// MOD-BY-LEETEN 07/02/2008-TO:
+typedef enum {
+	OPT_TYPE_FLAG, 
+	OPT_TYPE_INT, 
+	OPT_TYPE_FLOAT, 
+	OPT_TYPE_STRING, 
+	OPT_TYPE_BOOL,
+	OPT_TYPE_ENUM,
+} EOptType;
+// MOD-BY-LEETEN 07/02/2008-END
+
+// ADD-BY-LEETEN 07/02/2008-BEGIN
+typedef struct CEnumEntry 
+{
+	const char *szEnumName;
+	int iEnumValue;
+}CEnumEntry ;
+
+// ADD-BY-LEETEN 07/02/2008-END
 
 typedef struct COptEntry 
 {
@@ -46,6 +63,13 @@ typedef struct COptEntry
 	void **ppParameters;
 	int *piFlagParameter;
 	int iFlagValue;
+
+	// MOD-BY-LEETEN 07/02/2008-BEGIN
+	int iNrOfEnumValues;
+	vector<CEnumEntry> vcEnumTable;
+
+	const char *szComment;
+	// MOD-BY-LEETEN 07/02/2008-END
 
 	COptEntry()
 	{
@@ -123,6 +147,8 @@ int my_stricmp(const char* sz1, const char* sz2)
 void 
 _OPTAddBoolean(const char* szArgName, int *piParameter, int iDefaultValue)
 {
+	#if 0	// MOD-BY-TLEE 07/02/2008-FROM:
+
 	CHECK_ARGUMENT_PREFIX(szArgName);
 
 	*piParameter = iDefaultValue;
@@ -132,7 +158,23 @@ _OPTAddBoolean(const char* szArgName, int *piParameter, int iDefaultValue)
 	ppiParameters[0] = piParameter;
 
 	ADD_ENTRY(szArgName, 1, ppiParameters, OPT_TYPE_BOOL);
+
+	#else	// MOD-BY-TLEE 07/02/2008-TO:
+
+	_OPTAddEnum(szArgName, piParameter, iDefaultValue, 
+		4,
+		"0",		OPT_FALSE,
+		"false",	OPT_FALSE,
+		"1",		OPT_TRUE,
+		"true",		OPT_TRUE
+	);
+	vector<COptEntry>::reverse_iterator rivcOptEntry = vcOptTable.rbegin();
+	rivcOptEntry->eType = OPT_TYPE_BOOL;
+
+	#endif	// MOD-BY-TLEE 07/02/2008-END
 }
+	
+
 // ADD-BY-LEETEN 04/11/2007-END
 
 // ADD-BY-LEETEN 02/22/2008-BEGIN
@@ -155,6 +197,9 @@ _OPTAlign(const char* szArgName, const char* szNewArgName)
 		cEntry.ppParameters = (void**)calloc(sizeof(void*), cEntry.iNrOfParameters);
 		assert(cEntry.ppParameters);
 		memcpy(cEntry.ppParameters, pvcOptEntry->ppParameters, sizeof(void*) * cEntry.iNrOfParameters);
+		// ADD-BY-TLEE 07/02/2008-BEGIN
+		cEntry.szComment = pvcOptEntry->szComment;
+		// ADD-BY-TLEE 07/02/2008-END
 		vcOptTable.push_back(cEntry);	
 	} 
 	else 
@@ -234,6 +279,109 @@ _OPTAddStringVector(const char *szArgName, int iNrOfParameters, ...)
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
+// ADD-BY-TLEE 07/02/2008-BEGIN
+void 
+_OPTAddEnum(const char* szArgName, int *piParameter, int iDefault, int iNrOfEnumValues, ...)
+{
+	CHECK_ARGUMENT_PREFIX(szArgName);
+
+	*piParameter = iDefault;
+
+	int** ppiParameters = (int**)calloc(sizeof(int**), 1);
+	assert(ppiParameters);
+	ppiParameters[0] = piParameter;
+
+	ADD_ENTRY(szArgName, 1, ppiParameters, OPT_TYPE_ENUM);
+
+	vector<COptEntry>::reverse_iterator rivcOptEntry = vcOptTable.rbegin();
+	rivcOptEntry->iNrOfEnumValues = iNrOfEnumValues;
+
+	va_list ap; 
+	va_start(ap, iNrOfEnumValues);	
+	for(int e=0; e<iNrOfEnumValues; e++) 
+	{	
+		CEnumEntry cEnum;
+		cEnum.szEnumName = va_arg(ap, const char*);
+		cEnum.iEnumValue = va_arg(ap, int);
+
+		rivcOptEntry->vcEnumTable.push_back(cEnum);
+	}	
+	va_end(ap);	
+}
+
+#define PRINT_OPTION_USAGE(arg_name, type_str, nr_of_elems)	\
+	fprintf(stderr, "%s ", arg_name);		\
+	for(int e = 0; e < (nr_of_elems); e++)	\
+	{										\
+		fprintf(stderr, "%s ", type_str);	\
+	}										\
+	fprintf(stderr, "\n");					\
+
+void
+_OptPrintComment()
+{
+	for(pvcOptEntry=vcOptTable.begin(); pvcOptEntry != vcOptTable.end(); pvcOptEntry++) 
+	{
+		switch( pvcOptEntry->eType )
+		{
+		case OPT_TYPE_BOOL:
+			PRINT_OPTION_USAGE(pvcOptEntry->szArgName, "<bool>", 1);
+			break;
+
+		case OPT_TYPE_INT:	
+			PRINT_OPTION_USAGE(pvcOptEntry->szArgName, "<integer>", pvcOptEntry->iNrOfParameters);
+			break;
+
+		case OPT_TYPE_FLOAT:
+			PRINT_OPTION_USAGE(pvcOptEntry->szArgName, "<float>", pvcOptEntry->iNrOfParameters);
+			break;
+
+		case OPT_TYPE_STRING:
+			PRINT_OPTION_USAGE(pvcOptEntry->szArgName, "<string>", pvcOptEntry->iNrOfParameters);
+			break;
+
+		case OPT_TYPE_ENUM:
+			PRINT_OPTION_USAGE(pvcOptEntry->szArgName, "<enum>", 1);
+			fprintf(stderr, "\tThe <enum> can be as follows:\n");
+			for(vector<CEnumEntry>::iterator 
+					ivcEnum = pvcOptEntry->vcEnumTable.begin(); 
+				ivcEnum != pvcOptEntry->vcEnumTable.end(); 
+				ivcEnum ++)
+			{
+				fprintf(stderr, "\t\t%s\n", ivcEnum->szEnumName);
+			}
+			break;
+
+		default:
+			;
+		}
+		fprintf(stderr, "\n");
+		fprintf(stderr, "\t%s\n", pvcOptEntry->szComment);
+		fprintf(stderr, "\n");
+	}
+}
+// ADD-BY-TLEE 07/02/2008-END
+
+///////////////////////////////////////////////////////////////////////////////////
+// ADD-BY-TLEE 07/02/2008-BEGIN
+void
+_OPTAddComment(
+	const char* szArgName, 
+	const char *szComment
+)
+{
+	for(pvcOptEntry=vcOptTable.begin(); pvcOptEntry != vcOptTable.end(); pvcOptEntry++) 
+		if( 0 == strcmp_func(szArgName, pvcOptEntry->szArgName) )
+		{
+			pvcOptEntry->szComment = szComment;
+			return;
+		}
+
+	fprintf(stderr, "Warning in _OPTAddComment(): unrecognized option %s\n", szArgName);
+}
+// ADD-BY-TLEE 07/02/2008-END
+
+///////////////////////////////////////////////////////////////////////////////////
 // initialize the data structure
 
 void _OPTInit(bool bCaseInsentive)
@@ -255,6 +403,16 @@ bool BOPTParse(char* argv[], int argc, int iBegin, int *piEnd)
 	for(iA = iBegin; iA<argc; iA++)
 	{
 		for(pvcOptEntry=vcOptTable.begin(); pvcOptEntry != vcOptTable.end(); pvcOptEntry++) 
+			// ADD-BY-LEETEN 07/02/2008-BEGIN
+			if( 0 == strcmp_func(argv[iA], "--help") )
+			{
+				_OptPrintComment();
+				exit(0);
+				break;
+			}
+			else
+
+			// ADD-BY-LEETEN 07/02/2008-END
 			if( 0 == strcmp_func(argv[iA], pvcOptEntry->szArgName) )
 			{
 				// check the number of parameters
@@ -267,11 +425,15 @@ bool BOPTParse(char* argv[], int argc, int iBegin, int *piEnd)
 				for(int iP=0; iP<pvcOptEntry->iNrOfParameters; iP++)
 					switch( pvcOptEntry->eType )
 					{
+					// DEL-BY-LEETEN 07/02/2008-BEGIN
+					/*
 					// ADD-BY-LEETEN 04/11/2007-BEGIN
 					case OPT_TYPE_BOOL:
 						*(int*)pvcOptEntry->ppParameters[iP] = (!strcmp_func(argv[++iA], "true"))?OPT_TRUE:OPT_FALSE;	
 						break;
 					// ADD-BY-LEETEN 04/11/2007-END
+					*/
+					// DEL-BY-LEETEN 07/02/2008-END
 					case OPT_TYPE_INT:	
 						*(int*)pvcOptEntry->ppParameters[iP] = atoi(argv[++iA]);	
 						break;
@@ -281,6 +443,26 @@ bool BOPTParse(char* argv[], int argc, int iBegin, int *piEnd)
 					case OPT_TYPE_STRING:
 						*(char**)pvcOptEntry->ppParameters[iP] = argv[++iA];
 						break;
+
+					// ADD-BY-LEETEN 07/02/2008-END
+					case OPT_TYPE_ENUM:	
+					case OPT_TYPE_BOOL:
+						{
+							const char *szEnum = argv[++iA];
+							for(vector<CEnumEntry>::iterator 
+									ivcEnum = pvcOptEntry->vcEnumTable.begin();
+								ivcEnum != pvcOptEntry->vcEnumTable.end();
+								ivcEnum ++)
+
+								if( 0 == strcmp_func(szEnum, ivcEnum->szEnumName) )
+								{
+									*(int*)pvcOptEntry->ppParameters[iP] = ivcEnum->iEnumValue;
+									break;
+								}
+						}
+						break;
+					// ADD-BY-LEETEN 07/02/2008-BEGIN
+
 					}
 
 				// assign the flag if it is set
@@ -312,6 +494,11 @@ bool BOPTParse(char* argv[], int argc, int iBegin, int *piEnd)
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.5  2008/04/02 18:14:25  leeten
+
+[04/02/2008]
+1. Modify my_Strcmp such that the strings with the same prefix will be treated differently.
+
 Revision 1.4  2008/02/23 05:16:50  leeten
 
 [02/23/2008]
