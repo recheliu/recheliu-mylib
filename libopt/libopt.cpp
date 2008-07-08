@@ -1,4 +1,17 @@
+#if 0	// MOD-BY-LEETEN 07/08/2008-FROM:
 #include "stdafx.h"
+#else	// MOD-BY-LEETEN 07/08/2008-TO:
+
+	#include <vector>
+
+	using namespace std;
+
+	#include <assert.h>
+	#include <stdarg.h>
+
+	#include "libopt.h"
+
+#endif	// MOD-BY-LEETEN 07/08/2008-END
 
 #define CHECK_ARGUMENT_PREFIX(szArg)	assert( szArg[0] == '-' );
 
@@ -494,6 +507,14 @@ bool BOPTParse(char* argv[], int argc, int iBegin, int *piEnd)
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.6  2008/07/07 15:06:14  leeten
+
+[07/07/2008]
+1. [ADD] Define new function _OPTAddEnum() to parse a command argument from string to predefined constants. Besdies, new data structure CEnumEntry as the table of enum. entries.
+2. [CHANGE] Wrap _OPTAddBool to use the function _OPTAddEnum().
+3. [ADD] Define new function _OPTAddComment() to define comment with the arguments.
+4. [ADD] Define new function _OptPrintComment() to print out comments. Besides, if the argument "--help" is given, the comment will be displayed and then the program will be terminated.
+
 Revision 1.5  2008/04/02 18:14:25  leeten
 
 [04/02/2008]
