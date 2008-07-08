@@ -154,26 +154,6 @@
 				RelativePath=".\libopt.cpp"
 				>
 			</File>
-			<File
-				RelativePath=".\stdafx.cpp"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="1"
-					/>
-				</FileConfiguration>
-			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -188,14 +168,10 @@
 					>
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="copy &quot;$(InputPath)&quot; ..\include\$(InputFileName)"
+						CommandLine="copy &quot;$(InputPath)&quot; ..\include\$(InputFileName)&#x0D;&#x0A;"
 						Outputs="..\include\$(InputFileName)"
 					/>
 				</FileConfiguration>
-			</File>
-			<File
-				RelativePath=".\stdafx.h"
-				>
 			</File>
 		</Filter>
 		<Filter
