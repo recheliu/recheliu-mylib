@@ -1,7 +1,6 @@
-﻿
 Microsoft Visual Studio Solution File, Format Version 9.00
 # Visual Studio 2005
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libshader", "libshader.vcproj", "{E4E09780-9D7A-405D-BF01-C43795ECA35F}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libshader", "libshader.vcproj", "{263D8654-6EFA-44C2-AF2A-C086B96CFBCA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -9,10 +8,10 @@ Global
 		Release|Win32 = Release|Win32
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{E4E09780-9D7A-405D-BF01-C43795ECA35F}.Debug|Win32.ActiveCfg = Debug|Win32
-		{E4E09780-9D7A-405D-BF01-C43795ECA35F}.Debug|Win32.Build.0 = Debug|Win32
-		{E4E09780-9D7A-405D-BF01-C43795ECA35F}.Release|Win32.ActiveCfg = Release|Win32
-		{E4E09780-9D7A-405D-BF01-C43795ECA35F}.Release|Win32.Build.0 = Release|Win32
+		{263D8654-6EFA-44C2-AF2A-C086B96CFBCA}.Debug|Win32.ActiveCfg = Debug|Win32
+		{263D8654-6EFA-44C2-AF2A-C086B96CFBCA}.Debug|Win32.Build.0 = Debug|Win32
+		{263D8654-6EFA-44C2-AF2A-C086B96CFBCA}.Release|Win32.ActiveCfg = Release|Win32
+		{263D8654-6EFA-44C2-AF2A-C086B96CFBCA}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
