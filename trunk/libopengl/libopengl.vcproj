@@ -166,7 +166,7 @@
 					>
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="copy $(InputPath) ..\include\$(InputFileName)&#x0D;&#x0A;"
+						CommandLine="copy &quot;$(InputPath)&quot; ..\include\$(InputFileName)"
 						Outputs="..\include\$(InputFileName)"
 					/>
 				</FileConfiguration>
