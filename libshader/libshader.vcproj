@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="8.00"
 	Name="libshader"
-	ProjectGUID="{E4E09780-9D7A-405D-BF01-C43795ECA35F}"
+	ProjectGUID="{263D8654-6EFA-44C2-AF2A-C086B96CFBCA}"
 	>
 	<Platforms>
 		<Platform
@@ -18,7 +18,7 @@
 			OutputDirectory=".\..\lib\Debug"
 			IntermediateDirectory=".\Debug"
 			ConfigurationType="4"
-			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC60.vsprops"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
 			CharacterSet="2"
@@ -41,10 +41,10 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;_CRT_TERMINATE_DEFINED;_CRT_SECURE_NO_DEPRECATE"
-				MinimalRebuild="true"
+				PreprocessorDefinitions="WIN32;_DEBUG;_LIB"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
+				UsePrecompiledHeader="0"
 				PrecompiledHeaderFile=".\Debug/libshader.pch"
 				AssemblerListingLocation=".\Debug/"
 				ObjectFile=".\Debug/"
@@ -77,8 +77,6 @@
 			/>
 			<Tool
 				Name="VCBscMakeTool"
-				SuppressStartupBanner="true"
-				OutputFile=".\..\lib\Debug/libshader.bsc"
 			/>
 			<Tool
 				Name="VCFxCopTool"
@@ -92,7 +90,7 @@
 			OutputDirectory=".\Release"
 			IntermediateDirectory=".\Release"
 			ConfigurationType="4"
-			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC60.vsprops"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
 			CharacterSet="2"
@@ -120,6 +118,7 @@
 				StringPooling="true"
 				RuntimeLibrary="0"
 				EnableFunctionLevelLinking="true"
+				UsePrecompiledHeader="0"
 				PrecompiledHeaderFile=".\Release/libshader.pch"
 				AssemblerListingLocation=".\Release/"
 				ObjectFile=".\Release/"
@@ -151,8 +150,6 @@
 			/>
 			<Tool
 				Name="VCBscMakeTool"
-				SuppressStartupBanner="true"
-				OutputFile=".\Release/libshader.bsc"
 			/>
 			<Tool
 				Name="VCFxCopTool"
@@ -177,7 +174,9 @@
 					>
 					<Tool
 						Name="VCCLCompilerTool"
+						Optimization="0"
 						PreprocessorDefinitions=""
+						BasicRuntimeChecks="3"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -185,6 +184,7 @@
 					>
 					<Tool
 						Name="VCCLCompilerTool"
+						Optimization="2"
 						PreprocessorDefinitions=""
 					/>
 				</FileConfiguration>
@@ -202,7 +202,7 @@
 					>
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="copy $(InputPath) ..\include\$(InputFileName)&#x0D;&#x0A;"
+						CommandLine="copy &quot;$(InputPath)&quot; ..\include\&quot;$(InputFileName)&quot;&#x0D;&#x0A;"
 						Outputs="..\include\$(InputFileName)"
 					/>
 				</FileConfiguration>
