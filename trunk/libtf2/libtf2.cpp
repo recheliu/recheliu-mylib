@@ -1,4 +1,7 @@
-#include "stdafx.h"
+#include <stdio.h>
+#include <assert.h>
+#include <math.h>
+
 #include "libtf2.h"
 
 #define SAMPLING_FREQUENCIES	256
@@ -618,6 +621,13 @@ CTransferFunction::PFGet3DPreIntegratedTable(
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.2  2007/04/05 17:39:11  leeten
+
+[04/05/2007]
+1. [NEW ADDED] Define method _Clear() to free memory.
+2. [NEW ADDED] Define function CAssociateColor to convert an input color to associated color.
+3. [DEBUG] Before composistion, the color is converted into associated color first.
+
 Revision 1.1  2007/03/12 23:44:40  leeten
 
 [03/12/2007]
