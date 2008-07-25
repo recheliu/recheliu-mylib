@@ -79,6 +79,9 @@ void gcbReshapeFunc(void (*_MyReshapeFunc)(int, int));
 void gcbKeyboardFunc(void (*_MyKeyboardFunc)(unsigned char, int, int));
 void gcbSpecialFunc(void (*_MySpecialFunc)(int, int, int));
 void gcbIdleFunc(void (*_MyIdleFunc)());
+// ADD-BY-LEETEN 07/14/2008-BEGIN
+void gcbAnimeFunc(void (*_MyAnimeFunc)());
+// ADD-BY-LEETEN 07/14/2008-END
 
 // ADD-BY-LEETEN 03/12/2008-BEGIN
 void gcbSetSnapshotFilename(char* szSnapshotFilename, bool bSnapshotThenExit = false);
@@ -92,6 +95,11 @@ void gcbMatrixRecord(	char _szMatrixFilename[]);
 void gcbMatrixPlay(		char _szMatrixFilename[]);
 // ADD-BY-LEETEN 03/31/2008-END
 
+// ADD-BY-LEETEN 07/25/2008-BEGIN
+void gcbAnimePause();
+void gcbAnimeResume();
+// ADD-BY-LEETEN 07/25/2008-END
+
 void gcbInit(void (*_InitFunc)() = NULL, void (*_QuitFunc)() = NULL);
 
 #endif	// __GLUT_CALLBACK_H__
@@ -99,6 +107,11 @@ void gcbInit(void (*_InitFunc)() = NULL, void (*_QuitFunc)() = NULL);
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.1.1.1  2008/06/12 22:43:35  leeten
+
+[06/12/2008]
+1. Frist time checkin.
+
 Revision 1.7  2008/04/02 19:25:26  leeten
 
 [04/02/2008]
