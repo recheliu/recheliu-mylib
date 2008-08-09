@@ -1,0 +1,29 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 9.00
+# Visual Studio 2005
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libgw", "libgw\libgw.vcproj", "{E4AF0299-6BF4-468F-82DA-68BE4D3B4621}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libgw_example_single_win", "libgw_example_single_win\libgw_example_single_win.vcproj", "{A5469B0B-90ED-45E3-B4F2-489BDBE3DA4D}"
+	ProjectSection(ProjectDependencies) = postProject
+		{E4AF0299-6BF4-468F-82DA-68BE4D3B4621} = {E4AF0299-6BF4-468F-82DA-68BE4D3B4621}
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E4AF0299-6BF4-468F-82DA-68BE4D3B4621}.Debug|Win32.ActiveCfg = Debug|Win32
+		{E4AF0299-6BF4-468F-82DA-68BE4D3B4621}.Debug|Win32.Build.0 = Debug|Win32
+		{E4AF0299-6BF4-468F-82DA-68BE4D3B4621}.Release|Win32.ActiveCfg = Release|Win32
+		{E4AF0299-6BF4-468F-82DA-68BE4D3B4621}.Release|Win32.Build.0 = Release|Win32
+		{A5469B0B-90ED-45E3-B4F2-489BDBE3DA4D}.Debug|Win32.ActiveCfg = Debug|Win32
+		{A5469B0B-90ED-45E3-B4F2-489BDBE3DA4D}.Debug|Win32.Build.0 = Debug|Win32
+		{A5469B0B-90ED-45E3-B4F2-489BDBE3DA4D}.Release|Win32.ActiveCfg = Release|Win32
+		{A5469B0B-90ED-45E3-B4F2-489BDBE3DA4D}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
