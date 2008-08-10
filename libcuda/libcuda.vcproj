@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="8.00"
 	Name="libcuda"
-	ProjectGUID="{98A9AE67-34FE-415B-8900-CE37F8934671}"
+	ProjectGUID="{6A43EDF5-44CB-4D3E-B976-47BCBAA6E316}"
 	>
 	<Platforms>
 		<Platform
