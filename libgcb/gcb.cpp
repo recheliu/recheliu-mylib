@@ -361,7 +361,9 @@ _ZoomModel()
 void
 _DisplayCB()
 {
-	fprintf(stderr, "Frame %d\n", uAnimeFrame);
+	// DEL-BY-LEETEN 07/30/2008-FROM:
+	// fprintf(stderr, "Frame %d\n", uAnimeFrame);
+	// DEL-BY-LEETEN 07/30/2008-END
 
 	// ADD-BY-LEETEN 03/31/2008-BEGIN
 	if( bAnimePlayMatrix )
@@ -407,7 +409,7 @@ _DisplayCB()
 			{
 				*strrchr(szAnimeFilename, '.') = '\0';
 			}
-			sprintf(&szAnimeFilename[strlen(szAnimeFilename)], "_%03d.ppm", uAnimeFrame);
+			sprintf(&szAnimeFilename[strlen(szAnimeFilename)], "_%04d.ppm", uAnimeFrame);
 
 			cSnapshotBuffer.BWrite( szAnimeFilename );
 			fprintf(stdout, "Snapshot %s was saved\n", szAnimeFilename);
@@ -828,6 +830,12 @@ gcbInit(void (*_InitFunc)(), void (*_QuitFunc)())
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.2  2008/07/25 22:02:48  leeten
+
+[07/25/2008]
+1. [ADD] Define new function gcbAnimePause()/gcbAnimeResume() to toggle the animation.
+2. [ADD] Define a new function gcbAnimeFunc() to specify user-specified callback.
+
 Revision 1.1.1.1  2008/06/12 22:43:35  leeten
 
 [06/12/2008]
