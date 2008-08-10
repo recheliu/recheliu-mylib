@@ -203,7 +203,7 @@
 					>
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="copy $(InputPath) ..\include\$(InputFileName)&#x0D;&#x0A;"
+						CommandLine="copy &quot;$(InputPath)&quot; ..\include\$(InputFileName)&#x0D;&#x0A;"
 						Outputs="..\include\$(InputFileName)"
 					/>
 				</FileConfiguration>
@@ -216,7 +216,7 @@
 					>
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="copy $(InputPath) ..\include\$(InputFileName)"
+						CommandLine="copy &quot;$(InputPath)&quot; ..\include\$(InputFileName)&#x0D;&#x0A;"
 						Outputs="..\include\$(InputFileName)"
 					/>
 				</FileConfiguration>
