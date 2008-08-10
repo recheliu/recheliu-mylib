@@ -2,7 +2,9 @@
 	// #include "gw.h"
 // TO:
 #include "GlutWin.h"
-#include "gw_api.h"
+// DEL-BY-LEETEN 08/10/2008-BEGIN
+	// #include "gw_api.h"
+// DEL-BY-LEETEN 08/10/2008-END
 // MOD-BY-LEETEN 08/09/2008-END
 
 void 
@@ -551,6 +553,11 @@ CGlutWin::_Set()
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.1  2008/08/10 05:00:27  leeten
+
+[2008/08/10]
+1. First time checkin. Now we use the static member methods to add windows.
+
 Revision 1.1.1.1  2008/08/09 13:50:10  leeten
 
 [2008/08/09]
