@@ -9,6 +9,17 @@ This file defines several important macros for CUDA.
 
 #include <cutil.h>
 
+// ADD-BY-TLEE 07/30/2008-BEGIN
+#if CUDART_VERSION <= 1010
+
+	#define CUDA_INIT(argc, argv)	CUT_DEVICE_INIT()
+
+#else
+	#define CUDA_INIT(argc, argv)	CUT_DEVICE_INIT(argc, argv)
+
+#endif
+// ADD-BY-TLEE 07/30/2008-END
+
 #define ADDRESS_2D(type, base, eb, wb, w, h)	\
 	((type*)((unsigned char*)(base) + (wb) * (h) + (w) * (eb)))
 
@@ -161,6 +172,11 @@ struct CBuffer2D
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.1.1.1  2008/06/12 22:37:55  leeten
+
+[06/12/2008]
+1. Frist time checkin.
+
 Revision 1.1.1.1  2008/05/02 19:05:10  leeten
 
 [05/02/2008]
