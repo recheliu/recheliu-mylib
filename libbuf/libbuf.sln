@@ -1,6 +1,6 @@
 Microsoft Visual Studio Solution File, Format Version 9.00
 # Visual Studio 2005
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libcuda", "libcuda.vcproj", "{98A9AE67-34FE-415B-8900-CE37F8934671}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libbuf", "libbuf.vcproj", "{98A9AE67-34FE-415B-8900-CE37F8934671}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
