@@ -263,10 +263,29 @@ CGlutWin::_DisplayCB()
 void 
 CGlutWin::_ReshapeCB(int w, int h)
 {
-	if( w & h )
-	{
-		glViewport(0, 0, w, h);
+	#if 0		// MOD-BY-LEETEN 08/11/2008-FROM:
 
+		if( w & h )
+		{
+			glViewport(0, 0, w, h);
+
+			glGetIntegerv(GL_VIEWPORT, piViewport);
+
+			glMatrixMode(GL_PROJECTION);
+			glLoadIdentity();
+			gluPerspective(30.0f, (float)piViewport[2]/(float)piViewport[3], 0.05f, 20.0f);
+			glGetDoublev(GL_PROJECTION_MATRIX, tProjectionMatrix);
+		
+			_ReshapeFunc(w, h);
+		}
+
+	#else	// MOD-BY-LEETEN 08/11/2008-TO:
+
+	int tx, ty, tw, th;
+	GLUI_Master.get_viewport_area( &tx, &ty, &tw, &th );
+	glViewport(tx, ty, tw, th);
+	if( tw & th )
+	{
 		glGetIntegerv(GL_VIEWPORT, piViewport);
 
 		glMatrixMode(GL_PROJECTION);
@@ -274,8 +293,10 @@ CGlutWin::_ReshapeCB(int w, int h)
 		gluPerspective(30.0f, (float)piViewport[2]/(float)piViewport[3], 0.05f, 20.0f);
 		glGetDoublev(GL_PROJECTION_MATRIX, tProjectionMatrix);
 	
-		_ReshapeFunc(w, h);
+		_ReshapeFunc(tw, th);
 	}
+
+	#endif	// MOD-BY-LEETEN 08/11/2008-END
 
 	CHECK_OPENGL_ERROR(szReshape, true);
 }
@@ -490,6 +511,13 @@ CGlutWin::CGlutWin()
 	eMouseButton = 0;
 	eModifier = 0;
 	bMoving = false;
+
+	// ADD-BY-LEETEN 08/11/2008-BEGIN
+	iGluiEnum = GLUI_NONE;	// by default there is no GLUI control
+	pcGluiWin = NULL;		// by default there is no GLUI window
+	pcGluiSubwin = NULL;	// by default there is no GLUI sub-window
+	iSubwinPosistion = 0;	
+	// ADD-BY-LEETEN 08/11/2008-END
 }
 
 // destructor
@@ -550,9 +578,49 @@ CGlutWin::_Set()
 
 // ADD-BY-LEETEN 08/09/2008-END
 
+// ADD-BY-LEETEN 08/11/2008-BEGIN
+
+// add a GLUI window 
+void 
+CGlutWin::_AddGluiWin()
+{
+	iGluiEnum |= GLUI_WIN;
+}
+
+// return the pointer to the GLUI window
+GLUI *
+CGlutWin::PCGetGluiWin()
+{
+	assert(pcGluiWin);
+	return pcGluiWin;
+}
+
+// add a GLUI subwindow in the specified position
+void 
+CGlutWin::_AddGluiSubwin(int iPosition)
+{
+	iGluiEnum |= GLUI_SUBWIN;
+	iSubwinPosistion = iPosition;
+}
+
+// return the pointer to the GLUI sub-window
+GLUI *
+CGlutWin::PCGetGluiSubwin()
+{
+	assert(pcGluiSubwin);
+	return pcGluiSubwin;
+}
+
+// ADD-BY-LEETEN 08/11/2008-END
+
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.2  2008/08/10 18:50:53  leeten
+
+[2008/08/10]
+1. [DEL] Remove the header gw_api.h.
+
 Revision 1.1  2008/08/10 05:00:27  leeten
 
 [2008/08/10]
