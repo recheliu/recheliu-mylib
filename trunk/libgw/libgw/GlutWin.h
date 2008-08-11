@@ -23,6 +23,11 @@ using namespace std;
 	#pragma comment (lib, "glut32.lib")   
 #endif
 
+	// ADD-BY-LEETEN 08/11/2008-BEGIN
+	// combine w/ GLUI
+	#include <GL/glui.h>
+	// ADD-BY-LEETEN 08/11/2008-END
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -51,6 +56,43 @@ using namespace std;
 #include "libopengl.h"
 
 class CGlutWin {
+
+// ADD-BY-LEETEN 08/11/2008-BEGIN
+
+protected:
+	// store the GLUI option to add a GLUI win and/or a GLUI subwin
+	int iGluiEnum;
+
+	// pointer to the created GLUI window
+	GLUI *pcGluiWin;
+
+	// pointer to the created GLUI sub-window
+	GLUI *pcGluiSubwin;
+
+	// location of the sub-window
+	int iSubwinPosistion;
+
+public:
+	// define the option of GLUI windows as enum
+	typedef enum {
+		GLUI_NONE	= 0x0000,
+		GLUI_WIN	= 0x0001,
+		GLUI_SUBWIN	= 0x0002
+	} EGluiEnum;
+
+	// add a GLUI window 
+	void _AddGluiWin();
+
+	// return the pointer to the GLUI window
+	GLUI *PCGetGluiWin();
+
+	// add a GLUI subwindow in the specified position
+	void _AddGluiSubwin(int iPosition = 0);
+
+	// return the pointer to the GLUI sub-window
+	GLUI *PCGetGluiSubwin();
+// ADD-BY-LEETEN 08/11/2008-END
+
 protected:
 	typedef GLdouble TMatrix[16];
 
@@ -139,7 +181,10 @@ public:
 	static int IGetNrOfWins();
 	static void _SetActiveWin(int iWin);
 	static CGlutWin *PCGetActiveWin();
-	static void _AddWin(CGlutWin *win, char *szTitle, bool bUseDefault = true, int x = 0, int y = 0, int w = 128, int h = 128);
+	static void _AddWin(
+		CGlutWin *win, 
+		char *szTitle, 
+		bool bUseDefault = true, int x = 0, int y = 0, int w = 128, int h = 128);
 	// ADD-BY-LEETEN 08/09/2008-END
 };
 
@@ -152,6 +197,11 @@ public:
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.1  2008/08/10 05:00:27  leeten
+
+[2008/08/10]
+1. First time checkin. Now we use the static member methods to add windows.
+
 Revision 1.1.1.1  2008/08/09 13:50:10  leeten
 
 [2008/08/09]
