@@ -3,6 +3,7 @@
 
 // ADD-BY-LEETEN 08/09/2008-BEGIN
 #include <vector>
+#include <stack>
 using namespace std;
 // ADD-BY-LEETEN 08/09/2008-END
 
@@ -15,13 +16,21 @@ using namespace std;
 	// DEL-BY-LEETEN 08/09/2008-END
 #endif
 
-#if		defined(USING_FREEGLUT)
-	#include <GL/freeglut.h>
-	#pragma comment (lib, "freeglut.lib")
-#else
-	#include <GL/glut.h>
-	#pragma comment (lib, "glut32.lib")   
-#endif
+// DEL-BY-TLEE 08/12/2008-BEGIN
+// Since GLUT will be included in GLUI, this part is removed. 
+// If FREEGLUT is desired, define a preprocessor **** GLUI_FREEGLUT ****
+	/*
+	#if		defined(USING_FREEGLUT)
+		#include <GL/freeglut.h>
+		#pragma comment (lib, "freeglut.lib")
+		#define	GLUI_FREEGLUT
+		// ADD-BY-TLEE 08/12/2008-END
+	#else
+		#include <GL/glut.h>
+		#pragma comment (lib, "glut32.lib")   
+	#endif
+	*/
+// DEL-BY-TLEE 08/12/2008-END
 
 	// ADD-BY-LEETEN 08/11/2008-BEGIN
 	// combine w/ GLUI
@@ -153,6 +162,10 @@ protected:
 
 	virtual void _InitFunc();
 
+	// ADD-BY-LEETEN 08/11/2008-BEGIN
+	virtual void _TimerFunc(int value);
+	// ADD-BY-LEETEN 08/11/2008-END
+
 public:
 	virtual void _DisplayCB();
 	virtual void _ReshapeCB(int w, int h);
@@ -162,10 +175,18 @@ public:
 	virtual void _MouseCB(int button, int state, int x, int y);
 	virtual void _IdleCB();
 
-	// return the window ID
-	int IGetId();
+	// ADD-BY-LEETEN 08/11/2008-BEGIN
+	virtual void _TimerCB(int value);
+	// ADD-BY-LEETEN 08/11/2008-END
 
-	int ICreate(
+	// ADD-BY-LEETEN 08/11/2008-BEGIN
+	void _AddTimer(unsigned int msecs, short value = 0);	// add a timer event
+	void _Redisplay();										// trigger a display event
+	// ADD-BY-LEETEN 08/11/2008-END
+
+	int IGetId();			// return the window ID	
+
+	int ICreate(			// create the window.
 		char *szTitle, 
 		bool bUseDefault = true,
 		int iX = 0, int iY = 0, int iW = 128, int iH = 128);
@@ -173,9 +194,36 @@ public:
 	CGlutWin();
 	virtual ~CGlutWin();
 
-	// ADD-BY-LEETEN 08/09/2008-BEGIN
-	void _Set();
+	// ADD-BY-LEETEN 08/12/2008-BEGIN
+	void _Push();			// push current window
+	void _Pop();			// pop this window
 
+							// when implement new method that involve OpenGL status, 
+							// it is strongly recommended to implement in such a way:
+							/*
+							CGlutWin::_GlMethod()
+							{
+								_Begin();
+
+								...
+
+								_End();
+							}
+							*/
+
+							// variables to maintain the active window
+	stack<int> cWid_stack;	// a stack to hold the previous window
+	void _PushWid();		// push current window ID
+	void _PopWid();			// pop current window ID
+	void _Begin();			// push current window and set
+	void _End();			// pop the window
+	// ADD-BY-LEETEN 08/12/2008-BEGIN
+
+	// ADD-BY-LEETEN 08/09/2008-BEGIN
+	void _Set();			// force the window to be the active window
+
+	//////////////////////////////////////////////////////////////////////////////
+										// static variables/methods
 	static vector<CGlutWin*> vcWins;
 	static int IGetActiveWin();
 	static int IGetNrOfWins();
@@ -185,7 +233,16 @@ public:
 		CGlutWin *win, 
 		char *szTitle, 
 		bool bUseDefault = true, int x = 0, int y = 0, int w = 128, int h = 128);
+
 	// ADD-BY-LEETEN 08/09/2008-END
+
+	// ADD-BY-LEETEN 08/11/2008-BEGIN
+										// given a GLUT window id, return its id in the vcWins;
+	static int IGetWin(int iWid);
+
+										// add a timer event in the given time period in msecs to the specified window with the given value
+	static void _AddTimer(CGlutWin *win, unsigned int msecs, short value);
+	// ADD-BY-LEETEN 08/11/2008-END
 };
 
 // DEL-BY-LEETEN 08/09/2008-BEGIN
@@ -197,6 +254,13 @@ public:
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.2  2008/08/11 04:27:26  leeten
+
+[2008/08/11]
+1. [ADD] Combine with GLUI.
+2. [ADD] Declare new routine to enable GLUI subwin/win and return the GLUI pointers.
+3. [ADD] Add enums as GLUI options.
+
 Revision 1.1  2008/08/10 05:00:27  leeten
 
 [2008/08/10]
