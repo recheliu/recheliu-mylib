@@ -572,8 +572,19 @@ CGlutWin::ICreate(
 void 
 CGlutWin::_Set()
 {
-	assert(iId > 0);
-	glutSetWindow(iId);
+	#if 0	// MOD-BY-LEETEN 08/12/2008-FROM:
+		assert(iId > 0);
+		glutSetWindow(iId);
+	#else	// MOD-BY-LEETEN 08/12/2008-FROM:
+	if( iId > 0 )
+	{
+		glutSetWindow(iId);
+	}
+	else
+	{
+		fprintf(stderr, "Warning in CGlutWin::_Set(): the window has ben not created yet.\n");
+	}
+	#endif	// MOD-BY-LEETEN 08/12/2008-FROM:
 }
 
 // ADD-BY-LEETEN 08/09/2008-END
@@ -613,9 +624,106 @@ CGlutWin::PCGetGluiSubwin()
 
 // ADD-BY-LEETEN 08/11/2008-END
 
+// ADD-BY-LEETEN 08/11/2008-BEGIN
+void 
+CGlutWin::_Redisplay()
+{
+_Begin();
+	glutPostRedisplay();
+_End();
+}
+
+void
+CGlutWin::_TimerFunc(int value)
+{
+}
+
+// The member method to handle the callback
+// It is called by CGlutWin_static:_TimerCB.
+// The reason why it 
+
+void 
+CGlutWin::_TimerCB(int value)
+{
+	// call the timer func
+	_TimerFunc(value);
+}
+
+void 
+CGlutWin::_AddTimer(unsigned int msecs, short value)
+{
+	// call the static method to create a timer event for this window
+	// the static method will implicitly combine this window's id and the value
+
+	CGlutWin::_AddTimer(this, msecs, value);
+}
+// ADD-BY-LEETEN 08/11/2008-END
+
+// ADD-BY-LEETEN 08/12/2008-BEGIN
+		// push this window
+void 
+CGlutWin::_Push()
+{
+	if( iId > 0 )
+		glutPushWindow();
+
+}
+
+		// pop this window
+void 
+CGlutWin::_Pop()
+{
+	if( iId > 0 )
+		glutPopWindow();
+}
+
+		// push current window ID
+void 
+CGlutWin::_PushWid()
+{
+	if( iId )
+		cWid_stack.push(glutGetWindow());
+}
+
+// pop current window ID
+void				
+CGlutWin::_PopWid()
+{
+	if( iId )
+	{
+		glutSetWindow(cWid_stack.top());
+		cWid_stack.pop();
+	}
+}
+
+		// beginning of a new method
+void 
+CGlutWin::_Begin()
+{
+	_PushWid();
+	_Set();
+}
+
+		// ending of a new method
+void 
+CGlutWin::_End()
+{
+	_PopWid();
+}
+
+
+// ADD-BY-LEETEN 08/12/2008-BEGIN
+
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.3  2008/08/11 04:26:32  leeten
+
+[2008/08/11]
+1. [ADD] Combine with GLUI.
+2. [ADD] Modify the reshape func. s.t. the final viewport is decided via GLUI_Master.get_viewport_area().
+3. [ADD] Add new routine to enable GLUI subwin/win and return the GLUI pointers.
+
 Revision 1.2  2008/08/10 18:50:53  leeten
 
 [2008/08/10]
