@@ -59,6 +59,23 @@ _MouseCB(int button, int state, int x, int y)
 	CGlutWin::PCGetActiveWin()->_MouseCB(button, state, x, y);
 }
 
+// ADD-BY-LEETEN 08/11/2008-BEGIN
+static 
+void 
+_TimerCB(int iIdValue)
+{
+	int iWid =		iIdValue	/ 0x0100;
+	int iValue =	iIdValue	% 0x0100;
+
+	int iWin = CGlutWin::IGetWin(iWid);
+	if( iWin >= 0 )
+	{
+		glutSetWindow(iWid);
+		CGlutWin::PCGetActiveWin()->_TimerCB(iValue);
+	}
+}
+// ADD-BY-LEETEN 08/11/2008-END
+
 } // namespace CGlutWin_static
 
 using namespace CGlutWin_static;
@@ -66,6 +83,23 @@ using namespace CGlutWin_static;
 // static member method of class CGlutWin
 
 vector<CGlutWin*> CGlutWin::vcWins;
+
+// ADD-BY-LEETEN 08/11/2008-BEGIN
+
+// a static member method to add a timer event to the fiven window
+// it is decalred as a static method in order to call the _TimerCB in the namespace GLutWin_static
+void 
+CGlutWin::_AddTimer(CGlutWin *win, unsigned int msecs, short value)
+{
+	// because the timer events from all windows are passed throught the same callback, 
+	// the windows id is added so later the callback can correctly bypass the timer event
+	int iIdValue = win->iId * 0x0100 + value;
+
+	// register a timer event
+	GLUI_Master.set_glutTimerFunc(msecs, CGlutWin_static::_TimerCB, iIdValue);
+}
+
+// ADD-BY-LEETEN 08/11/2008-END
 
 int
 CGlutWin::IGetNrOfWins()
@@ -90,7 +124,11 @@ CGlutWin::PCGetActiveWin()
 	// Since the GLUI windows/subwindows might change the active window, it is manually reset to the current window
 
 	CGlutWin *pcActiveWin = vcWins[IGetActiveWin()];
-	glutSetWindow(pcActiveWin->iId);
+	// MOD-By-TLEE 08/11/2008-FROM:
+		// glutSetWindow(pcActiveWin->iId);
+	// TO:
+		pcActiveWin->_Set();
+	// MOD-By-TLEE 08/11/2008-END
 	return pcActiveWin;
 	// MOD-BY-LEETEN 08/11/2008-END
 }
@@ -127,7 +165,6 @@ CGlutWin::IGetActiveWin()
 	// ADD-BY-LEETEN 08/11/2008-END
 
 	assert( iWin < (int)vcWins.size() );
-
 
 	return iWin;
 }
@@ -183,9 +220,35 @@ CGlutWin::_AddWin(
 	vcWins.push_back(win);
 }
 
+// ADD-BY-LEETEN 08/11/2008-BEGIN
+// given a GLUT window id, return its id in the vcWins;
+int 
+CGlutWin::IGetWin(int iWid)
+{
+	int iWin = 0;
+	for(vector<CGlutWin*>::iterator 
+			ivcWin = vcWins.begin();
+		ivcWin != vcWins.end() && (*ivcWin)->IGetId() != iWid;
+		ivcWin++, iWin++)
+		;
+	if( iWin == vcWins.size() )
+		iWin = -1;
+
+	return iWin;
+
+}
+// ADD-BY-LEETEN 08/11/2008-END
+
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.2  2008/08/11 04:30:42  leeten
+
+[2008/08/11]
+1. [ADD] In PCGetActiveWin, manually set the window as the current window.
+2. [ADD] In IGetActiveWin, when checking of window id failes, since the id might represent a GLUI window, the GLUI win and subwin if possible.
+3. [CHANGE] Register the GLUT callbacks via GLUI.
+
 Revision 1.1  2008/08/10 05:00:28  leeten
 
 [2008/08/10]
