@@ -242,6 +242,39 @@ CGlutWin::_ZoomModel()
 	glutPostRedisplay();
 }
 
+// ADD-BY-LEETEN 08/12/2008-BEGIN
+char *
+CGlutWin::SZSprintf
+(
+	const char *szFormat, ...
+)
+{
+	static char szBuffer[4096+1];
+	va_list args;
+	va_start (args, szFormat);
+	vsprintf(szBuffer, szFormat, args);
+	va_end (args);
+	return szBuffer;
+}
+
+				// draw a string on the screen. It will be drawn in the origin in current coordinate
+void
+CGlutWin::_DrawString(char *szString)
+{
+	glRasterPos3f(0.0, 0.0, 0.0);
+	for(const char *pc = szString; *pc; pc++)
+        glutBitmapCharacter(GLUT_BITMAP_9_BY_15, *pc);
+}
+
+				// print out a string on the console with a prefix to indicate this window 
+				// a newline will be printed at the end.
+void			
+CGlutWin::_AddToLog(char *szString, FILE* fpOutput)
+{
+	fprintf(fpOutput, "[GLUTWIN-%s]: %s\n", szTitle, szString);
+}
+// ADD-BY-LEETEN 08/12/2008-END
+
 void 
 CGlutWin::_DisplayCB()
 {
@@ -256,6 +289,30 @@ CGlutWin::_DisplayCB()
 	glMultMatrixd(tModelMatrix);
 
 	_DisplayFunc();
+
+	// ADD-BY-LEETEN 08/12/2008-BEGIN
+						// update the FPS
+	cFps.Update();
+
+						// draw the FPS on the screen
+	if( bDisplayFps )
+	{
+		glMatrixMode(GL_PROJECTION);
+		glLoadIdentity();
+
+		glMatrixMode(GL_MODELVIEW);
+		glLoadIdentity();
+
+		glTranslatef(-1.0f, -1.0f, 0.0f);
+		glColor4f(0.0f, 1.0f, 1.0f, 1.0f);
+
+		float fFps = cFps.GetFps();
+		_DrawString(SZSprintf("FPS = %f", fFps));
+	}
+
+	if( CGlutWin::bSwapBuffer )
+		glutSwapBuffers();	
+	// ADD-BY-LEETEN 08/12/2008-END
 
 	CHECK_OPENGL_ERROR(szDisplay, true);
 }
@@ -284,9 +341,15 @@ CGlutWin::_ReshapeCB(int w, int h)
 	int tx, ty, tw, th;
 	GLUI_Master.get_viewport_area( &tx, &ty, &tw, &th );
 	glViewport(tx, ty, tw, th);
+	// ADD-BY-LEETEN 08/13/2008-BEGIN
+	glGetIntegerv(GL_VIEWPORT, piViewport);
+	// ADD-BY-LEETEN 08/13/2008-END
+
 	if( tw & th )
 	{
-		glGetIntegerv(GL_VIEWPORT, piViewport);
+		// DEL-BY-LEETEN 08/13/2008-BEGIN
+			//	glGetIntegerv(GL_VIEWPORT, piViewport);
+		// DEL-BY-LEETEN 08/13/2008-END
 
 		glMatrixMode(GL_PROJECTION);
 		glLoadIdentity();
@@ -301,9 +364,24 @@ CGlutWin::_ReshapeCB(int w, int h)
 	CHECK_OPENGL_ERROR(szReshape, true);
 }
 
+// ADD-BY-LEETEN 08/13/2008-BEGIN
+void 
+CGlutWin::_UpdateWinCoord(int *piX, int *piY, bool bFlipY)
+{
+	*piX -= piViewport[0];
+	*piY -= piViewport[1];
+	if( bFlipY )
+		*piY = piViewport[3] - *piY;
+}
+// ADD-BY-LEETEN 08/13/2008-END
+
 void 
 CGlutWin::_KeyboardCB(unsigned char key, int x, int y)
 {
+	// ADD-BY-LEETEN 08/13/2008-BEGIN
+	_UpdateWinCoord(&x, &y);
+	// ADD-BY-LEETEN 08/13/2008-END
+
 	switch(key) {
 		case 'x':	case 'X':
 			memcpy(tViewMatrix, tInitViewMatrix, sizeof(tViewMatrix));;
@@ -367,6 +445,10 @@ CGlutWin::_KeyboardCB(unsigned char key, int x, int y)
 void 
 CGlutWin::_SpecialCB(int skey, int x, int y)
 {
+	// ADD-BY-LEETEN 08/13/2008-BEGIN
+	_UpdateWinCoord(&x, &y);
+	// ADD-BY-LEETEN 08/13/2008-END
+
 	switch(skey) {
 		case GLUT_KEY_LEFT:
 			break;
@@ -389,7 +471,11 @@ void
 CGlutWin::_MotionCB(int x, int y)
 {
 	// flip the y coordinate
-	y = piViewport[3] - y;
+	// MOD-BY-LEETEN 08/13/2008-FROM:
+		// y = piViewport[3] - y;
+	// TO:
+	_UpdateWinCoord(&x, &y);
+	// MOD-BY-LEETEN 08/13/2008-END
 
 	iCursorX = x;
 	iCursorY = y;
@@ -399,7 +485,11 @@ void
 CGlutWin::_MouseCB(int button, int state, int x, int y)
 {
 	// flip the y coordinate
-	y = piViewport[3] - y; 
+	// MOD-BY-LEETEN 08/13/2008-FROM:
+		// y = piViewport[3] - y;
+	// TO:
+	_UpdateWinCoord(&x, &y);
+	// MOD-BY-LEETEN 08/13/2008-END
 
 	iCursorX = x;
 	iCursorY = y;
@@ -469,6 +559,11 @@ CGlutWin::_IdleCB()
 	} // if(bMoving)
 
 	_IdleFunc();
+
+	// ADD-BY-LEETEN 08/12/2008-BEGIN
+	if( bKeepUpdate )
+		_Redisplay();
+	// ADD-BY-LEETEN 08/12/2008-END
 }
 
 void 
@@ -518,6 +613,12 @@ CGlutWin::CGlutWin()
 	pcGluiSubwin = NULL;	// by default there is no GLUI sub-window
 	iSubwinPosistion = 0;	
 	// ADD-BY-LEETEN 08/11/2008-END
+
+	// ADD-BY-LEETEN 08/12/2008-BEGIN
+	bDisplayFps = false;	// by default the FPS is not shown
+	bKeepUpdate = false;	// by default the frame is not keep updating
+	// ADD-BY-LEETEN 08/12/2008-END
+
 }
 
 // destructor
@@ -530,6 +631,45 @@ CGlutWin::IGetId()
 {
 	return iId;
 }
+
+// ADD-BY-LEETEN 08/12/2008-BEGIN
+
+			// enabling keeping sending redisplay event
+void 
+CGlutWin::_KeepUpdateOn()
+{
+	bKeepUpdate = true;
+}
+
+			// disabling keeping sending redisplay event
+void 
+CGlutWin::_KeepUpdateOff()
+{
+	bKeepUpdate = false;
+}
+
+			// return the FPS of previous frame
+float 
+CGlutWin::fGetFps()
+{
+	return cFps.GetFps();
+}
+
+			// enable displaying FPS on the screen
+void 
+CGlutWin::_DisplayFpsOn()
+{
+	bDisplayFps = true;
+}
+
+			// disable displaying FPS on the screen
+void 
+CGlutWin::_DisplayFpsOff()
+{
+	bDisplayFps = false;
+}
+
+// ADD-BY-LEETEN 08/12/2008-END
 
 int 
 CGlutWin::ICreate(
@@ -561,7 +701,10 @@ CGlutWin::ICreate(
 	glGetDoublev(GL_MODELVIEW_MATRIX, tModelMatrix);
 	memcpy(tInitModelMatrix, tModelMatrix, sizeof(tModelMatrix));
 
-	_InitFunc();
+	// DEL-BY-TLEE 08/13/2008-BEGIN
+		// call _InitFunc after the GLUI win/subwin have been created
+		// _InitFunc();
+	// DEL-BY-TLEE 08/13/2008-END
 
 	CHECK_OPENGL_ERROR(szInit, true);
 
@@ -659,6 +802,25 @@ CGlutWin::_AddTimer(unsigned int msecs, short value)
 }
 // ADD-BY-LEETEN 08/11/2008-END
 
+// ADD-BY-LEETEN 08/13/2008-BEGIN
+void
+CGlutWin::_GluiFunc(unsigned short usValue)
+{
+}
+
+void 
+CGlutWin::_GluiCB(unsigned short usValue)
+{
+	_GluiFunc(usValue);
+}
+
+void 
+CGlutWin::_AddButton(char *szName, unsigned short usValue)
+{
+	CGlutWin::_AddButton(this, szName, usValue);
+}
+// ADD-BY-LEETEN 08/13/2008-END
+
 // ADD-BY-LEETEN 08/12/2008-BEGIN
 		// push this window
 void 
@@ -717,6 +879,15 @@ CGlutWin::_End()
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.4  2008/08/12 16:38:34  leeten
+
+[2008/08/12]
+1. [CHANGE] In _Set, if the windows is not created yet, send a warning other than terminating the application.
+2. [ADD] Define new methods to similar GLUT APIs: _Push(), _Pop() and _Redisplay().
+3. [ADD] Support the timer event. To trigger a timer event, the application can call a static method _AddTimer(). to process the timer event, a new callback _TimerCB() is defined. This callback will invoke another method _TimerFunc().
+4. [ADD] Define methods _Begin(), _End(), _PushWid(), _PopWid() to avoid the misorder of active windows since the timer event can shuffle the order among the GLUT windows.
+5. [ADD] Define a new method _GetWin() to conver a GLUT window ID to the order in the vector vcWins.
+
 Revision 1.3  2008/08/11 04:26:32  leeten
 
 [2008/08/11]
