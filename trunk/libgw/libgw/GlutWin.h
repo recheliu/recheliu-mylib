@@ -37,11 +37,15 @@ using namespace std;
 	#include <GL/glui.h>
 	// ADD-BY-LEETEN 08/11/2008-END
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
-#include <memory.h>
-#include <math.h>
+	#include <stdlib.h>
+	#include <stdio.h>
+	#include <string.h>
+	#include <memory.h>
+	#include <math.h>
+
+	// ADD-BY-LEETEN 08/12/2008-BEGIN
+	#include <stdarg.h>	
+	// ADD-BY-LEETEN 08/12/2008-END
 
 #ifdef NDEBUG
 	#undef assert
@@ -64,7 +68,38 @@ using namespace std;
 
 #include "libopengl.h"
 
+// ADD-BY-LEETEN 08/12/2008-BEGIN
+#include "libfps.h"
+#pragma comment (lib, "libfps.lib")      
+// ADD-BY-LEETEN 08/12/2008-END
+
 class CGlutWin {
+
+	// ADD-BY-LEETEN 08/12/2008-BEGIN
+				// variables and method for displaying FPS
+protected:
+	FPS_COUNTER cFps;
+	bool bDisplayFps;
+public:
+	void _DisplayFpsOn();
+	void _DisplayFpsOff();
+	float fGetFps();
+
+				// variables and method for output string
+public:
+	char *SZSprintf(const char *szFormat, ...);
+	void _DrawString(char *szString);		// draw a string on the screen
+	void _AddToLog(char *szString, FILE* fpOutput = stderr);			// print out a string on the console as the log
+
+				// variables and method for deciding if the screen should be keep updating
+protected:
+						
+	bool bKeepUpdate;	// if bKeepUpdate is true, in the _IdleCB, a glutPostRedisplay() will be automatically called
+public:
+	void _KeepUpdateOn();
+	void _KeepUpdateOff();
+
+	// ADD-BY-LEETEN 08/12/2008-END
 
 // ADD-BY-LEETEN 08/11/2008-BEGIN
 
@@ -81,6 +116,9 @@ protected:
 	// location of the sub-window
 	int iSubwinPosistion;
 
+	// ADD-BY-LEETEN 08/13/2008-BEGIN
+	void _UpdateWinCoord(int *px, int *py, bool bFlipY = true);
+	// ADD-BY-LEETEN 08/13/2008-END
 public:
 	// define the option of GLUI windows as enum
 	typedef enum {
@@ -243,6 +281,19 @@ public:
 										// add a timer event in the given time period in msecs to the specified window with the given value
 	static void _AddTimer(CGlutWin *win, unsigned int msecs, short value);
 	// ADD-BY-LEETEN 08/11/2008-END
+
+	// ADD-BY-LEETEN 08/12/2008-BEGIN
+	static bool bSwapBuffer;
+	static void _Init(int *argcp, char **argv, unsigned int mode);
+	// ADD-BY-LEETEN 08/12/2008-END
+
+	// ADD-BY-LEETEN 08/13/2008-BEGIN
+	virtual void _GluiFunc(unsigned short usValue);
+	virtual void _GluiCB(unsigned short usValue);
+
+	void _AddButton(char *szName, unsigned short usValue);
+	static void _AddButton(CGlutWin *win, char *szName, unsigned short usValue);
+	// ADD-BY-LEETEN 08/13/2008-END
 };
 
 // DEL-BY-LEETEN 08/09/2008-BEGIN
@@ -254,6 +305,15 @@ public:
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.3  2008/08/12 16:36:59  leeten
+
+[2008/08/12]
+1. [DEL] Remvoe the checking of FREEGLUT since it will be done in GLUI.
+2. [ADD] Support the timer event. To trigger a timer event, the application can call a static method _AddTimer(). to process the timer event, a new callback _TimerCB() is defined. This callback will invoke another method _TimerFunc().
+3. [ADD] Define methods to avoid the misorder of active windows since the timer event can shuffle the order among the GLUT windows.
+4. [ADD] Define new methods to similar GLUT APIs: _Push(), _Pop() and _Redisplay().
+5. [ADD] Define a new method _GetWin() to conver a GLUT window ID to the order in the vector vcWins.
+
 Revision 1.2  2008/08/11 04:27:26  leeten
 
 [2008/08/11]
