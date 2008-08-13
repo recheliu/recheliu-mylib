@@ -76,6 +76,22 @@ _TimerCB(int iIdValue)
 }
 // ADD-BY-LEETEN 08/11/2008-END
 
+// ADD-BY-LEETEN 08/13/2008-BEGIN
+void
+_GluiCB(int iIdValue)
+{
+	int iWid =		iIdValue	/ 0x0100;
+	int iValue =	iIdValue	% 0x0100;
+
+	int iWin = CGlutWin::IGetWin(iWid);
+	if( iWin >= 0 )
+	{
+		glutSetWindow(iWid);
+		CGlutWin::PCGetActiveWin()->_GluiCB((unsigned short)iValue);
+	}
+}
+// ADD-BY-LEETEN 08/13/2008-END
+
 } // namespace CGlutWin_static
 
 using namespace CGlutWin_static;
@@ -217,6 +233,11 @@ CGlutWin::_AddWin(
 
 	#endif	// MOD-BY-LEETEN 08/11/2008-END
 
+	// ADD-BY-TLEE 08/13/2008-BEGIN
+				// call _InitFunc after the GLUI win/subwin have been created
+	win->_InitFunc();
+	// ADD-BY-TLEE 08/13/2008-END
+
 	vcWins.push_back(win);
 }
 
@@ -239,9 +260,48 @@ CGlutWin::IGetWin(int iWid)
 }
 // ADD-BY-LEETEN 08/11/2008-END
 
+// ADD-BY-LEETEN 08/12/2008-BEGIN
+bool CGlutWin::bSwapBuffer = false;
+
+void 
+CGlutWin::_Init(
+	int *argcp, 
+	char **argv, 
+	unsigned int mode
+)
+{
+	glutInit(argcp, argv);
+	glutInitDisplayMode(mode);
+
+	if( mode & GLUT_DOUBLE )
+		bSwapBuffer = true;
+}
+// ADD-BY-LEETEN 08/12/2008-END
+
+// ADD-BY-LEETEN 08/13/2008-BEGIN
+void 
+CGlutWin::_AddButton(
+	CGlutWin *win,
+	char *szName,
+	unsigned short usValue
+	)
+{
+	int iWidValue = win->IGetId() * 0x0100 + usValue;
+	win->PCGetGluiSubwin()->add_button(szName, iWidValue, CGlutWin_static::_GluiCB);
+}
+
+// ADD-BY-LEETEN 08/13/2008-END
+
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.3  2008/08/12 16:40:54  leeten
+
+[2008/08/12]
+1. [ADD] Define a function _TimerCB in the namespace CGlutWin_static to handle the global timer event.
+2. [ADD] Define a static method _AddTimer to associate a new timer to a window. In this method, the passed value and the window's id will be combined into a long int s.t later the callback _TimerCB() can bypass the event to the corresponding window.
+3. [ADD] Define a new method _GetWin() to conver a GLUT window ID to the order in the vector vcWins.
+
 Revision 1.2  2008/08/11 04:30:42  leeten
 
 [2008/08/11]
