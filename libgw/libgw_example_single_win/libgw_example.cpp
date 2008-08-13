@@ -21,7 +21,9 @@ public:
 		glColor4f(r, g, b, a);
 		glutWireCube(1.0f);
 
-		glutSwapBuffers();
+		// DEL-BY-LEETEN 08/12/2008-BEGIN
+			// glutSwapBuffers();
+		// DEL-BY-LEETEN 08/12/2008-END
 	}
 
 public:
@@ -47,8 +49,14 @@ CTestWin cWhiteWin(1.0, 1.0, 1.0, 1.0);
 int
 main(int argn, char *argv[])
 {
-	glutInit(&argn, argv);
-	glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA | GLUT_ALPHA | GLUT_STENCIL );
+	#if 0	// MOD-BY-LEETEN 08/12/2008-FROM:
+		glutInit(&argn, argv);
+		glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA | GLUT_ALPHA | GLUT_STENCIL );
+	#else	// MOD-BY-LEETEN 08/12/2008-TO:
+	CGlutWin::_Init(
+		&argn, argv, 
+		GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA | GLUT_ALPHA | GLUT_STENCIL);
+	#endif	// MOD-BY-LEETEN 08/12/2008-END
 
 	#if 0	// MOD-BY-LEETEN 08/09/2008-FROM:
 		_GWAddWin(&cRedWin,		"RED");
@@ -63,6 +71,10 @@ main(int argn, char *argv[])
 	#else	// MOD-BY-LEETEN 08/11/2008-TO:
 
 	CGlutWin::_AddWin(&cRedWin,		"RED", false, 100, 100, 256, 256);
+		// ADD-BY-LEETEN 08/12/2008-BEGIN
+		cRedWin._DisplayFpsOn();
+		cRedWin._KeepUpdateOn();
+		// ADD-BY-LEETEN 08/11/2008-END
 
 	cGreenWin._AddGluiWin();
 	CGlutWin::_AddWin(&cGreenWin,	"GREEN", false, 200, 100, 256, 256);
@@ -89,6 +101,14 @@ main(int argn, char *argv[])
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.3  2008/08/11 04:35:06  leeten
+
+[2008/08/11]
+1. [CHANGE] Declare the color variables as public.
+2. [ADD] Add a new window to draw a 3D white box. This window is associated w/ a GLUI win and a GLUI subwin to control the RGB channels.
+3. [ADD] Add a GLUI window to the GREEN window to change the green channel.
+4. [ADD] Add a GLUI sub-window to the BLUE window to change the blue channel.
+
 Revision 1.2  2008/08/10 05:03:56  leeten
 
 [2008/08/10]
