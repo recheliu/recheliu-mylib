@@ -294,6 +294,10 @@ public:
 	void _AddButton(char *szName, unsigned short usValue);
 	static void _AddButton(CGlutWin *win, char *szName, unsigned short usValue);
 	// ADD-BY-LEETEN 08/13/2008-END
+
+	// ADD-BY-LEETEN 08/14/2008-BEGIN
+	static void _IdleCB_static();
+	// ADD-BY-LEETEN 08/14/2008-END
 };
 
 // DEL-BY-LEETEN 08/09/2008-BEGIN
@@ -305,6 +309,19 @@ public:
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.4  2008/08/13 21:00:24  leeten
+
+[2008/08/13]
+1. [ADD] Declare a new method SZSprint to format string. Hence stdarg.h is included
+2. [ADD] Declare a new method _DrawString() to draw a string in the left bottom corner.
+3. [ADD] Declare a new method _AddToLog to add a string to specifed file (by default STDERR). When printing this string, a prefix will be added to indicate which window display this string, and a new line will be automatically appended at the end.
+4. [ADD] Declare methods _DisplayFpsOn()/_DisplayFpsOff(); Hence libfps.h is included
+5. [ADD] Declare new methods _KeepUpdateOn()/_KeepUpdateOff()  to decide if the screen should be keeping up to date
+6. [ADD] Declare a new callback _GluiCB() to handle event from GLUI control. It will call another method _GluiFunc().
+7. [ADD] Declare a new method _AddButton() to add a button to the GLUI windows/subwindows.
+8. [ADD] Declare a new static method _AddButton() to add a button to a given window.
+9. [ADD] Add a new static method _Init to replace the glutInit. If GLUT_DOUBLE is specifed, a new static flag bSwapBuffer will be true.
+
 Revision 1.3  2008/08/12 16:36:59  leeten
 
 [2008/08/12]
