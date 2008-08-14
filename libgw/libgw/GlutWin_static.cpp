@@ -42,7 +42,11 @@ static
 void
  _IdleCB()
 {
-	CGlutWin::PCGetActiveWin()->_IdleCB();
+	// MOD-BY-LEETEN 08/14/2008-FROM:
+		// CGlutWin::PCGetActiveWin()->_IdleCB();
+	// TO:
+	CGlutWin::_IdleCB_static();
+	// MOD-BY-LEETEN 08/14/2008-END:
 }
 
 static 
@@ -99,6 +103,18 @@ using namespace CGlutWin_static;
 // static member method of class CGlutWin
 
 vector<CGlutWin*> CGlutWin::vcWins;
+
+// ADD-BY-LEETEN 08/14/2008-BEGIN
+void 
+CGlutWin::_IdleCB_static()
+{
+	for(vector<CGlutWin*>::iterator 
+			vipcWin = vcWins.begin();
+		vipcWin != vcWins.end();
+		vipcWin++)	
+		(*vipcWin)->_IdleCB();
+}
+// ADD-BY-LEETEN 08/14/2008-END
 
 // ADD-BY-LEETEN 08/11/2008-BEGIN
 
@@ -295,6 +311,13 @@ CGlutWin::_AddButton(
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.4  2008/08/13 21:01:32  leeten
+
+[2008/08/13]
+1. [ADD] Define a new callback _GluiCB() to handle event from GLUI control.
+2. [ADD] Declare a new static method _AddButton() to add a button to a given window.
+3. [ADD] Add a new static method _Init to replace the glutInit. If GLUT_DOUBLE is specifed, a new static flag bSwapBuffer will be true.
+
 Revision 1.3  2008/08/12 16:40:54  leeten
 
 [2008/08/12]
