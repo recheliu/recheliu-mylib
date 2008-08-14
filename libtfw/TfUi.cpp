@@ -345,7 +345,6 @@ _Begin();
 				}
 			glEnd();
 		glPopAttrib();	//	glPushAttrib(GL_CURRENT_BIT);
-
 		#endif	// MOD-BY-LEETEN 08/14/2008-END
 
 								// plot the knots
@@ -506,6 +505,10 @@ CTfUi::_ClearChannel(int channel)
 	plcEditHistorys[channel]._AddAction(CEditHistory::EDIT_ACTION_ADD, cBegin);
 	pcTransFunc->plSplines[channel].push_back(cBegin);
 	pcTransFunc->plSplines[channel].push_back(cEnd);
+
+	// ADD-By-TLEE 08/14/2008-BEGIN
+	pviSelectedKnots[channel].clear();
+	// ADD-By-TLEE 08/14/2008-END
 }
 
 void
@@ -661,6 +664,7 @@ CTfUi::CTfUi()
 	pcTransFunc = NULL;
 	_UpdateFunc = NULL;
 	_AddGluiSubwin(GLUI_SUBWINDOW_LEFT);
+
 }
 
 CTfUi::~CTfUi(void)
@@ -670,6 +674,11 @@ CTfUi::~CTfUi(void)
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.1.1.1  2008/08/14 14:44:02  leeten
+
+[2008/08/14]
+1. [FIRST TIME CHECKIN]. This library defines classes for trasnfer functions, including editing and displaying.
+
 Revision 1.1  2008/08/13 21:17:21  leeten
 
 [2008/08/13]
