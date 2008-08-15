@@ -1,6 +1,6 @@
 /*
 
-This is the shader program for my time-varying visualization algorithm
+This is the shader program for direct volume rendering
 
 */
 
@@ -47,6 +47,11 @@ main()
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.1.1.1  2008/08/14 22:54:48  leeten
+
+[2008/08/14]
+1. [FIRST TIME CHECKIN] This is a library to create a GLUTWIN window for direct volume rendering (DVR).
+
 Revision 1.1.1.1  2008/08/12 16:58:49  leeten
 
 [2008/08/12]
