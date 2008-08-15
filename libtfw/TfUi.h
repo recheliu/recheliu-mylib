@@ -43,6 +43,15 @@ public:
 		EDIT_CLEAR,		// clear the spline
 		EDIT_RESTORE,
 		EDIT_UPDATE,
+
+						// define new constants
+		// ADD-BY-LEETEN 2008/08/15-BEGIN
+		FILE_OPEN,		// open file of the TF
+		FILE_SAVE,		// save file of the TF
+		FILE_DIR,		// specify the dir. of the TF
+		FILE_FILENAME,	// specify the filename of the TF
+		// ADD-BY-LEETEN 2008/08/15-END
+
 		EDIT_EXIT
 	};
 
@@ -121,6 +130,16 @@ protected:
 		{
 			liCurrentAction = lcEditActions.end();
 		}
+
+											// thie method clear the history and reset the pointer to current action
+		// ADD-BY-LEETEN 08/15/2008-BEGIN
+		void
+		_Clear()
+		{
+			lcEditActions.clear();
+			liCurrentAction = lcEditActions.end();
+		}
+		// ADD-BY-LEETEN 08/15/2008-BEGIN
 
 		void 
 		_AddMarker()
@@ -212,6 +231,58 @@ public:
 		this->_UpdateFunc = _UpdateFunc;
 	}
 
+									// variables and methods for specifying the path of the TF
+// ADD-BY-LEETEN 08/15/2008-BEGIN
+
+protected:						
+	char szFilename[1024+1];		// a buffer for the EditText control to define the filename
+	char szDir[1024+1];				// a buffer for the EditText control to define the path
+	char szPath[2048+1];			// a buffer to store the combination of the path and filename
+
+									// struct for GLUI control
+	GLUI_EditText	*pcEditText_Filename;
+	GLUI_EditText	*pcEditText_Dir;
+
+public:
+
+	void					// combine the filename and dir to form the path. The path is stored in szPath
+	_GetPath()
+	{
+		strcpy(szPath, pcEditText_Dir->get_text());
+		#if defined(WIN32)
+			strcat(szPath, "\\\\");
+		#else
+			strcat(szPath, "//");
+		#endif
+		strcat(szPath, pcEditText_Filename->get_text());
+	}
+
+							// set the directory to be displayed in the edit text
+	void 
+	_SetDir(const char *szDir)
+	{
+		if( pcEditText_Dir )
+			pcEditText_Dir->set_text(szDir);
+		else
+		{
+			_AddToLog("pcEditText_Dir hasn't been created yet.");
+		}
+
+	}
+
+							// set the filename to be displayed in the edit text
+	void 
+	_SetFilename(const char *szFilename)
+	{
+		if( pcEditText_Filename )
+			pcEditText_Filename->set_text(szFilename);
+		else
+		{
+			_AddToLog("pcEditText_Filename hasn't been created yet.");
+		}
+	}
+// ADD-BY-LEETEN 08/15/2008-END
+
 public:						// callbacks
 	void _InitFunc();
 	void _DisplayFunc();
@@ -236,6 +307,11 @@ public:
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.1.1.1  2008/08/14 14:44:02  leeten
+
+[2008/08/14]
+1. [FIRST TIME CHECKIN]. This library defines classes for trasnfer functions, including editing and displaying.
+
 Revision 1.1  2008/08/13 21:17:21  leeten
 
 [2008/08/13]
