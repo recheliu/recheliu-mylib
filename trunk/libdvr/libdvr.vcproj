@@ -170,6 +170,10 @@
 					/>
 				</FileConfiguration>
 			</File>
+			<File
+				RelativePath=".\tf_1d.frag.h"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Resource Files"
@@ -180,6 +184,19 @@
 		<File
 			RelativePath=".\ReadMe.txt"
 			>
+		</File>
+		<File
+			RelativePath=".\tf_1d.frag"
+			>
+			<FileConfiguration
+				Name="Debug|Win32"
+				>
+				<Tool
+					Name="VCCustomBuildTool"
+					CommandLine="..\bin\shader2string $(InputFileName) $(InputFileName).h"
+					Outputs="$(InputFileName).h"
+				/>
+			</FileConfiguration>
 		</File>
 	</Files>
 	<Globals>
