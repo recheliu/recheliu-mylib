@@ -3,6 +3,11 @@
 
 #include <GL/glew.h>
 
+// ADD-BY-LEETEN 08/14/2008-BEGIN
+char *SzTextFileRead(char *fn);
+GLhandleARB CSetShadersByString(const char* szVertexProg, const char* szFragmentProg);
+// ADD-BY-LEETEN 08/14/2008-END
+
 bool BCheckObject(GLhandleARB obj);
 GLhandleARB CSetShaders(const char* szVertex, const char* szFragment);
 
@@ -101,6 +106,11 @@ GLhandleARB CSetShaders(const char* szVertex, const char* szFragment);
 /*
 
   $Log: not supported by cvs2svn $
+  Revision 1.3  2007/03/12 23:40:22  leeten
+
+  [03/12/2007]
+  1. Remove included header glut.h.
+
   Revision 1.2  2007/02/20 18:03:53  leeten
 
   [02/20/2007]
