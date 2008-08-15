@@ -56,8 +56,44 @@ public:
 
 public:
 	void _LoadRainBow();
-	void _Load(char szFilename[]);
-	void _Save(char szFilename[]);
+
+										// methods about load/save files
+	#if	0	// MOD-BY-LEETEN 08/15/2008-FROM:
+		void _Load(char szFilename[]);
+		void _Save(char szFilename[]);
+	#else	// MOD-BY-LEETEN 08/15/2008-TO:
+
+										// this method checks the validabilty of the file
+										// if the file is valid, return TRUE else FALSE
+	bool BCheckFile(const char szFilename[]);
+
+										// this method checks if the file's extension is ".TF"
+										// if true, return TRUE else FALSE
+	bool BCheckFilenameExt(const char szFilename[])
+	{
+		const char* szExt = strrchr(szFilename, '.');
+
+						// the filename should contain an extension
+		if( !szExt )
+			return false;
+
+						// the extension should be .tf ot .TF
+		if( 0 != strcmp(szExt, ".tf") && 0 != strcmp(szExt, ".TF") )
+			return false;
+
+		return true;
+
+	}
+								
+										// this method open the specified file 
+										// if true, return TRUE else FALSE
+	bool BOpenFile(const char szFilename[]);
+
+										// this method write the four splines to the specified file 
+										// if true, return TRUE else FALSE
+	bool BSaveFile(const char szFilename[]);
+	#endif	// MOD-BY-LEETEN 08/15/2008-END
+
 	void _ExportColorMap(float pfColorMap[], int iNrOfEntries);
 
 	friend class CTfWin;
@@ -68,5 +104,10 @@ public:
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.1.1.1  2008/08/14 14:44:02  leeten
+
+[2008/08/14]
+1. [FIRST TIME CHECKIN]. This library defines classes for trasnfer functions, including editing and displaying.
+
 
 */
