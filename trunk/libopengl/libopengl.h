@@ -6,8 +6,8 @@
 		{\
 		glGenTextures(1, &(TID));	\
 		glBindTexture(TARGET, TID);	\
-		glTexParameteri(TARGET, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);	\
-		glTexParameteri(TARGET, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);	\
+		glTexParameteri(TARGET, GL_TEXTURE_WRAP_S, GL_CLAMP);	\
+		glTexParameteri(TARGET, GL_TEXTURE_WRAP_T, GL_CLAMP);	\
 		glTexParameteri(TARGET, GL_TEXTURE_MAG_FILTER, FILTER);	\
 		glTexParameteri(TARGET, GL_TEXTURE_MIN_FILTER, FILTER);	\
 		glTexImage2D(TARGET, 0, INT_FORMAT,	\
@@ -32,6 +32,11 @@ GLenum EGetFboStatus(bool bPrint=false);
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.2  2008/02/23 03:02:33  leeten
+
+[02/22/2008]
+1. Chnage the clamp method of 2D texture from GL_CLAMP to GL_CLAMP_TO_EDGE.
+
 Revision 1.1  2006/11/26 00:08:55  leeten
 
 [11/25/2006]
