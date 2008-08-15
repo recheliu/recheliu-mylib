@@ -80,21 +80,24 @@ _TimerCB(int iIdValue)
 }
 // ADD-BY-LEETEN 08/11/2008-END
 
-// ADD-BY-LEETEN 08/13/2008-BEGIN
-void
-_GluiCB(int iIdValue)
-{
-	int iWid =		iIdValue	/ 0x0100;
-	int iValue =	iIdValue	% 0x0100;
-
-	int iWin = CGlutWin::IGetWin(iWid);
-	if( iWin >= 0 )
+										// use the static method CGlutWin_static instead
+#if	0	// DEL-BY-LEETEN 08/15/2008-BEGIN
+	// ADD-BY-LEETEN 08/13/2008-BEGIN
+	void
+	_GluiCB(int iIdValue)
 	{
-		glutSetWindow(iWid);
-		CGlutWin::PCGetActiveWin()->_GluiCB((unsigned short)iValue);
+		int iWid =		iIdValue	/ 0x0100;
+		int iValue =	iIdValue	% 0x0100;
+
+		int iWin = CGlutWin::IGetWin(iWid);
+		if( iWin >= 0 )
+		{
+			glutSetWindow(iWid);
+			CGlutWin::PCGetActiveWin()->_GluiCB((unsigned short)iValue);
+		}
 	}
-}
-// ADD-BY-LEETEN 08/13/2008-END
+	// ADD-BY-LEETEN 08/13/2008-END
+#endif	// DEL-BY-LEETEN 08/15/2008-END
 
 } // namespace CGlutWin_static
 
@@ -299,18 +302,52 @@ void
 CGlutWin::_AddButton(
 	CGlutWin *win,
 	char *szName,
-	unsigned short usValue
+	unsigned short usValue,
+								// Add a new parameter to specify the panel
+	// ADD-BY-LEETEN 2008/08/15-BEGIN
+	GLUI_Panel *pcPanel
+	// ADD-BY-LEETEN 2008/08/15-END
 	)
 {
 	int iWidValue = win->IGetId() * 0x0100 + usValue;
-	win->PCGetGluiSubwin()->add_button(szName, iWidValue, CGlutWin_static::_GluiCB);
+								// Add the button to the specified panel if given
+	// MOD-BY-LEETEN 2008/08/15-FROM:
+		// win->PCGetGluiSubwin()->add_button(szName, iWidValue, CGlutWin_static::_GluiCB);
+	//	TO:
+	if(	pcPanel )
+		win->PCGetGluiSubwin()->add_button_to_panel(pcPanel, szName, iWidValue, &CGlutWin::_GluiCB_static);
+	else
+		win->PCGetGluiSubwin()->add_button(szName, iWidValue, &CGlutWin::_GluiCB_static);
+	// MOD-BY-LEETEN 2008/08/15-END
 }
 
 // ADD-BY-LEETEN 08/13/2008-END
 
+										// define a static method as the GLUI callbacks
+// ADD-BY-LEETEN 2008/08/15-BEGIN
+void 
+CGlutWin::_GluiCB_static(int iIdValue)
+{
+	int iWid =		iIdValue	/ 0x0100;
+	int iValue =	iIdValue	% 0x0100;
+
+	int iWin = CGlutWin::IGetWin(iWid);
+	if( iWin >= 0 )
+	{
+		glutSetWindow(iWid);
+		CGlutWin::PCGetActiveWin()->_GluiCB((unsigned short)iValue);
+	}
+}
+// ADD-BY-LEETEN 2008/08/15-END
+
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.5  2008/08/14 14:46:46  leeten
+
+[2008/08/14]
+1. [ADD] Define a new static method _IdleCB_static to bypass the idle event to all windows.
+
 Revision 1.4  2008/08/13 21:01:32  leeten
 
 [2008/08/13]
