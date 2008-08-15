@@ -5,6 +5,61 @@
 #include <memory.h>
 #include <string.h>
 
+// ADD-BY-LEETEN 08/14/2008-BEGIN
+#include "shader.h"
+
+GLhandleARB 
+CSetShadersByString(
+	const char* szVertexProg, 
+	const char* szFragmentProg)
+{
+	GLhandleARB hFragmentShader, hVertexShader;
+
+	GLhandleARB 
+		hProgramHandle = glCreateProgramObjectARB();
+
+	if( szVertexProg ) 
+	{
+		hVertexShader = glCreateShaderObjectARB(GL_VERTEX_SHADER_ARB);
+		glShaderSourceARB(hVertexShader, 1, &szVertexProg, NULL);
+		glCompileShaderARB(hVertexShader);
+		if( !BCheckObject(hVertexShader) ) 
+		{
+			fprintf(stderr, "Error during parsing the vertex program.\n");
+			return false;
+		}
+	}
+
+	if( szFragmentProg ) 
+	{
+		hFragmentShader = glCreateShaderObjectARB(GL_FRAGMENT_SHADER_ARB);
+		glShaderSourceARB(hFragmentShader, 1, &szFragmentProg, NULL);
+		glCompileShaderARB(hFragmentShader);
+		if( !BCheckObject(hFragmentShader) ) 
+		{
+			fprintf(stderr, "Error during compiling the fragment program.\n");
+			return false;
+		}
+	}
+
+	if( szVertexProg )
+		glAttachObjectARB(hProgramHandle, hVertexShader);
+
+	if( szFragmentProg )
+		glAttachObjectARB(hProgramHandle, hFragmentShader);
+
+	glLinkProgramARB(hProgramHandle);
+
+	if( !BCheckObject(hProgramHandle) )
+	{
+		fprintf(stderr, "Error during linking shaders\n");
+		return false;
+	}
+
+	return hProgramHandle;
+}
+// ADD-BY-LEETEN 08/14/2008-END
+
 char *SzTextFileRead(char *fn) 
 {
 	FILE *fp;
@@ -132,6 +187,11 @@ CSetShaders(const char* szVertex, const char* szFragment)
 /*
 
   $Log: not supported by cvs2svn $
+  Revision 1.4  2007/09/18 16:17:38  leeten
+
+  [09/18/2007]
+  1. Changed the code to free the buffer for the shader programs.
+
   Revision 1.3  2007/03/12 23:40:37  leeten
 
   [03/12/2007]
