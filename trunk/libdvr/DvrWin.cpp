@@ -389,7 +389,15 @@ CDvrWin::_InitFunc()
 
 
 	// load the shader
-	uPidTf1d = CSetShaders(NULL, "tf_1d.frag");
+	// MOD-BY-LEETEN 08/14/2008-FROM:
+		// uPidTf1d = CSetShaders(NULL, "tf_1d.frag");
+	// TO:
+	uPidTf1d = CSetShadersByString(
+		NULL, 
+		#include "tf_1d.frag.h"
+	);
+	// MOD-BY-LEETEN 08/14/2008-END
+
 	assert( uPidTf1d );
 
 	// setup value for variable inside the shader
@@ -426,8 +434,13 @@ CDvrWin::_InitFunc()
 	_KeepUpdateOn();		// the frame will be keep updating
 
 							// a spinner to control the #slices
-	PCGetGluiWin()->add_spinner("#Slices = ", GLUI_SPINNER_INT, &iNrOfSlices);	
-
+	// MOD-BY-TLEE 2008/08/15-FROM:
+		// PCGetGluiWin()->add_spinner("#Slices = ", GLUI_SPINNER_INT, &iNrOfSlices);	
+	// TO:
+							// set the lower/upper limits of #slices
+	GLUI_Spinner *pcSpinner = PCGetGluiWin()->add_spinner("#Slices", GLUI_SPINNER_INT, &iNrOfSlices);	
+	pcSpinner->set_int_limits(1, iMaxNrOfSlices);
+	// MOD-BY-TLEE 2008/08/15-END
 	// ADD-BY-TLEE 2008/08/14-END
 }
 
@@ -491,6 +504,11 @@ _End();
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.1.1.1  2008/08/14 22:54:48  leeten
+
+[2008/08/14]
+1. [FIRST TIME CHECKIN] This is a library to create a GLUTWIN window for direct volume rendering (DVR).
+
 Revision 1.2  2008/08/13 21:16:31  leeten
 
 [2008/08/13]
