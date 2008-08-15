@@ -11,26 +11,7 @@ using namespace std;
 
 #if		defined(_WIN32)
 	#define GLUT_BUILDING_LIB	
-	// DEL-BY-LEETEN 08/09/2008-BEGIN
-		// #define _CRT_SECURE_NO_DEPRECATE
-	// DEL-BY-LEETEN 08/09/2008-END
 #endif
-
-// DEL-BY-TLEE 08/12/2008-BEGIN
-// Since GLUT will be included in GLUI, this part is removed. 
-// If FREEGLUT is desired, define a preprocessor **** GLUI_FREEGLUT ****
-	/*
-	#if		defined(USING_FREEGLUT)
-		#include <GL/freeglut.h>
-		#pragma comment (lib, "freeglut.lib")
-		#define	GLUI_FREEGLUT
-		// ADD-BY-TLEE 08/12/2008-END
-	#else
-		#include <GL/glut.h>
-		#pragma comment (lib, "glut32.lib")   
-	#endif
-	*/
-// DEL-BY-TLEE 08/12/2008-END
 
 	// ADD-BY-LEETEN 08/11/2008-BEGIN
 	// combine w/ GLUI
@@ -70,7 +51,9 @@ using namespace std;
 
 // ADD-BY-LEETEN 08/12/2008-BEGIN
 #include "libfps.h"
-#pragma comment (lib, "libfps.lib")      
+// DEL-BY-LEETEN 2008/08/14-BEGIN
+	// #pragma comment (lib, "libfps.lib")      
+// DEL-BY-LEETEN 2008/08/14-END
 // ADD-BY-LEETEN 08/12/2008-END
 
 class CGlutWin {
@@ -104,67 +87,65 @@ public:
 // ADD-BY-LEETEN 08/11/2008-BEGIN
 
 protected:
-	// store the GLUI option to add a GLUI win and/or a GLUI subwin
+						// store the GLUI option to add a GLUI win and/or a GLUI subwin
 	int iGluiEnum;
 
-	// pointer to the created GLUI window
+						// pointer to the created GLUI window
 	GLUI *pcGluiWin;
 
-	// pointer to the created GLUI sub-window
+						// pointer to the created GLUI sub-window
 	GLUI *pcGluiSubwin;
 
-	// location of the sub-window
+						// location of the sub-window
 	int iSubwinPosistion;
 
 	// ADD-BY-LEETEN 08/13/2008-BEGIN
 	void _UpdateWinCoord(int *px, int *py, bool bFlipY = true);
 	// ADD-BY-LEETEN 08/13/2008-END
 public:
-	// define the option of GLUI windows as enum
+						// define the option of GLUI windows as enum
 	typedef enum {
 		GLUI_NONE	= 0x0000,
 		GLUI_WIN	= 0x0001,
 		GLUI_SUBWIN	= 0x0002
 	} EGluiEnum;
 
-	// add a GLUI window 
+						// add a GLUI window 
 	void _AddGluiWin();
 
-	// return the pointer to the GLUI window
+						// return the pointer to the GLUI window
 	GLUI *PCGetGluiWin();
 
-	// add a GLUI subwindow in the specified position
+						// add a GLUI subwindow in the specified position
 	void _AddGluiSubwin(int iPosition = 0);
 
-	// return the pointer to the GLUI sub-window
+						// return the pointer to the GLUI sub-window
 	GLUI *PCGetGluiSubwin();
 // ADD-BY-LEETEN 08/11/2008-END
 
 protected:
 	typedef GLdouble TMatrix[16];
 
-	// the window id
+						// the window id
 	int iId;
 
-	// title
+						// title
 	char szTitle[1024+1];
 	char szReshape[1024+1];
 	char szDisplay[1024+1];
 	char szInit[1024+1];
 
-	// the viewport
+						// the viewport
 	int piViewport[4];
 
-	// the model, view, and projection matrices
+						// the model, view, and projection matrices
 	TMatrix tViewMatrix, tInitViewMatrix;
 	TMatrix tModelMatrix, tInitModelMatrix;
 	TMatrix tProjectionMatrix;
 
-	// the different between the origin of the model and the cursor the on screen.
-	// it is used to adjust the shift of the model
+						// the different between the origin of the model and the cursor the on screen.
+						// it is used to adjust the shift of the model
 	double dXDiffOnScreen, dYDiffOnScreen;	
-
-	// GLUT Callbacks 
 
 	///////////////////////////////////////////////////////////////
 	// The callbacks, functions and vairable for the mouse interfaces.
@@ -179,7 +160,7 @@ protected:
 	double pdCurPos[3], pdBeginPos[3];
 	double dX, dY, dZ;
 
-	// methods to manipulate the object 
+								// methods to manipulate the object 
 	void _AlignPan(double pdNewCoord[3], double pdOldCoord[3]);
 	void _AlignRotate(double pdAxis[3]);
 
@@ -191,7 +172,7 @@ protected:
 	void _RotateModel();
 	void _ZoomModel();
 
-	// interfaces
+								// interfaces
 	virtual void _DisplayFunc();
 	virtual void _ReshapeFunc(int, int);
 	virtual void _KeyboardFunc(unsigned char, int, int);
@@ -291,24 +272,48 @@ public:
 	virtual void _GluiFunc(unsigned short usValue);
 	virtual void _GluiCB(unsigned short usValue);
 
-	void _AddButton(char *szName, unsigned short usValue);
-	static void _AddButton(CGlutWin *win, char *szName, unsigned short usValue);
+	// ADD-BY-LEETEN 2008/08/15-BEGIN
+											// combine the window ID with the given value
+											// the purpose of this method is to create an unique ID 
+											// for GLUI controls
+	int IAddWid(unsigned short usValue)
+	{
+		return IGetId() * 0x0100 + usValue;
+	}
+	// ADD-BY-LEETEN 2008/08/15-END
+
+	#if	0		// MOD-BY-LEETEN 2008/08/15-FROM:
+		void _AddButton(char *szName, unsigned short usValue);
+		static void _AddButton(CGlutWin *win, char *szName, unsigned short usValue);
+	#else		// MOD-BY-LEETEN 2008/08/15-TO:
+											// add one parameter to decide the panel
+
+	void _AddButton(char *szName, unsigned short usValue, GLUI_Panel *pcPanel = NULL);
+	static void _AddButton(CGlutWin *win, char *szName, unsigned short usValue, GLUI_Panel *pcPanel = NULL);
+
+	#endif		// MOD-BY-LEETEN 2008/08/15-END
 	// ADD-BY-LEETEN 08/13/2008-END
 
 	// ADD-BY-LEETEN 08/14/2008-BEGIN
 	static void _IdleCB_static();
 	// ADD-BY-LEETEN 08/14/2008-END
-};
 
-// DEL-BY-LEETEN 08/09/2008-BEGIN
-	// void _GWAddWin(CGlutWin *win, char *szTitle, bool bUseDefault = true, int x = 0, int y = 0, int w = 128, int h = 128);
-// DEL-BY-LEETEN 08/09/2008-END
+	// ADD-BY-LEETEN 2008/08/15-BEGIN
+											// declare a static method as the GLUI callbacks
+	static void _GluiCB_static(int iIdValue);
+	// ADD-BY-LEETEN 2008/08/15-END
+};
 
 #endif	//	__GLUT_WINDOW_H__
 
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.5  2008/08/14 14:46:31  leeten
+
+[2008/08/18]
+1. [ADD] Declare a new static method _IdleCB_static to bypass the idle event to all windows.
+
 Revision 1.4  2008/08/13 21:00:24  leeten
 
 [2008/08/13]
