@@ -781,10 +781,8 @@ CGlutWin::_TimerFunc(int value)
 {
 }
 
-// The member method to handle the callback
-// It is called by CGlutWin_static:_TimerCB.
-// The reason why it 
-
+						// The member method to handle the callback
+						// It is called by CGlutWin_static:_TimerCB.
 void 
 CGlutWin::_TimerCB(int value)
 {
@@ -795,8 +793,8 @@ CGlutWin::_TimerCB(int value)
 void 
 CGlutWin::_AddTimer(unsigned int msecs, short value)
 {
-	// call the static method to create a timer event for this window
-	// the static method will implicitly combine this window's id and the value
+						// call the static method to create a timer event for this window
+						// the static method will implicitly combine this window's id and the value
 
 	CGlutWin::_AddTimer(this, msecs, value);
 }
@@ -814,14 +812,25 @@ CGlutWin::_GluiCB(unsigned short usValue)
 	_GluiFunc(usValue);
 }
 
+#if	0	// MOD-BY-LEETEN 08/15/2008-FROM:
+	void 
+	CGlutWin::_AddButton(char *szName, unsigned short usValue)
+	{
+		CGlutWin::_AddButton(this, szName, usValue);
+	}
+#else	// MOD-BY-LEETEN 08/15/2008-TO:
+								// Add a new parameter to specify the panel
+
 void 
-CGlutWin::_AddButton(char *szName, unsigned short usValue)
+CGlutWin::_AddButton(char *szName, unsigned short usValue, GLUI_Panel *pcPanel)
 {
-	CGlutWin::_AddButton(this, szName, usValue);
+	CGlutWin::_AddButton(this, szName, usValue, pcPanel);
 }
+
+#endif	// MOD-BY-LEETEN 08/15/2008-END
+
 // ADD-BY-LEETEN 08/13/2008-END
 
-// ADD-BY-LEETEN 08/12/2008-BEGIN
 		// push this window
 void 
 CGlutWin::_Push()
@@ -879,6 +888,19 @@ CGlutWin::_End()
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.5  2008/08/13 20:55:36  leeten
+
+[2008/08/13]
+1. [ADD] Define a new method SZSprint to format string.
+2. [ADD] Define a new method _DrawString() to draw a string in the left bottom corner.
+3. [ADD] Define a new method _AddToLog to add a string to specifed file (by default STDERR). When printing this string, a prefix will be added to indicate which window display this string, and a new line will be automatically appended at the end.
+4. [ADD] Add code to measure FPS. FPS can be shown on screen via another new method _DisplayFpsOn();
+5. [CHANGE] Since GLUI subwindow can change the both location and size of the viewport, the viewport is recorded, and a new method _UpdateWinCoord is defined to adjust the passed coordinate.
+6. [ADD] Add a new method _KeepUpdateOn() to keep displaying the screen. It can be disabled via another method _KeepUpdateOff().
+7. [CHANGE] Change the order of _InitFunc() s.t. it is called after the GLUI win/subwindows have been created.
+8. [ADD] Add a new callback _GluiCB() to handle event from GLUI control. It will call another method _GluiFunc().
+9. [ADD] Add a new method _AddButton() to add a button to the GLUI windows/subwindows.
+
 Revision 1.4  2008/08/12 16:38:34  leeten
 
 [2008/08/12]
