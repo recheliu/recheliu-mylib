@@ -40,7 +40,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				PreprocessorDefinitions="WIN32;_DEBUG;_LIB"
+				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;_CRT_SECURE_NO_DEPRECATE"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
@@ -173,7 +173,7 @@
 					>
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="copy &quot;$(InputPath)&quot; &quot;$(SolutionDir)&quot;\..\include\$(ProjectName)\$(InputFileName)"
+						CommandLine="copy &quot;$(InputPath)&quot; &quot;$(SolutionDir)&quot;\..\include\$(ProjectName)\$(InputFileName)&#x0D;&#x0A;"
 						Outputs="&quot;$(SolutionDir)&quot;\..\include\$(ProjectName)\$(InputFileName)"
 					/>
 				</FileConfiguration>
@@ -182,7 +182,7 @@
 					>
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="copy &quot;$(InputPath)&quot; &quot;$(SolutionDir)&quot;\..\include\$(ProjectName)\$(InputFileName)"
+						CommandLine="copy &quot;$(InputPath)&quot; &quot;$(SolutionDir)&quot;\..\include\$(ProjectName)\$(InputFileName)&#x0D;&#x0A;"
 						Outputs="&quot;$(SolutionDir)&quot;\..\include\$(ProjectName)\$(InputFileName)"
 					/>
 				</FileConfiguration>
@@ -195,7 +195,7 @@
 					>
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="copy &quot;$(InputPath)&quot; &quot;$(SolutionDir)&quot;\..\include\$(ProjectName)\$(InputFileName)"
+						CommandLine="copy &quot;$(InputPath)&quot; &quot;$(SolutionDir)&quot;\..\include\$(ProjectName)\$(InputFileName)&#x0D;&#x0A;"
 						Outputs="&quot;$(SolutionDir)&quot;\..\include\$(ProjectName)\$(InputFileName)"
 					/>
 				</FileConfiguration>
@@ -204,7 +204,7 @@
 					>
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="copy &quot;$(InputPath)&quot; &quot;$(SolutionDir)&quot;\..\include\$(ProjectName)\$(InputFileName)"
+						CommandLine="copy &quot;$(InputPath)&quot; &quot;$(SolutionDir)&quot;\..\include\$(ProjectName)\$(InputFileName)&#x0D;&#x0A;"
 						Outputs="&quot;$(SolutionDir)&quot;\..\include\$(ProjectName)\$(InputFileName)"
 					/>
 				</FileConfiguration>
@@ -217,7 +217,7 @@
 					>
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="copy &quot;$(InputPath)&quot; &quot;$(SolutionDir)&quot;\..\include\$(ProjectName)\$(InputFileName)"
+						CommandLine="copy &quot;$(InputPath)&quot; &quot;$(SolutionDir)&quot;\..\include\$(ProjectName)\$(InputFileName)&#x0D;&#x0A;"
 						Outputs="&quot;$(SolutionDir)&quot;\..\include\$(ProjectName)\$(InputFileName)"
 					/>
 				</FileConfiguration>
@@ -226,7 +226,7 @@
 					>
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="copy &quot;$(InputPath)&quot; &quot;$(SolutionDir)&quot;\..\include\$(ProjectName)\$(InputFileName)"
+						CommandLine="copy &quot;$(InputPath)&quot; &quot;$(SolutionDir)&quot;\..\include\$(ProjectName)\$(InputFileName)&#x0D;&#x0A;"
 						Outputs="&quot;$(SolutionDir)&quot;\..\include\$(ProjectName)\$(InputFileName)"
 					/>
 				</FileConfiguration>
@@ -239,7 +239,7 @@
 					>
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="copy &quot;$(InputPath)&quot; &quot;$(SolutionDir)&quot;\..\include\$(ProjectName)\$(InputFileName)"
+						CommandLine="copy &quot;$(InputPath)&quot; &quot;$(SolutionDir)&quot;\..\include\$(ProjectName)\$(InputFileName)&#x0D;&#x0A;"
 						Outputs="&quot;$(SolutionDir)&quot;\..\include\$(ProjectName)\$(InputFileName)"
 					/>
 				</FileConfiguration>
