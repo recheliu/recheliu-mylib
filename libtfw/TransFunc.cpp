@@ -22,8 +22,13 @@ CTransFunc::_LoadRainBow()
 
 			// setup the alpha channel
 	plSplines[COLOR_A].clear();
-	plSplines[COLOR_A].push_back(CKnot(0.0f, 0.2f));
-	plSplines[COLOR_A].push_back(CKnot(1.0f, 0.2f));
+	#if	0	// MOD-BY-TLEE 2008/08/16-FROM:
+		plSplines[COLOR_A].push_back(CKnot(0.0f, 0.2f));
+		plSplines[COLOR_A].push_back(CKnot(1.0f, 0.2f));
+	#else	// MOD-BY-TLEE 2008/08/16-TO:
+	plSplines[COLOR_A].push_back(CKnot(0.0f, 0.5f));
+	plSplines[COLOR_A].push_back(CKnot(1.0f, 0.5f));
+	#endif	// MOD-BY-TLEE 2008/08/16-END
 }
 
 #if	0		// MOD-BY-LEETEN 08/15/2008-FROM:
@@ -179,6 +184,12 @@ CTransFunc::_ExportColorMap(float pfColorMap[], int iNrOfEntries)
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.2  2008/08/15 14:52:38  leeten
+
+[2008/08/15]
+1. [ADD] Add new functionalities to open/save the TF as files.
+2. [ADD] Define a new methods BCheckFile to check the validabilty of a file. It is used to prevent from loading wrong TF and destroying the current TF because calling another method BOpenFile can immediately destroy the TF.
+
 Revision 1.1.1.1  2008/08/14 14:44:02  leeten
 
 [2008/08/14]
