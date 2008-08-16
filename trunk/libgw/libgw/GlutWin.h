@@ -9,6 +9,8 @@ using namespace std;
 
 #pragma comment (lib, "winmm.lib")      /* link with Windows MultiMedia lib */
 
+#pragma comment (lib, "libfps.lib")      // link with my own library libfps
+
 #if		defined(_WIN32)
 	#define GLUT_BUILDING_LIB	
 #endif
@@ -185,6 +187,15 @@ protected:
 	virtual void _TimerFunc(int value);
 	// ADD-BY-LEETEN 08/11/2008-END
 
+	// ADD-BY-LEETEN 08/16/2008-BEGIN
+							// because the window can be created via the method ICreate,
+							// this purposes of _AddWin are only to register callbacks
+							// and add the window to the list, which can be hidden from 
+							// the caller. Hence it is declared as protected.
+	static void _AddWin(
+		CGlutWin *win); 
+	// ADD-BY-LEETEN 08/16/2008-END
+
 public:
 	virtual void _DisplayCB();
 	virtual void _ReshapeCB(int w, int h);
@@ -241,6 +252,14 @@ public:
 	// ADD-BY-LEETEN 08/09/2008-BEGIN
 	void _Set();			// force the window to be the active window
 
+	// ADD-BY-LEETEN 08/15/2008-BEGIN
+	void _Reshape(int w, int h)
+	{
+		_Set();
+		glutReshapeWindow(w, h);
+	}
+	// ADD-BY-LEETEN 08/15/2008-END
+
 	//////////////////////////////////////////////////////////////////////////////
 										// static variables/methods
 	static vector<CGlutWin*> vcWins;
@@ -248,10 +267,13 @@ public:
 	static int IGetNrOfWins();
 	static void _SetActiveWin(int iWin);
 	static CGlutWin *PCGetActiveWin();
-	static void _AddWin(
-		CGlutWin *win, 
-		char *szTitle, 
-		bool bUseDefault = true, int x = 0, int y = 0, int w = 128, int h = 128);
+
+	// DEL-BY-TLEE 2008/08/16-BEGIN
+		static void _AddWin(
+			CGlutWin *win, 
+			char *szTitle, 
+			bool bUseDefault = true, int x = 0, int y = 0, int w = 128, int h = 128);
+	// DEL-BY-TLEE 2008/08/16-END
 
 	// ADD-BY-LEETEN 08/09/2008-END
 
@@ -309,6 +331,15 @@ public:
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.6  2008/08/15 14:39:13  leeten
+
+[2008/08/15]
+1. [DEL] Remove old deleted code.
+2. [DEL] Remove the pragmas  to link libraries in mylib.
+3. [ADD] Add a new method IAddWid to combien the window's ID with a unsigned short value.
+4. [ADD] Add a new paramter to _AddButton to specify the panel.
+5. [ADD] Declared a new static method _GluiCB_static as the callback to handle GLUI callbacks.
+
 Revision 1.5  2008/08/14 14:46:31  leeten
 
 [2008/08/18]
