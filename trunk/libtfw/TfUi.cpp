@@ -1,3 +1,12 @@
+							// include the header for accessing file system to obtain current path
+	// ADD-BY-LEETEN 08/15/2008-BEGIN
+	#if defined(WIN32)
+		#include <windows.h>
+	#else
+		#include <unistd.h>
+	#endif
+	// ADD-BY-LEETEN 08/15/2008-END
+
 #include "TfUi.h"
 
 void 
@@ -91,6 +100,24 @@ CTfUi::_DeleteSelectedKnots(int c)
 	{		
 		list<CKnot>::iterator viKnot = *viiCKnot;
 
+		// ADD-BY-TLEE 2008/06/16-BEGIN
+											// get next node
+		list<CKnot>::iterator viNextKnot = viKnot;
+		viNextKnot++;
+
+											// if this knot is the beginning or the end of the spline
+											// replace it by a new knot whose y is 0.0 
+		if( viKnot == pcTransFunc->plSplines[c].begin() ||
+			viNextKnot == pcTransFunc->plSplines[c].end() )
+		{
+			plcEditHistorys[c]._AddAction(CEditHistory::EDIT_ACTION_DEL, *viKnot);
+			viKnot->fY = 0.0f;
+			plcEditHistorys[c]._AddAction(CEditHistory::EDIT_ACTION_ADD, *viKnot);
+
+			continue;
+		}
+		// ADD-BY-TLEE 2008/06/16-END
+
 									// save thie operation to the history
 		plcEditHistorys[c]._AddAction(CEditHistory::EDIT_ACTION_DEL, *viKnot);
 
@@ -110,9 +137,11 @@ CTfUi::_SelectKnots(int c, float l, float r, float b, float t)
 			viKnot != pcTransFunc->plSplines[c].end(); 
 			viKnot++)
 	{
-							// skip the fist and last knot
-		if( 0.0f == viKnot->fX || 1.0f == viKnot->fX )
-			continue;
+		#if	0	// DEL-BY-LEETEN 2008/08/16-BEGIN
+								// skip the fist and last knot
+			if( 0.0f == viKnot->fX || 1.0f == viKnot->fX )
+				continue;
+		#endif	// DEL-BY-LEETEN 2008/08/16-END
 
 		#if	0	// MOD-BY-LEETEN 08/14/2008-FROM:
 			if( l <= viKnot->fX && viKnot->fX < r &&
@@ -590,17 +619,28 @@ CTfUi::_InitFunc()
 {
 	assert(pcTransFunc);
 
-	#if	0	// MOD-BY-LEETEN 08/14/2008-FROM:
+											// move the File panel to above the Edit panel
+	// ADD-BY-LEETEN 08/15/2008-BEGIN
+											// add new control for accessing TF as files
+	GLUI_Panel *pcFilePanel = PCGetGluiSubwin()->add_panel("File");
+		pcEditText_Dir		= PCGetGluiSubwin()->add_edittext_to_panel(pcFilePanel, "Dir",		GLUI_EDITTEXT_TEXT, szDir,		IAddWid(FILE_DIR),		&CGlutWin::_GluiCB_static);
+		pcEditText_Filename = PCGetGluiSubwin()->add_edittext_to_panel(pcFilePanel, "Filename", GLUI_EDITTEXT_TEXT, szFilename, IAddWid(FILE_FILENAME), &CGlutWin::_GluiCB_static);
+		_AddButton("Save", FILE_SAVE, pcFilePanel);
+		_AddButton("Open", FILE_OPEN, pcFilePanel);
 
-		GLUI_Listbox * pcListBox = PCGetGluiSubwin()->add_listbox("Channele", &iEditingChannel);
-			pcListBox->add_item(CTransFunc::COLOR_R, "Red");
-			pcListBox->add_item(CTransFunc::COLOR_G, "Green");
-			pcListBox->add_item(CTransFunc::COLOR_B, "Blue");
-			pcListBox->add_item(CTransFunc::COLOR_A, "Alpha");
-			pcListBox->set_int_val(iEditingChannel);
+									// by default, use current director and *.* as the filename
+	char szDir[1024+1];
 
-	#else	// MOD-BY-LEETEN 08/14/2008-TO:
-	
+	#if defined(WIN32)
+		GetCurrentDirectoryA((DWORD)strlen(szDir), szDir);
+	#else
+		getcwd(szDir, strlen(szDir));
+	#endif
+	_SetDir(szDir);
+	_SetFilename("*.*");
+
+	// ADD-BY-LEETEN 08/15/2008-END
+
 											// add a panel to group the radio group and buttons
 	#if	0	// MOD-BY-LEETEN 08/15/2008-FROM:
 		GLUI_Panel *pcChannelPanel = PCGetGluiSubwin()->add_panel("Channel");
@@ -625,7 +665,6 @@ CTfUi::_InitFunc()
 	_AddButton("Undo", EDIT_UNDO, pcEditPanel);
 	_AddButton("Clear", EDIT_CLEAR, pcEditPanel);
 	#endif	// MOD-BY-LEETEN 08/15/2008-END
-	#endif	// MOD-BY-LEETEN 08/14/2008-END
 
 	#if	0	// DEL-BY-LEETEN 08/15/2008-BEGIN
 		_AddButton("Redo", EDIT_REDO);
@@ -636,19 +675,27 @@ CTfUi::_InitFunc()
 		// ADD-BY-LEETEN 08/14/2008-END
 	#endif	// DEL-BY-LEETEN 08/15/2008-END
 
-										// add new control for accessing TF as files
-	// ADD-BY-LEETEN 08/15/2008-BEGIN
-	GLUI_Panel *pcFilePanel = PCGetGluiSubwin()->add_panel("File");
-		pcEditText_Dir		= PCGetGluiSubwin()->add_edittext_to_panel(pcFilePanel, "Dir",		GLUI_EDITTEXT_TEXT, szDir,		IAddWid(FILE_DIR),		&CGlutWin::_GluiCB_static);
-		pcEditText_Filename = PCGetGluiSubwin()->add_edittext_to_panel(pcFilePanel, "Filename", GLUI_EDITTEXT_TEXT, szFilename, IAddWid(FILE_FILENAME), &CGlutWin::_GluiCB_static);
-		_AddButton("Save", FILE_SAVE, pcFilePanel);
-		_AddButton("Open", FILE_OPEN, pcFilePanel);
-	// ADD-BY-LEETEN 08/15/2008-END
+
+											// move the File panel to above the Edit panel
+	#if	0	// DEL-BY-LEETEN 08/15/2008-BEGIN
+											// add new control for accessing TF as files
+		// ADD-BY-LEETEN 08/15/2008-BEGIN
+		GLUI_Panel *pcFilePanel = PCGetGluiSubwin()->add_panel("File");
+			pcEditText_Dir		= PCGetGluiSubwin()->add_edittext_to_panel(pcFilePanel, "Dir",		GLUI_EDITTEXT_TEXT, szDir,		IAddWid(FILE_DIR),		&CGlutWin::_GluiCB_static);
+			pcEditText_Filename = PCGetGluiSubwin()->add_edittext_to_panel(pcFilePanel, "Filename", GLUI_EDITTEXT_TEXT, szFilename, IAddWid(FILE_FILENAME), &CGlutWin::_GluiCB_static);
+			_AddButton("Save", FILE_SAVE, pcFilePanel);
+			_AddButton("Open", FILE_OPEN, pcFilePanel);
+		// ADD-BY-LEETEN 08/15/2008-END
+
+	#endif	// DEL-BY-LEETEN 08/15/2008-BEGIN
 
 	_AddButton("Update", EDIT_UPDATE);
 	_AddButton("Exit", EDIT_EXIT);
 
-
+							// specify a default window size for the TF editor
+	// ADD-BY-LEETEN 08/15/2008-BEGIN
+	_Reshape(512, 384);
+	// ADD-BY-LEETEN 08/15/2008-END
 }
 
 void 
@@ -754,6 +801,11 @@ CTfUi::~CTfUi(void)
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.3  2008/08/15 14:47:44  leeten
+
+[2008/08/15]
+1. [ADD] Add new functionalities to open/save the TF as files. The use can specify the dir. and path of the file via edit texts, and tow button are added to load/save the TF.
+
 Revision 1.2  2008/08/14 23:00:25  leeten
 
 [2008/08/14]
