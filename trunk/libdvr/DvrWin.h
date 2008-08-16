@@ -17,12 +17,11 @@ The proecduer to use this class is as below:
 **************************************************/
 
 										// remove the libraries
-#if	0	// DEL-BY-LEETEN 2008/08/14-BEGIN
+// ADD-BY-LEETEN 2008/08/16-BEGIN
 	#pragma comment (lib, "glew32.lib")      
 	#pragma comment (lib, "libfbo.lib")      
 	#pragma comment (lib, "libshader.lib")      
-	#pragma comment (lib, "libdvr.lib")      
-#endif	// DEL-BY-LEETEN 2008/08/14-END
+// ADD-BY-LEETEN 2008/08/16-END
 
 #pragma once
 #include "GlutWin.h"
@@ -85,6 +84,11 @@ public:
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.2  2008/08/15 14:31:19  leeten
+
+[2008/08/15]
+1. [DEL] Remove the pragma to implictly link the libraries in mylib since it can cause VC not to check the dependency for those library.
+
 Revision 1.1.1.1  2008/08/14 22:54:48  leeten
 
 [2008/08/14]
