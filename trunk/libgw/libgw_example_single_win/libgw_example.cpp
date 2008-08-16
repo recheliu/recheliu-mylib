@@ -1,8 +1,4 @@
-// MOD-BY-LEETEN 08/09/2008-FROM:
-	// #include "gw.h"
-// TO:
 #include "GlutWin.h"
-// MOD-BY-LEETEN 08/09/2008-END
 
 class CTestWin:public CGlutWin {
 	// the colors
@@ -20,10 +16,6 @@ public:
 
 		glColor4f(r, g, b, a);
 		glutWireCube(1.0f);
-
-		// DEL-BY-LEETEN 08/12/2008-BEGIN
-			// glutSwapBuffers();
-		// DEL-BY-LEETEN 08/12/2008-END
 	}
 
 public:
@@ -49,50 +41,46 @@ CTestWin cWhiteWin(1.0, 1.0, 1.0, 1.0);
 int
 main(int argn, char *argv[])
 {
-	#if 0	// MOD-BY-LEETEN 08/12/2008-FROM:
-		glutInit(&argn, argv);
-		glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA | GLUT_ALPHA | GLUT_STENCIL );
-	#else	// MOD-BY-LEETEN 08/12/2008-TO:
 	CGlutWin::_Init(
 		&argn, argv, 
 		GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA | GLUT_ALPHA | GLUT_STENCIL);
-	#endif	// MOD-BY-LEETEN 08/12/2008-END
 
-	#if 0	// MOD-BY-LEETEN 08/09/2008-FROM:
-		_GWAddWin(&cRedWin,		"RED");
-		_GWAddWin(&cGreenWin,	"GREEN");
-		_GWAddWin(&cBlueWin,	"BLUE");
-	#else	// MOD-BY-LEETEN 08/09/2008-TO:
-
-	#if	0	// MOD-BY-LEETEN 08/11/2008-FROM:
-		CGlutWin::_AddWin(&cRedWin,		"RED");
-		CGlutWin::_AddWin(&cGreenWin,	"GREEN");
-		CGlutWin::_AddWin(&cBlueWin,	"BLUE");
-	#else	// MOD-BY-LEETEN 08/11/2008-TO:
-
-	CGlutWin::_AddWin(&cRedWin,		"RED", false, 100, 100, 256, 256);
+	// MOD-BY-TLEE 2008/08/16-FROM:
+		//	CGlutWin::_AddWin(&cRedWin,		"RED", false, 100, 100, 256, 256);
+	// TO:
+	cRedWin.ICreate("RED", false, 100, 100, 256, 256);
+	// MOD-BY-TLEE 2008/08/16-END
 		// ADD-BY-LEETEN 08/12/2008-BEGIN
 		cRedWin._DisplayFpsOn();
 		cRedWin._KeepUpdateOn();
 		// ADD-BY-LEETEN 08/11/2008-END
 
 	cGreenWin._AddGluiWin();
-	CGlutWin::_AddWin(&cGreenWin,	"GREEN", false, 200, 100, 256, 256);
+	// MOD-BY-TLEE 2008/08/16-FROM:
+		//	CGlutWin::_AddWin(&cGreenWin,	"GREEN", false, 200, 100, 256, 256);
+	// TO:
+	cGreenWin.ICreate("GREEN", false, 200, 100, 256, 256);
+	// MOD-BY-TLEE 2008/08/16-END
 	cGreenWin.PCGetGluiWin()->add_spinner("G:", GLUI_SPINNER_FLOAT, &cGreenWin.g);
 
 	cBlueWin._AddGluiSubwin(GLUI_SUBWINDOW_RIGHT);
-	CGlutWin::_AddWin(&cBlueWin,	"BLUE", false, 300, 100, 256, 256);
+	// MOD-BY-TLEE 2008/08/16-FROM:
+		//	CGlutWin::_AddWin(&cBlueWin,	"BLUE", false, 300, 100, 256, 256);
+	// TO:
+	cBlueWin.ICreate("BLUE", false, 300, 100, 256, 256);
+	// MOD-BY-TLEE 2008/08/16-END
 		cBlueWin.PCGetGluiSubwin()->add_spinner("B:", GLUI_SPINNER_FLOAT, &cBlueWin.b);
 
 	cWhiteWin._AddGluiWin();
 	cWhiteWin._AddGluiSubwin(GLUI_SUBWINDOW_LEFT);
-	CGlutWin::_AddWin(&cWhiteWin,	"WHITE", false, 400, 100, 256, 256);
+	// MOD-BY-TLEE 2008/08/16-FROM:
+		//	CGlutWin::_AddWin(&cWhiteWin,	"WHITE", false, 400, 100, 256, 256);
+	// TO:
+	cWhiteWin.ICreate("WHITE", false, 400, 100, 256, 256);
+	// MOD-BY-TLEE 2008/08/16-END
 		cWhiteWin.PCGetGluiSubwin()->add_spinner("R:", GLUI_SPINNER_FLOAT, &cWhiteWin.r);
 		cWhiteWin.PCGetGluiSubwin()->add_spinner("G:", GLUI_SPINNER_FLOAT, &cWhiteWin.g);
 		cWhiteWin.PCGetGluiWin()->add_spinner("B:", GLUI_SPINNER_FLOAT, &cWhiteWin.b);
-
-	#endif	// MOD-BY-LEETEN 08/11/2008-END
-	#endif	// MOD-BY-LEETEN 08/09/2008-END
 
 	glutMainLoop();
 	return 0;
@@ -101,6 +89,12 @@ main(int argn, char *argv[])
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.4  2008/08/13 21:03:48  leeten
+
+[2008/08/13]
+1. [CHANGE] Use the new static method CGlutWin::_Init other than glutInit to initialize OpenGL/GLUT. Since the swap of buffer will be implictly done in the member callback _DisplayCB(), it is removed.
+2. [ADD] Make the RED window can display FPS and keep update.
+
 Revision 1.3  2008/08/11 04:35:06  leeten
 
 [2008/08/11]
