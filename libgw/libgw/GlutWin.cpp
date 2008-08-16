@@ -1,11 +1,4 @@
-// MOD-BY-LEETEN 08/09/2008-FROM:
-	// #include "gw.h"
-// TO:
 #include "GlutWin.h"
-// DEL-BY-LEETEN 08/10/2008-BEGIN
-	// #include "gw_api.h"
-// DEL-BY-LEETEN 08/10/2008-END
-// MOD-BY-LEETEN 08/09/2008-END
 
 void 
 CGlutWin::_AlignPan(double pdNewCoord[3], double pdOldCoord[3])
@@ -320,24 +313,6 @@ CGlutWin::_DisplayCB()
 void 
 CGlutWin::_ReshapeCB(int w, int h)
 {
-	#if 0		// MOD-BY-LEETEN 08/11/2008-FROM:
-
-		if( w & h )
-		{
-			glViewport(0, 0, w, h);
-
-			glGetIntegerv(GL_VIEWPORT, piViewport);
-
-			glMatrixMode(GL_PROJECTION);
-			glLoadIdentity();
-			gluPerspective(30.0f, (float)piViewport[2]/(float)piViewport[3], 0.05f, 20.0f);
-			glGetDoublev(GL_PROJECTION_MATRIX, tProjectionMatrix);
-		
-			_ReshapeFunc(w, h);
-		}
-
-	#else	// MOD-BY-LEETEN 08/11/2008-TO:
-
 	int tx, ty, tw, th;
 	GLUI_Master.get_viewport_area( &tx, &ty, &tw, &th );
 	glViewport(tx, ty, tw, th);
@@ -347,10 +322,6 @@ CGlutWin::_ReshapeCB(int w, int h)
 
 	if( tw & th )
 	{
-		// DEL-BY-LEETEN 08/13/2008-BEGIN
-			//	glGetIntegerv(GL_VIEWPORT, piViewport);
-		// DEL-BY-LEETEN 08/13/2008-END
-
 		glMatrixMode(GL_PROJECTION);
 		glLoadIdentity();
 		gluPerspective(30.0f, (float)piViewport[2]/(float)piViewport[3], 0.05f, 20.0f);
@@ -358,8 +329,6 @@ CGlutWin::_ReshapeCB(int w, int h)
 	
 		_ReshapeFunc(tw, th);
 	}
-
-	#endif	// MOD-BY-LEETEN 08/11/2008-END
 
 	CHECK_OPENGL_ERROR(szReshape, true);
 }
@@ -430,12 +399,6 @@ CGlutWin::_KeyboardCB(unsigned char key, int x, int y)
 			glutPostRedisplay();
 			break;
 
-		/*
-		case 27:
-			exit(0);
-			break;
-		*/
-
 		default:
 			_KeyboardFunc(key, x, y);
 			;
@@ -470,12 +433,7 @@ CGlutWin::_SpecialCB(int skey, int x, int y)
 void 
 CGlutWin::_MotionCB(int x, int y)
 {
-	// flip the y coordinate
-	// MOD-BY-LEETEN 08/13/2008-FROM:
-		// y = piViewport[3] - y;
-	// TO:
 	_UpdateWinCoord(&x, &y);
-	// MOD-BY-LEETEN 08/13/2008-END
 
 	iCursorX = x;
 	iCursorY = y;
@@ -484,12 +442,7 @@ CGlutWin::_MotionCB(int x, int y)
 void 
 CGlutWin::_MouseCB(int button, int state, int x, int y)
 {
-	// flip the y coordinate
-	// MOD-BY-LEETEN 08/13/2008-FROM:
-		// y = piViewport[3] - y;
-	// TO:
 	_UpdateWinCoord(&x, &y);
-	// MOD-BY-LEETEN 08/13/2008-END
 
 	iCursorX = x;
 	iCursorY = y;
@@ -701,10 +654,26 @@ CGlutWin::ICreate(
 	glGetDoublev(GL_MODELVIEW_MATRIX, tModelMatrix);
 	memcpy(tInitModelMatrix, tModelMatrix, sizeof(tModelMatrix));
 
-	// DEL-BY-TLEE 08/13/2008-BEGIN
-		// call _InitFunc after the GLUI win/subwin have been created
-		// _InitFunc();
-	// DEL-BY-TLEE 08/13/2008-END
+	// ADD-BY-TLEE 08/16/2008-BEGIN
+										// move the creation of GLUI win/subwin from the static method CGlutWin::_AddWin to here
+	if( iGluiEnum & GLUI_SUBWIN )
+	{
+		pcGluiSubwin = GLUI_Master.create_glui_subwindow(iId, iSubwinPosistion);
+		pcGluiSubwin->set_main_gfx_window( iId );
+	}
+
+	if( iGluiEnum & GLUI_WIN )
+	{
+		static char szGluiTitle[1024+1];
+		sprintf(szGluiTitle, "%s-GLUI", szTitle);
+		pcGluiWin = GLUI_Master.create_glui(szGluiTitle);
+		pcGluiWin->set_main_gfx_window( iId );
+	}
+
+	_InitFunc();
+
+	_AddWin(this);
+	// ADD-BY-TLEE 08/16/2008-END
 
 	CHECK_OPENGL_ERROR(szInit, true);
 
@@ -715,10 +684,6 @@ CGlutWin::ICreate(
 void 
 CGlutWin::_Set()
 {
-	#if 0	// MOD-BY-LEETEN 08/12/2008-FROM:
-		assert(iId > 0);
-		glutSetWindow(iId);
-	#else	// MOD-BY-LEETEN 08/12/2008-FROM:
 	if( iId > 0 )
 	{
 		glutSetWindow(iId);
@@ -727,7 +692,6 @@ CGlutWin::_Set()
 	{
 		fprintf(stderr, "Warning in CGlutWin::_Set(): the window has ben not created yet.\n");
 	}
-	#endif	// MOD-BY-LEETEN 08/12/2008-FROM:
 }
 
 // ADD-BY-LEETEN 08/09/2008-END
@@ -883,11 +847,14 @@ CGlutWin::_End()
 }
 
 
-// ADD-BY-LEETEN 08/12/2008-BEGIN
-
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.6  2008/08/15 14:36:18  leeten
+
+[2008/08/15]
+1. [CHANGE] Add a new parameter to method _AddButton to specify the panel.
+
 Revision 1.5  2008/08/13 20:55:36  leeten
 
 [2008/08/13]
