@@ -446,62 +446,6 @@ CTransferFunction1D::BPreIntegrateIncrementally(size_t uDepthInterval)
 
 // ADD-BY-LEETEN 11/05/2006-END
 
-// ADD-BY-LEETEN 01/03/2007-BEGIN
-#define BIAS(f, b)		pow((double)(f), log((double)(b))/log(0.5))
-
-void 
-CTransferFunction1D::_Default()
-{
-	for(int i=1; i<uNrOfEntries; i++) 
-	{
-		float fValue = (float)i/(float)(uNrOfEntries-1);
-		pfEntries[4*i + 0] = (fValue<0.5f)?0.0f:(2.0f*fValue-1.0f);
-		pfEntries[4*i + 1] = (0.5 - fabs(fValue-0.5)) * 2.0;
-		pfEntries[4*i + 2] = (fValue>0.5f)?0.0:(1.0f - 2.0*fValue);
-
-		// 02/19 fValue = BIAS(1.0f-fValue, 0.8);
-		pfEntries[4*i + 3] = fValue;
-	}
-}
-
-bool 
-CTransferFunction1D::BLoadCMap(const char* szCMapPathFilename)
-{
-	FILE* fpCmap;
-	fpCmap = fopen(szCMapPathFilename, "r+t");
-	if( !fpCmap )
-	{
-		perror("CTransferFunction1D::BLoadCMap");
-		return false;
-	}
-
-	fscanf(fpCmap, "%d", &uNrOfEntries);
-
-	// reallocate the space
-	_Alloc();
-
-	for(int iI=0; iI<(int)uNrOfEntries; iI++) 
-	{
-		fscanf(fpCmap, "%f %f %f %f", 
-			&pfEntries[iI*4], 
-			&pfEntries[iI*4+1], 
-			&pfEntries[iI*4+2], 
-			&pfEntries[iI*4+3]);
-
-		// 02/19
-		/*
-		float fValue = BIAS(1.0f-pfEntries[iI*4+3], 0.8);
-		pfEntries[4*iI + 3] = fValue;
-		*/
-	}
-
-	fclose( fpCmap );
-
-	return true;
-}
-
-// ADD-BY-LEETEN 01/03/2007-END
-
 /*
 
 $Log: not supported by cvs2svn $

@@ -62,9 +62,6 @@ void (*_ReshapeFunc)(int w, int h);
 void (*_KeyboardFunc)(unsigned char key, int w, int h);
 void (*_SpecialFunc)(int skey, int w, int h);
 void (*_IdleFunc)();
-// ADD-BY-LEETEN 07/14/2008-BEGIN
-void (*_AnimeFunc)();
-// ADD-BY-LEETEN 07/14/2008-END
 
 ///////////////////////////////////////////////////////////////
 // The callbacks, functions and vairable for the mouse interfaces.
@@ -361,9 +358,7 @@ _ZoomModel()
 void
 _DisplayCB()
 {
-	// DEL-BY-LEETEN 07/30/2008-FROM:
-	// fprintf(stderr, "Frame %d\n", uAnimeFrame);
-	// DEL-BY-LEETEN 07/30/2008-END
+	fprintf(stderr, "Frame %d\n", uAnimeFrame);
 
 	// ADD-BY-LEETEN 03/31/2008-BEGIN
 	if( bAnimePlayMatrix )
@@ -409,7 +404,7 @@ _DisplayCB()
 			{
 				*strrchr(szAnimeFilename, '.') = '\0';
 			}
-			sprintf(&szAnimeFilename[strlen(szAnimeFilename)], "_%04d.ppm", uAnimeFrame);
+			sprintf(&szAnimeFilename[strlen(szAnimeFilename)], "_%03d.ppm", uAnimeFrame);
 
 			cSnapshotBuffer.BWrite( szAnimeFilename );
 			fprintf(stdout, "Snapshot %s was saved\n", szAnimeFilename);
@@ -685,35 +680,13 @@ _IdleCB()
 void
 _TimerCB(int value)
 {
-	// ADD-BY-LEETEN 07/14/2008-BEGIN
-	_AnimeFunc();
-	// ADD-BY-LEETEN 07/14/2008-END
-
 	glutPostRedisplay();
-
-	// ADD-BY-LEETEN 07/25/2008-BEGIN
-	if( bAnime )
-	// ADD-BY-LEETEN 07/25/2008-END
 	glutTimerFunc(33, _TimerCB, 0);
 }
 // ADD-BY-LEETEN 04/02/2008-END
 
 ///////////////////////////////////////////////////////////////
 // basic subroutines
-
-// ADD-BY-LEETEN 07/25/2008-BEGIN
-void 
-gcbAnimePause()
-{
-	bAnime = false;
-}
-
-void 
-gcbAnimeResume()
-{
-	gcbAnimeOn();
-}
-// ADD-BY-LEETEN 07/25/2008-END
 
 // ADD-BY-LEETEN 03/30/2008-BEGIN
 void
@@ -781,14 +754,6 @@ gcbIdleFunc(void (*_MyIdleFunc)())
 	_IdleFunc = _MyIdleFunc;
 }
 
-// ADD-BY-LEETEN 07/14/2008-BEGIN
-void
-gcbAnimeFunc(void (*_MyAnimeFunc)())
-{
-	_AnimeFunc = _MyAnimeFunc;
-}
-// ADD-BY-LEETEN 07/14/2008-END
-
 void
 gcbInit(void (*_InitFunc)(), void (*_QuitFunc)())
 {
@@ -830,17 +795,6 @@ gcbInit(void (*_InitFunc)(), void (*_QuitFunc)())
 /*
 
 $Log: not supported by cvs2svn $
-Revision 1.2  2008/07/25 22:02:48  leeten
-
-[07/25/2008]
-1. [ADD] Define new function gcbAnimePause()/gcbAnimeResume() to toggle the animation.
-2. [ADD] Define a new function gcbAnimeFunc() to specify user-specified callback.
-
-Revision 1.1.1.1  2008/06/12 22:43:35  leeten
-
-[06/12/2008]
-1. Frist time checkin.
-
 Revision 1.7  2008/06/12 21:21:59  leeten
 
 [06/12/2008]

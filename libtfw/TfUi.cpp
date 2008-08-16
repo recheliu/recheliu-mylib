@@ -345,6 +345,7 @@ _Begin();
 				}
 			glEnd();
 		glPopAttrib();	//	glPushAttrib(GL_CURRENT_BIT);
+
 		#endif	// MOD-BY-LEETEN 08/14/2008-END
 
 								// plot the knots
@@ -505,10 +506,6 @@ CTfUi::_ClearChannel(int channel)
 	plcEditHistorys[channel]._AddAction(CEditHistory::EDIT_ACTION_ADD, cBegin);
 	pcTransFunc->plSplines[channel].push_back(cBegin);
 	pcTransFunc->plSplines[channel].push_back(cEnd);
-
-	// ADD-By-TLEE 08/14/2008-BEGIN
-	pviSelectedKnots[channel].clear();
-	// ADD-By-TLEE 08/14/2008-END
 }
 
 void
@@ -541,45 +538,6 @@ CTfUi::_GluiFunc(unsigned short usValue)
 		break;
 	// ADD-BY-LEETEN 08/14/2008-END
 
-	// ADD-BY-LEETEN 08/15/2008-BEGIN
-	case FILE_OPEN:			// load TF from a file
-		{
-			_GetPath();
-
-			_AddToLog(SZSprintf("Open file %s", szPath));
-
-			if( !pcTransFunc->BCheckFile(szPath) )
-			{
-				_AddToLog(SZSprintf("Cannot open %s", szPath));
-			}
-			else
-			{
-				for(int c = 0; c < CTransFunc::NR_OF_COLORS; c++)
-				{
-												// clear the set of selected knots
-					pviSelectedKnots[c].clear();
-												// reset the edit history
-					plcEditHistorys[c]._Clear();
-				}
-												// open the file. all knots will be erased
-				pcTransFunc->BOpenFile(szPath);
-				_Redisplay();
-			}
-		}
-		break;
-
-	case FILE_SAVE:				// save current TF to a file
-		{
-			_GetPath();
-
-			_AddToLog(SZSprintf("Save to file %s", szPath));
-
-			pcTransFunc->BSaveFile(szPath);
-		}
-		break;
-
-	// ADD-BY-LEETEN 08/15/2008-END
-
 	case EDIT_EXIT:
 		exit(0);
 	}
@@ -590,65 +548,31 @@ CTfUi::_InitFunc()
 {
 	assert(pcTransFunc);
 
-	#if	0	// MOD-BY-LEETEN 08/14/2008-FROM:
-
-		GLUI_Listbox * pcListBox = PCGetGluiSubwin()->add_listbox("Channele", &iEditingChannel);
-			pcListBox->add_item(CTransFunc::COLOR_R, "Red");
-			pcListBox->add_item(CTransFunc::COLOR_G, "Green");
-			pcListBox->add_item(CTransFunc::COLOR_B, "Blue");
-			pcListBox->add_item(CTransFunc::COLOR_A, "Alpha");
-			pcListBox->set_int_val(iEditingChannel);
-
-	#else	// MOD-BY-LEETEN 08/14/2008-TO:
+#if	0
+	GLUI_Listbox * pcListBox = PCGetGluiSubwin()->add_listbox("Channele", &iEditingChannel);
+		pcListBox->add_item(CTransFunc::COLOR_R, "Red");
+		pcListBox->add_item(CTransFunc::COLOR_G, "Green");
+		pcListBox->add_item(CTransFunc::COLOR_B, "Blue");
+		pcListBox->add_item(CTransFunc::COLOR_A, "Alpha");
+		pcListBox->set_int_val(iEditingChannel);
+#else
 	
-											// add a panel to group the radio group and buttons
-	#if	0	// MOD-BY-LEETEN 08/15/2008-FROM:
-		GLUI_Panel *pcChannelPanel = PCGetGluiSubwin()->add_panel("Channel");
-		GLUI_RadioGroup* pcRadioGroup = PCGetGluiSubwin()->add_radiogroup_to_panel(pcChannelPanel, &iEditingChannel, CTransFunc::COLOR_R);
-			PCGetGluiSubwin()->add_radiobutton_to_group(pcRadioGroup, "R");
-			PCGetGluiSubwin()->add_radiobutton_to_group(pcRadioGroup, "G");
-			PCGetGluiSubwin()->add_radiobutton_to_group(pcRadioGroup, "B");
-			PCGetGluiSubwin()->add_radiobutton_to_group(pcRadioGroup, "A");
-			pcRadioGroup->set_int_val(iEditingChannel);
-	#else	// MOD-BY-LEETEN 08/15/2008-TO:
-	GLUI_Panel *pcEditPanel = PCGetGluiSubwin()->add_panel("Edit");
+	GLUI_Panel *pcChannelPanel = PCGetGluiSubwin()->add_panel("Channel");
+	GLUI_RadioGroup* pcRadioGroup = PCGetGluiSubwin()->add_radiogroup_to_panel(pcChannelPanel, &iEditingChannel, CTransFunc::COLOR_R);
+		PCGetGluiSubwin()->add_radiobutton_to_group(pcRadioGroup, "R");
+		PCGetGluiSubwin()->add_radiobutton_to_group(pcRadioGroup, "G");
+		PCGetGluiSubwin()->add_radiobutton_to_group(pcRadioGroup, "B");
+		PCGetGluiSubwin()->add_radiobutton_to_group(pcRadioGroup, "A");
+		pcRadioGroup->set_int_val(iEditingChannel);
+#endif
 
-	GLUI_Panel *pcChannelPanel = PCGetGluiSubwin()->add_panel_to_panel(pcEditPanel, "Channel");
-	GLUI_RadioGroup *pcRadioGroup_Channel = PCGetGluiSubwin()->add_radiogroup_to_panel(pcChannelPanel, &iEditingChannel);
-		PCGetGluiSubwin()->add_radiobutton_to_group(pcRadioGroup_Channel, "R");
-		PCGetGluiSubwin()->add_radiobutton_to_group(pcRadioGroup_Channel, "G");
-		PCGetGluiSubwin()->add_radiobutton_to_group(pcRadioGroup_Channel, "B");
-		PCGetGluiSubwin()->add_radiobutton_to_group(pcRadioGroup_Channel, "A");
-		pcRadioGroup_Channel->set_int_val(iEditingChannel);
-
-	_AddButton("Redo", EDIT_REDO, pcEditPanel);
-	_AddButton("Undo", EDIT_UNDO, pcEditPanel);
-	_AddButton("Clear", EDIT_CLEAR, pcEditPanel);
-	#endif	// MOD-BY-LEETEN 08/15/2008-END
-	#endif	// MOD-BY-LEETEN 08/14/2008-END
-
-	#if	0	// DEL-BY-LEETEN 08/15/2008-BEGIN
-		_AddButton("Redo", EDIT_REDO);
-		_AddButton("Undo", EDIT_UNDO);
-		_AddButton("Update", EDIT_UPDATE);
-		// ADD-BY-LEETEN 08/14/2008-BEGIN
-		_AddButton("Clear", EDIT_CLEAR);
-		// ADD-BY-LEETEN 08/14/2008-END
-	#endif	// DEL-BY-LEETEN 08/15/2008-END
-
-										// add new control for accessing TF as files
-	// ADD-BY-LEETEN 08/15/2008-BEGIN
-	GLUI_Panel *pcFilePanel = PCGetGluiSubwin()->add_panel("File");
-		pcEditText_Dir		= PCGetGluiSubwin()->add_edittext_to_panel(pcFilePanel, "Dir",		GLUI_EDITTEXT_TEXT, szDir,		IAddWid(FILE_DIR),		&CGlutWin::_GluiCB_static);
-		pcEditText_Filename = PCGetGluiSubwin()->add_edittext_to_panel(pcFilePanel, "Filename", GLUI_EDITTEXT_TEXT, szFilename, IAddWid(FILE_FILENAME), &CGlutWin::_GluiCB_static);
-		_AddButton("Save", FILE_SAVE, pcFilePanel);
-		_AddButton("Open", FILE_OPEN, pcFilePanel);
-	// ADD-BY-LEETEN 08/15/2008-END
-
+	_AddButton("Redo", EDIT_REDO);
+	_AddButton("Undo", EDIT_UNDO);
 	_AddButton("Update", EDIT_UPDATE);
+	// ADD-BY-LEETEN 08/14/2008-BEGIN
+	_AddButton("Clear", EDIT_CLEAR);
+	// ADD-BY-LEETEN 08/14/2008-END
 	_AddButton("Exit", EDIT_EXIT);
-
-
 }
 
 void 
@@ -737,14 +661,6 @@ CTfUi::CTfUi()
 	pcTransFunc = NULL;
 	_UpdateFunc = NULL;
 	_AddGluiSubwin(GLUI_SUBWINDOW_LEFT);
-
-	// ADD-BY-LEETEN 08/15/2008-BEGIN
-	szFilename[0] = '\0';
-	szDir[0] = '\0';
-	szPath[0] = '\0'; 
-	pcEditText_Filename = NULL;
-	pcEditText_Dir = NULL;
-	// ADD-BY-LEETEN 08/15/2008-END
 }
 
 CTfUi::~CTfUi(void)
@@ -754,16 +670,6 @@ CTfUi::~CTfUi(void)
 /*
 
 $Log: not supported by cvs2svn $
-Revision 1.2  2008/08/14 23:00:25  leeten
-
-[2008/08/14]
-1. [DEBUG] Clear the selected knots after the spline has been cleared.
-
-Revision 1.1.1.1  2008/08/14 14:44:02  leeten
-
-[2008/08/14]
-1. [FIRST TIME CHECKIN]. This library defines classes for trasnfer functions, including editing and displaying.
-
 Revision 1.1  2008/08/13 21:17:21  leeten
 
 [2008/08/13]

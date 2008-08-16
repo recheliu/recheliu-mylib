@@ -16,13 +16,10 @@ The proecduer to use this class is as below:
 
 **************************************************/
 
-										// remove the libraries
-#if	0	// DEL-BY-LEETEN 2008/08/14-BEGIN
-	#pragma comment (lib, "glew32.lib")      
-	#pragma comment (lib, "libfbo.lib")      
-	#pragma comment (lib, "libshader.lib")      
-	#pragma comment (lib, "libdvr.lib")      
-#endif	// DEL-BY-LEETEN 2008/08/14-END
+#pragma comment (lib, "glew32.lib")      
+#pragma comment (lib, "libfbo.lib")      
+#pragma comment (lib, "libshader.lib")      
+#pragma comment (lib, "libdvr.lib")      
 
 #pragma once
 #include "GlutWin.h"
@@ -36,7 +33,7 @@ class CDvrWin :
 	void _KeyboardFunc(unsigned char, int, int);
 	void _SpecialFunc(int, int, int);
 
-	#if	0	// DEL-BY-LEETEN 08/14/2008-BEGIN
+#if	0	// DEL-BY-LEETEN 08/14/2008-BEGIN
 		void _IdleFunc();
 	#endif	// DEL-BY-LEETEN 08/14/2008-END
 
@@ -85,11 +82,6 @@ public:
 /*
 
 $Log: not supported by cvs2svn $
-Revision 1.1.1.1  2008/08/14 22:54:48  leeten
-
-[2008/08/14]
-1. [FIRST TIME CHECKIN] This is a library to create a GLUTWIN window for direct volume rendering (DVR).
-
 Revision 1.1.1.1  2008/08/12 16:58:49  leeten
 
 [2008/08/12]

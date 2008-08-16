@@ -1,17 +1,6 @@
-// MOD-BY-LEETEN 08/09/2008-FROM:
-	// #include "gw.h"
-// TO:
-#include "GlutWin.h"
-// MOD-BY-LEETEN 08/09/2008-END
+#include "gw.h"
 
 class CTestWin:public CGlutWin {
-	// the colors
-
-// ADD-BY-LEETEN 08/11/2008-BEGIN
-// declare them as public methods and variables
-public:
-// ADD-BY-LEETEN 08/11/2008-END
-
 	float r, g, b, a;
 
 	void _DisplayFunc()
@@ -21,9 +10,7 @@ public:
 		glColor4f(r, g, b, a);
 		glutWireCube(1.0f);
 
-		// DEL-BY-LEETEN 08/12/2008-BEGIN
-			// glutSwapBuffers();
-		// DEL-BY-LEETEN 08/12/2008-END
+		glutSwapBuffers();
 	}
 
 public:
@@ -37,62 +24,16 @@ public:
 	}
 };
 
-CTestWin 
-	cGreenWin(0.0, 1.0, 0.0, 1.0), 
-	cRedWin(1.0, 0.0, 0.0, 1.0),
-	cBlueWin(0.0, 0.0, 1.0, 1.0);
-
-// ADD-BY-LEETEN 08/11/2008-BEGIN
-CTestWin cWhiteWin(1.0, 1.0, 1.0, 1.0);
-// ADD-BY-LEETEN 08/11/2008-END
+CTestWin cGreenWin(0.0, 1.0, 0.0, 1.0), cRedWin(1.0, 0.0, 0.0, 1.0);
 
 int
 main(int argn, char *argv[])
 {
-	#if 0	// MOD-BY-LEETEN 08/12/2008-FROM:
-		glutInit(&argn, argv);
-		glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA | GLUT_ALPHA | GLUT_STENCIL );
-	#else	// MOD-BY-LEETEN 08/12/2008-TO:
-	CGlutWin::_Init(
-		&argn, argv, 
-		GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA | GLUT_ALPHA | GLUT_STENCIL);
-	#endif	// MOD-BY-LEETEN 08/12/2008-END
+	glutInit(&argn, argv);
+	glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA | GLUT_ALPHA | GLUT_STENCIL );
 
-	#if 0	// MOD-BY-LEETEN 08/09/2008-FROM:
-		_GWAddWin(&cRedWin,		"RED");
-		_GWAddWin(&cGreenWin,	"GREEN");
-		_GWAddWin(&cBlueWin,	"BLUE");
-	#else	// MOD-BY-LEETEN 08/09/2008-TO:
-
-	#if	0	// MOD-BY-LEETEN 08/11/2008-FROM:
-		CGlutWin::_AddWin(&cRedWin,		"RED");
-		CGlutWin::_AddWin(&cGreenWin,	"GREEN");
-		CGlutWin::_AddWin(&cBlueWin,	"BLUE");
-	#else	// MOD-BY-LEETEN 08/11/2008-TO:
-
-	CGlutWin::_AddWin(&cRedWin,		"RED", false, 100, 100, 256, 256);
-		// ADD-BY-LEETEN 08/12/2008-BEGIN
-		cRedWin._DisplayFpsOn();
-		cRedWin._KeepUpdateOn();
-		// ADD-BY-LEETEN 08/11/2008-END
-
-	cGreenWin._AddGluiWin();
-	CGlutWin::_AddWin(&cGreenWin,	"GREEN", false, 200, 100, 256, 256);
-	cGreenWin.PCGetGluiWin()->add_spinner("G:", GLUI_SPINNER_FLOAT, &cGreenWin.g);
-
-	cBlueWin._AddGluiSubwin(GLUI_SUBWINDOW_RIGHT);
-	CGlutWin::_AddWin(&cBlueWin,	"BLUE", false, 300, 100, 256, 256);
-		cBlueWin.PCGetGluiSubwin()->add_spinner("B:", GLUI_SPINNER_FLOAT, &cBlueWin.b);
-
-	cWhiteWin._AddGluiWin();
-	cWhiteWin._AddGluiSubwin(GLUI_SUBWINDOW_LEFT);
-	CGlutWin::_AddWin(&cWhiteWin,	"WHITE", false, 400, 100, 256, 256);
-		cWhiteWin.PCGetGluiSubwin()->add_spinner("R:", GLUI_SPINNER_FLOAT, &cWhiteWin.r);
-		cWhiteWin.PCGetGluiSubwin()->add_spinner("G:", GLUI_SPINNER_FLOAT, &cWhiteWin.g);
-		cWhiteWin.PCGetGluiWin()->add_spinner("B:", GLUI_SPINNER_FLOAT, &cWhiteWin.b);
-
-	#endif	// MOD-BY-LEETEN 08/11/2008-END
-	#endif	// MOD-BY-LEETEN 08/09/2008-END
+	_GWAddWin(&cGreenWin,	"GREEN");
+	_GWAddWin(&cRedWin,		"RED");
 
 	glutMainLoop();
 	return 0;
@@ -101,25 +42,5 @@ main(int argn, char *argv[])
 /*
 
 $Log: not supported by cvs2svn $
-Revision 1.3  2008/08/11 04:35:06  leeten
-
-[2008/08/11]
-1. [CHANGE] Declare the color variables as public.
-2. [ADD] Add a new window to draw a 3D white box. This window is associated w/ a GLUI win and a GLUI subwin to control the RGB channels.
-3. [ADD] Add a GLUI window to the GREEN window to change the green channel.
-4. [ADD] Add a GLUI sub-window to the BLUE window to change the blue channel.
-
-Revision 1.2  2008/08/10 05:03:56  leeten
-
-[2008/08/10]
-1. Include GlutWin.h to replace gw.h
-2. Create three windows.
-3. Use the static member CGlutWin::_AddWin to create windows.
-
-Revision 1.1.1.1  2008/08/09 13:50:10  leeten
-
-[2008/08/09]
-1. First time checkin. LIBGW is a OO-based library to create GLUT window. In each window, there is a 3D coordinate for the object and mouse countrol to manipulate the coordinate and viewpoint.
-
 
 */

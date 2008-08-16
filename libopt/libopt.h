@@ -42,15 +42,6 @@ parsing is succesfull.
 #define OPT_FALSE	0
 #define OPT_TRUE	1
 
-// ADD-BY-LEETEN 02/22/2008-BEGIN
-void _OPTAlign(const char* szArgName, const char* szNewArgName);
-// ADD-BY-LEETEN 02/22/2008-END
-
-// ADD-BY-LEETEN 04/11/2007-BEGIN
-// declare a boolean variable
-void _OPTAddBoolean(const char* szArgName, int *piParameter, int iDefaultValue = OPT_FALSE);
-// ADD-BY-LEETEN 04/11/2007-END
-
 // specify a flag. If the flag is given the variable *pbParameter is set as bValue (otherwise it is set as the default balue bDefault)
 void _OPTAddFlag(const char* szArgName, int *piParameter, int iValue, int iDefault);
 
@@ -65,14 +56,6 @@ void _OPTAddIntegerVector(const char *szArgName, int iNrOfParameters, ...);
 // All of them will be pointed to the pointers in the argument list
 void _OPTAddStringVector(const char *szArgName, int iNrOfParameters, ...);
 
-// ADD-BY-LEETEN 07/02/2008-BEGIN
-void _OPTAddEnum(const char* szArgName, int *piParameter, int iDefault, int iNrOfEnumValues, ...);
-
-void _OPTAddComment(const char* szArgName, const char *szComment);
-
-void _OptPrintComment();
-// ADD-BY-LEETEN 07/02/2008-END
-
 // initialize the parse of arguments
 void _OPTInit(bool bCaseInsentive=true);
 
@@ -84,16 +67,6 @@ bool BOPTParse(char* argv[], int argc, int iBegin, int *piEnd = NULL);
 /*
 
 $Log: not supported by cvs2svn $
-Revision 1.3  2008/02/23 05:16:38  leeten
-
-[02/23/2008]
-1. Declare a new function _OPTAlign() to align an argument to an existed one.
-
-Revision 1.2  2007/04/12 19:03:16  leeten
-
-[04/12/2007]
-1. [ADDED] Declare new function OptAddBoolean().
-
 
 */
 
