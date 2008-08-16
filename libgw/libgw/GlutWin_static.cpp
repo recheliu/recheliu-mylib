@@ -75,7 +75,11 @@ _TimerCB(int iIdValue)
 	if( iWin >= 0 )
 	{
 		glutSetWindow(iWid);
-		CGlutWin::PCGetActiveWin()->_TimerCB(iValue);
+		// MOD-BY-TLEE 2008/08/16-FROM:
+			// CGlutWin::PCGetActiveWin()->_TimerCB(iValue);
+		// TO:
+		CGlutWin::PCGetActiveWin()->_TimerCB((unsigned short)iValue);
+		// MOD-BY-TLEE 2008/08/16-END
 	}
 }
 // ADD-BY-LEETEN 08/11/2008-END
@@ -124,7 +128,11 @@ CGlutWin::_IdleCB_static()
 // a static member method to add a timer event to the fiven window
 // it is decalred as a static method in order to call the _TimerCB in the namespace GLutWin_static
 void 
-CGlutWin::_AddTimer(CGlutWin *win, unsigned int msecs, short value)
+// MOD-BY-TLEE 2008/08/16-FROM:
+	// CGlutWin::_AddTimer(CGlutWin *win, unsigned int msecs, short value)
+// TO:
+CGlutWin::_AddTimer(CGlutWin *win, unsigned int msecs, unsigned short value)
+// MOD-BY-TLEE 2008/08/16-END
 {
 					// because the timer events from all windows are passed throught the same callback, 
 					// the windows id is added so later the callback can correctly bypass the timer event
@@ -361,6 +369,13 @@ CGlutWin::_GluiCB_static(int iIdValue)
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.7  2008/08/16 16:03:33  leeten
+
+[2008/08/16]
+1. [DEL] Remove old deleted code.
+2. [CHANGE] Redefine the static method _AddWin since its usage is reduced to add a window to the window list, other than the function to create the windows.
+3. [CHANGE] Use  the method IAddWin to combine the passed value and the window ID.
+
 Revision 1.6  2008/08/15 14:40:32  leeten
 
 [2008/08/15]
