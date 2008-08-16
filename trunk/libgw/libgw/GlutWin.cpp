@@ -741,21 +741,33 @@ _End();
 }
 
 void
-CGlutWin::_TimerFunc(int value)
+// MOD-BY-TLEE 2008/08/16-FROM:
+	// CGlutWin::_TimerFunc(int value)
+// TO:
+CGlutWin::_TimerFunc(unsigned short value)
+// MOD-BY-TLEE 2008/08/16-END
 {
 }
 
 						// The member method to handle the callback
 						// It is called by CGlutWin_static:_TimerCB.
 void 
-CGlutWin::_TimerCB(int value)
+// MOD-BY-TLEE 2008/08/16-FROM:
+	// CGlutWin::_TimerCB(int value)
+// TO:
+CGlutWin::_TimerCB(unsigned short value)
+// MOD-BY-TLEE 2008/08/16-END
 {
 	// call the timer func
 	_TimerFunc(value);
 }
 
 void 
-CGlutWin::_AddTimer(unsigned int msecs, short value)
+// MOD-BY-TLEE 2008/08/16-FROM:
+	// CGlutWin::_AddTimer(unsigned int msecs, short value)
+// TO:
+CGlutWin::_AddTimer(unsigned int msecs, unsigned short value)
+// MOD-BY-TLEE 2008/08/16-END
 {
 						// call the static method to create a timer event for this window
 						// the static method will implicitly combine this window's id and the value
@@ -850,6 +862,12 @@ CGlutWin::_End()
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.7  2008/08/16 15:58:44  leeten
+
+[2008/08/16]
+1. [DEL] Remove old deleted code segments.
+2. [CHANGE] Add the initialization of GLUI win/subwin in and the invokation of _InitFunc in the method ICreate().
+
 Revision 1.6  2008/08/15 14:36:18  leeten
 
 [2008/08/15]

@@ -184,7 +184,11 @@ protected:
 	virtual void _InitFunc();
 
 	// ADD-BY-LEETEN 08/11/2008-BEGIN
-	virtual void _TimerFunc(int value);
+	// MOD-BY-TLEE 2008/08/16-FROM:
+		// virtual void _TimerFunc(int value);
+	// TO:
+	virtual void _TimerFunc(unsigned short value);
+	// MOD-BY-TLEE 2008/08/16-END
 	// ADD-BY-LEETEN 08/11/2008-END
 
 	// ADD-BY-LEETEN 08/16/2008-BEGIN
@@ -206,11 +210,19 @@ public:
 	virtual void _IdleCB();
 
 	// ADD-BY-LEETEN 08/11/2008-BEGIN
-	virtual void _TimerCB(int value);
+	// MOD-BY-TLEE 2008/08/16-FROM:
+		// virtual void _TimerCB(int value);
+	// TO:
+	virtual void _TimerCB(unsigned short value);
+	// MOD-BY-TLEE 2008/08/16-END
 	// ADD-BY-LEETEN 08/11/2008-END
 
 	// ADD-BY-LEETEN 08/11/2008-BEGIN
-	void _AddTimer(unsigned int msecs, short value = 0);	// add a timer event
+	// MOD-BY-TLEE 2008/08/16-FROM:
+		// void _AddTimer(unsigned int msecs, short value = 0);	// add a timer event
+	// TO:
+	void _AddTimer(unsigned int msecs, unsigned short value = 0);	// add a timer event
+	// MOD-BY-TLEE 2008/08/16-END
 	void _Redisplay();										// trigger a display event
 	// ADD-BY-LEETEN 08/11/2008-END
 
@@ -268,25 +280,30 @@ public:
 	static void _SetActiveWin(int iWin);
 	static CGlutWin *PCGetActiveWin();
 
-	// DEL-BY-TLEE 2008/08/16-BEGIN
+	#if	0	// DEL-BY-TLEE 2008/08/16-BEGIN
 		static void _AddWin(
 			CGlutWin *win, 
 			char *szTitle, 
 			bool bUseDefault = true, int x = 0, int y = 0, int w = 128, int h = 128);
-	// DEL-BY-TLEE 2008/08/16-END
+	#endif	// DEL-BY-TLEE 2008/08/16-END
 
 	// ADD-BY-LEETEN 08/09/2008-END
 
 	// ADD-BY-LEETEN 08/11/2008-BEGIN
-										// given a GLUT window id, return its id in the vcWins;
+										// given a GLUT window id, return its order in the vcWins;
 	static int IGetWin(int iWid);
 
 										// add a timer event in the given time period in msecs to the specified window with the given value
-	static void _AddTimer(CGlutWin *win, unsigned int msecs, short value);
+	// MOD-BY-TLEE 2008/08/16-FROM:
+		// static void _AddTimer(CGlutWin *win, unsigned int msecs, short value);
+	// TO:
+	static void _AddTimer(CGlutWin *win, unsigned int msecs, unsigned short value);
+	// MOD-BY-TLEE 2008/08/16-END
 	// ADD-BY-LEETEN 08/11/2008-END
 
 	// ADD-BY-LEETEN 08/12/2008-BEGIN
 	static bool bSwapBuffer;
+
 	static void _Init(int *argcp, char **argv, unsigned int mode);
 	// ADD-BY-LEETEN 08/12/2008-END
 
@@ -331,6 +348,13 @@ public:
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.7  2008/08/16 16:01:38  leeten
+
+[2008/08/16]
+1. [ADD] link with the library libfps.lib
+2. [CHANGE] Declare the static method _AddWin as private since its usage is reduced to add a window to the window list, other than the function to create the windows.
+3. [ADD] Define a new method _Reshape(w, h) to control the size of the window.
+
 Revision 1.6  2008/08/15 14:39:13  leeten
 
 [2008/08/15]
