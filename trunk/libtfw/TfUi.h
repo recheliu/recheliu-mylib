@@ -43,6 +43,9 @@ public:
 		EDIT_CLEAR,		// clear the spline
 		EDIT_RESTORE,
 		EDIT_UPDATE,
+		// ADD-BY-LEETEN 2008/08/17-BEGIN
+		EDIT_DELETE,
+		// ADD-BY-LEETEN 2008/08/17-END
 
 						// define new constants
 		// ADD-BY-LEETEN 2008/08/15-BEGIN
@@ -59,12 +62,30 @@ public:
 protected:
 	TBuffer<float> pfHistogram;
 
+	// ADD-BY-LEETEN 2008/08/17-BEGIN
+	double dHistogramMin;
+	double dHistogramMax;
+	// ADD-BY-LEETEN 2008/08/17-END
+
 public:
-	void _SetHistogramAsBackground(int iNrOfEntries, float pfHistogram[])
+	#if	0	// MOD-BY-LEETEN 2008/08/17-FROM:
+		void _SetHistogramAsBackground(int iNrOfEntries, float pfHistogram[])
+		{
+			this->pfHistogram.alloc(iNrOfEntries);
+			memcpy(&this->pfHistogram[0], pfHistogram, sizeof(pfHistogram[0]) * iNrOfEntries);
+		}
+	#else	// MOD-BY-LEETEN 2008/08/17-TO:
+	void _SetHistogramAsBackground(float pfHistogram[], int iNrOfEntries, double dHistogramMin, double dHistogramMax)
 	{
+													// store the histogram 
 		this->pfHistogram.alloc(iNrOfEntries);
 		memcpy(&this->pfHistogram[0], pfHistogram, sizeof(pfHistogram[0]) * iNrOfEntries);
+
+													// store the range
+		this->dHistogramMin = dHistogramMin;
+		this->dHistogramMax = dHistogramMax;
 	}
+	#endif	// MOD-BY-LEETEN 2008/08/17-END
 
 	///////////////////////////////////////////////
 protected:
@@ -307,6 +328,13 @@ public:
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.2  2008/08/15 14:49:45  leeten
+
+[2008/08/15]
+1. [ADD] Add new functionalities to open/save the TF as files. The use can specify the dir. and path of the file via edit texts, and tow button are added to load/save the TF.
+2. [ADD] Define new methods _SetDir and _SetFilename to specify the dir/filename in the edit texts.
+3. [ADD] Define new a new method _Clear in CEditHistory to clear the history.
+
 Revision 1.1.1.1  2008/08/14 14:44:02  leeten
 
 [2008/08/14]
