@@ -251,13 +251,49 @@ CGlutWin::SZSprintf
 }
 
 				// draw a string on the screen. It will be drawn in the origin in current coordinate
+#if	0	// MOD-BY-LEETEN 2008/08/17-FROM:
+	void
+	CGlutWin::_DrawString(char *szString)
+	{
+		glRasterPos3f(0.0, 0.0, 0.0);
+		for(const char *pc = szString; *pc; pc++)
+			glutBitmapCharacter(GLUT_BITMAP_9_BY_15, *pc);
+	}
+#else	// MOD-BY-LEETEN 2008/08/17-TO:
 void
-CGlutWin::_DrawString(char *szString)
+CGlutWin::_DrawString(
+	char *szString, int iX, int iY, bool bAlignToRight)
 {
-	glRasterPos3f(0.0, 0.0, 0.0);
-	for(const char *pc = szString; *pc; pc++)
-        glutBitmapCharacter(GLUT_BITMAP_9_BY_15, *pc);
+_Begin();
+	glPushMatrix();
+							// normalize the coordinate to be window coordinate
+	glLoadIdentity();
+	glTranslatef(-1.0f, -1.0f, -1.0f);
+	glScalef(2.0f/(float)piViewport[2], 2.0f/(float)piViewport[3], 2.0f);
+
+
+	float fX, fY;
+							// calculate the x coordinate
+	fX = (float)(( iX >= 0 ) ? iX : (piViewport[2] - iX));
+	if( bAlignToRight )
+	{
+		int iLen = (int)strlen(szString);
+		fX -= iLen * 9;					// 9 is the width of the font
+	}
+
+							// calculate the y coordinate
+	fY = (float)(( iY >= 0 ) ? iY : (piViewport[3] - iY));
+
+	glTranslatef(fX, fY, 0.0f);
+
+		glRasterPos3f(0.0, 0.0, 0.0);
+		for(const char *pc = szString; *pc; pc++)
+			glutBitmapCharacter(GLUT_BITMAP_9_BY_15, *pc);
+
+	glPopMatrix();
+_End();
 }
+#endif	// MOD-BY-LEETEN 2008/08/17-END
 
 				// print out a string on the console with a prefix to indicate this window 
 				// a newline will be printed at the end.
@@ -300,7 +336,11 @@ CGlutWin::_DisplayCB()
 		glColor4f(0.0f, 1.0f, 1.0f, 1.0f);
 
 		float fFps = cFps.GetFps();
-		_DrawString(SZSprintf("FPS = %f", fFps));
+		// MOD-BY-LEETEN 2008/08/17-FROM:
+			// _DrawString(SZSprintf("FPS = %f", fFps));
+		// TO:
+		_DrawString(SZSprintf("FPS = %.2f", fFps));
+		// MOD-BY-LEETEN 2008/08/17-END
 	}
 
 	if( CGlutWin::bSwapBuffer )
@@ -862,6 +902,11 @@ CGlutWin::_End()
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.8  2008/08/16 21:20:25  leeten
+
+[2008/08/16]
+1. [CHANGE] Change the type of the value for timer event from int to unsigned short.
+
 Revision 1.7  2008/08/16 15:58:44  leeten
 
 [2008/08/16]
