@@ -34,6 +34,12 @@ CDvrWin::CDvrWin(void)
 	// ADD-BY-TLEE 2008/08/14-BEGIN
 	_AddGluiWin();				// there is a sub GLUI window
 	// ADD-BY-TLEE 2008/08/14-END
+
+	// ADD-BY-TLEE 2008/08/17-BEGIN
+							// variable for setting the window resolution
+	pcWidth_spinner  = NULL;
+	pcHeight_spinner = NULL;
+	// ADD-BY-TLEE 2008/08/17-END
 }
 
 CDvrWin::~CDvrWin(void)
@@ -281,6 +287,26 @@ CDvrWin::_ReshapeFunc(int w, int h)
 			glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
 		}
 	}
+
+	// ADD-BY-TLEE 2008/08/17-BEGIN
+							// variable for setting the window resolution
+	iWindowWidth = w;
+	iWindowHeight = h;
+	pcWidth_spinner->set_int_val(iWindowWidth);
+	pcHeight_spinner->set_int_val(iWindowHeight);
+	// ADD-BY-TLEE 2008/08/17-END
+}
+
+// ADD-BY-TLEE 2008/08/17-BEGIN
+void 
+CDvrWin::_GluiFunc(unsigned short usValue)
+{
+	switch(usValue)
+	{
+	case WINDOW_SIZE:
+		_Reshape(iWindowWidth, iWindowHeight);
+		break;
+	}
 }
 
 void 
@@ -442,6 +468,17 @@ CDvrWin::_InitFunc()
 	pcSpinner->set_int_limits(1, iMaxNrOfSlices);
 	// MOD-BY-TLEE 2008/08/15-END
 	// ADD-BY-TLEE 2008/08/14-END
+
+	// ADD-BY-TLEE 2008/08/17-BEGIN
+							// create two spinners to specify the window resolution
+	GLUI_Rollout* pcWindowPaenl = PCGetGluiWin()->add_rollout("Window", false);
+	pcWidth_spinner = 
+		PCGetGluiWin()->add_spinner_to_panel(pcWindowPaenl, "Width", GLUI_SPINNER_INT, &iWindowWidth, IAddWid(WINDOW_SIZE), &CGlutWin::_GluiCB_static);	
+	pcWidth_spinner->set_int_limits(1, 1024);
+	pcHeight_spinner = 
+		PCGetGluiWin()->add_spinner_to_panel(pcWindowPaenl, "Height", GLUI_SPINNER_INT, &iWindowHeight, IAddWid(WINDOW_SIZE), &CGlutWin::_GluiCB_static);
+	pcHeight_spinner->set_int_limits(1, 1024);
+	// ADD-BY-TLEE 2008/08/17-END
 }
 
 // load the volume and upload it as a 3D texture 
@@ -504,6 +541,12 @@ _End();
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.2  2008/08/15 14:27:31  leeten
+
+[2008/08/15]
+1. [CHANGE] Load the shader as string other than files.
+2. [ADD] Set the lower and upper limit to the spinner that controls #slices.
+
 Revision 1.1.1.1  2008/08/14 22:54:48  leeten
 
 [2008/08/14]

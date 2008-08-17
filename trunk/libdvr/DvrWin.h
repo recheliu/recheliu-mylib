@@ -29,6 +29,12 @@ The proecduer to use this class is as below:
 class CDvrWin :
 	public CGlutWin
 {
+	// ADD-BY-TLEE 2008/08/17-BEGIN
+	enum {
+		WINDOW_SIZE	= 0x10
+	};
+	// ADD-BY-TLEE 2008/08/17-END
+
 	// inhered interfaces
 	void _DisplayFunc();
 	void _ReshapeFunc(int, int);
@@ -43,6 +49,15 @@ class CDvrWin :
 
 	// new methods
 	void _DisplayVolume();
+
+	// ADD-BY-TLEE 2008/08/17-BEGIN
+	void _GluiFunc(unsigned short usValue);
+							// variable for setting the window resolution
+	GLUI_Spinner *pcWidth_spinner;
+	GLUI_Spinner *pcHeight_spinner;
+	int iWindowWidth;	
+	int iWindowHeight;	
+	// ADD-BY-TLEE 2008/08/17-END
 
 public:
 	// texture handle
@@ -84,6 +99,11 @@ public:
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.3  2008/08/16 21:32:23  leeten
+
+[2008/08/16]
+1. [Add] implictly link the following libs: glew32.lib, libfbo.lib and libshader.lib.
+
 Revision 1.2  2008/08/15 14:31:19  leeten
 
 [2008/08/15]
