@@ -59,7 +59,7 @@ CTransFunc::BCheckFile(const char szFilename[])
 	FILE *fpTf = fopen(szFilename, "rt");
 	if( NULL == fpTf )
 	{
-		fprintf(stderr, "Warning s in CTransFunc::BCheckFile(): %s cannot be opened.\n", szFilename);
+		fprintf(stderr, "Warning in CTransFunc::BCheckFile(): %s cannot be opened.\n", szFilename);
 		return false;
 	}
 
@@ -184,6 +184,11 @@ CTransFunc::_ExportColorMap(float pfColorMap[], int iNrOfEntries)
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.3  2008/08/16 16:39:56  leeten
+
+[2008/08/14]
+1. [CHANGE] Set the alpha value of the rainbow TF from 0.2 to 0.5.
+
 Revision 1.2  2008/08/15 14:52:38  leeten
 
 [2008/08/15]
