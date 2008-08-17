@@ -73,7 +73,11 @@ public:
 				// variables and method for output string
 public:
 	char *SZSprintf(const char *szFormat, ...);
-	void _DrawString(char *szString);		// draw a string on the screen
+	// MOD-BY-LEETEN 2008/08/17-FROM:
+		// void _DrawString(char *szString);		// draw a string on the screen
+	// TO:
+	void _DrawString(char *szString, int iX = 0, int iY = 0, bool bAlignToRight = false);		// draw a string on the screen
+	// MOD-BY-LEETEN 2008/08/17-END
 	void _AddToLog(char *szString, FILE* fpOutput = stderr);			// print out a string on the console as the log
 
 				// variables and method for deciding if the screen should be keep updating
@@ -348,6 +352,11 @@ public:
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.8  2008/08/16 21:21:05  leeten
+
+[2008/08/16]
+1. [CHANGE] Change the type of the value for timer event from int to unsigned short.
+
 Revision 1.7  2008/08/16 16:01:38  leeten
 
 [2008/08/16]
