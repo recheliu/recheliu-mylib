@@ -434,9 +434,16 @@ CTfUi::_KeyboardCB(unsigned char key, int x, int y)
 		this->_GluiFunc(EDIT_REDO);
 		break;
 
+	// ADD-BY-LEETEN 2008/08/17-BEGIN
+	case 'D': case 'd':	// D for 'delete'
+	// ADD-BY-LEETEN 2008/08/17-END
 	case 127:	// DEL
-		_DeleteSelectedKnots(iEditingChannel);
-		_Redisplay();
+		#if	0	// MOD-BY-LEETEN 2008/08/17-FROM:
+			_DeleteSelectedKnots(iEditingChannel);
+			_Redisplay();
+		#else	// MOD-BY-LEETEN 2008/08/17-TO:
+		this->_GluiFunc(EDIT_DELETE);
+		#endif	// MOD-BY-LEETEN 2008/08/17-END
 		break;
 	}
 }
@@ -453,22 +460,10 @@ CTfUi::_IdleCB()
 			switch( vriMouseEvent->iState)
 			{
 			case GLUT_UP:
-/*
-				if( false == pviSelectedKnots[iEditingChannel].empty() )
-				{
-					_DeleteSelectedKnots(iEditingChannel);
-				}
-				else
-				{
-											// add one knot
-					_AddKnot(iEditingChannel, (float)vriMouseEvent->iX / (float)piViewport[2], (float)vriMouseEvent->iY / (float)piViewport[3]);
-					_ClearSelectedKnots(iEditingChannel);
-				}
-*/
-											// add one knot
+										// add one knot
 				_AddKnot(iEditingChannel, (float)vriMouseEvent->iX / (float)piViewport[2], (float)vriMouseEvent->iY / (float)piViewport[3]);
-				_ClearSelectedKnots(iEditingChannel);
-											// reset the mouse event
+				_ClearSelectedKnots(iEditingChannel);	
+										// reset the mouse event
 				vcMouseEvents.clear();
 				break;
 			}
@@ -545,6 +540,13 @@ CTfUi::_GluiFunc(unsigned short usValue)
 {
 	switch(usValue)
 	{
+	// ADD-BY-LEETEN 2008/08/17-BEGIN
+	case EDIT_DELETE:
+		_DeleteSelectedKnots(iEditingChannel);
+		_Redisplay();
+		break;
+	// ADD-BY-LEETEN 2008/08/17-END
+
 	case EDIT_REDO:
 		_Redo(iEditingChannel);
 		_Redisplay();
@@ -622,7 +624,11 @@ CTfUi::_InitFunc()
 											// move the File panel to above the Edit panel
 	// ADD-BY-LEETEN 08/15/2008-BEGIN
 											// add new control for accessing TF as files
-	GLUI_Panel *pcFilePanel = PCGetGluiSubwin()->add_panel("File");
+	// MOD-BY-LEETEN 08/16/2008-FROM:
+		// GLUI_Panel *pcFilePanel = PCGetGluiSubwin()->add_panel("File");
+	// TO:
+	GLUI_Rollout* pcFilePanel = PCGetGluiSubwin()->add_rollout("File", false);
+	// MOD-BY-LEETEN 08/16/2008-END
 		pcEditText_Dir		= PCGetGluiSubwin()->add_edittext_to_panel(pcFilePanel, "Dir",		GLUI_EDITTEXT_TEXT, szDir,		IAddWid(FILE_DIR),		&CGlutWin::_GluiCB_static);
 		pcEditText_Filename = PCGetGluiSubwin()->add_edittext_to_panel(pcFilePanel, "Filename", GLUI_EDITTEXT_TEXT, szFilename, IAddWid(FILE_FILENAME), &CGlutWin::_GluiCB_static);
 		_AddButton("Save", FILE_SAVE, pcFilePanel);
@@ -651,7 +657,11 @@ CTfUi::_InitFunc()
 			PCGetGluiSubwin()->add_radiobutton_to_group(pcRadioGroup, "A");
 			pcRadioGroup->set_int_val(iEditingChannel);
 	#else	// MOD-BY-LEETEN 08/15/2008-TO:
-	GLUI_Panel *pcEditPanel = PCGetGluiSubwin()->add_panel("Edit");
+	// MOD-BY-LEETEN 08/16/2008-FROM:
+		// GLUI_Panel *pcEditPanel = PCGetGluiSubwin()->add_panel("Edit");
+	// TO:
+	GLUI_Rollout* pcEditPanel  = PCGetGluiSubwin()->add_rollout("Edit");
+	// MOD-BY-LEETEN 08/16/2008-END
 
 	GLUI_Panel *pcChannelPanel = PCGetGluiSubwin()->add_panel_to_panel(pcEditPanel, "Channel");
 	GLUI_RadioGroup *pcRadioGroup_Channel = PCGetGluiSubwin()->add_radiogroup_to_panel(pcChannelPanel, &iEditingChannel);
@@ -664,6 +674,9 @@ CTfUi::_InitFunc()
 	_AddButton("Redo", EDIT_REDO, pcEditPanel);
 	_AddButton("Undo", EDIT_UNDO, pcEditPanel);
 	_AddButton("Clear", EDIT_CLEAR, pcEditPanel);
+	// ADD-BY-LEETEN 2008/08/17-BEGIN
+	_AddButton("Delete", EDIT_DELETE, pcEditPanel);
+	// ADD-BY-LEETEN 2008/08/17-END
 	#endif	// MOD-BY-LEETEN 08/15/2008-END
 
 	#if	0	// DEL-BY-LEETEN 08/15/2008-BEGIN
@@ -736,6 +749,12 @@ CTfUi::_DisplayFunc()
 
 		glPopMatrix();
 
+		// ADD-BY-LEETEN 2008/08/17-BEGIN
+		// plot the range
+		glColor4f(0.0f, 1.0f, 1.0f, 1.0f);
+		_DrawString(SZSprintf("%.2f", dHistogramMin), 0, 0, false);
+		_DrawString(SZSprintf("%.2f", dHistogramMax), -1, 0, true);
+		// ADD-BY-LEETEN 2008/08/17-END
 
 		// plot the transfer func. as lines
 		for(int c = 0; c < CTransFunc::NR_OF_COLORS; c++)	
@@ -792,6 +811,11 @@ CTfUi::CTfUi()
 	pcEditText_Filename = NULL;
 	pcEditText_Dir = NULL;
 	// ADD-BY-LEETEN 08/15/2008-END
+
+	// ADD-BY-LEETEN 2008/08/17-BEGIN
+	dHistogramMin = 0.0f;
+	dHistogramMax = 1.0f;
+	// ADD-BY-LEETEN 2008/08/17-END
 }
 
 CTfUi::~CTfUi(void)
@@ -801,6 +825,12 @@ CTfUi::~CTfUi(void)
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.4  2008/08/16 16:36:34  leeten
+
+[2008/08/14]
+1. [ADD] When the window is created, use current directory and *.* as the path, and initialize thw window size as 512x384.
+2. [ADD] When select the knots, the first and last knots can be selected too.
+
 Revision 1.3  2008/08/15 14:47:44  leeten
 
 [2008/08/15]
