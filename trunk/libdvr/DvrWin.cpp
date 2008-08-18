@@ -258,7 +258,10 @@ CDvrWin::_DisplayFunc()
 void
 CDvrWin::_ReshapeFunc(int w, int h)
 {
-	glViewport(0, 0, w, h);
+									// since the viewport has been decided in _ReshapeCB, 
+									// this one is not needed
+	// DEL-BY-LEETEN 08/18/2008
+		// glViewport(0, 0, w, h);
 
 	// allocate new FBO
 	if( w && h )
@@ -292,8 +295,11 @@ CDvrWin::_ReshapeFunc(int w, int h)
 							// variable for setting the window resolution
 	iWindowWidth = w;
 	iWindowHeight = h;
-	pcWidth_spinner->set_int_val(iWindowWidth);
-	pcHeight_spinner->set_int_val(iWindowHeight);
+
+	#if	0	// DEL-BY-TLEE 2008/08/18-BEGIN
+		pcWidth_spinner->set_int_val(iWindowWidth);
+		pcHeight_spinner->set_int_val(iWindowHeight);
+	#endif	// DEL-BY-TLEE 2008/08/18-END
 	// ADD-BY-TLEE 2008/08/17-END
 }
 
@@ -479,6 +485,14 @@ CDvrWin::_InitFunc()
 		PCGetGluiWin()->add_spinner_to_panel(pcWindowPaenl, "Height", GLUI_SPINNER_INT, &iWindowHeight, IAddWid(WINDOW_SIZE), &CGlutWin::_GluiCB_static);
 	pcHeight_spinner->set_int_limits(1, 1024);
 	// ADD-BY-TLEE 2008/08/17-END
+
+	// ADD-BY-TLEE 2008/08/18-BEGIN
+		// get the size of this window
+		// since it is assumed to be w/o subwindow, 
+		// just call glutGet to obtain the size
+	iWindowWidth	= glutGet(GLUT_WINDOW_WIDTH);
+	iWindowHeight	= glutGet(GLUT_WINDOW_HEIGHT);
+	// ADD-BY-TLEE 2008/08/18-END
 }
 
 // load the volume and upload it as a 3D texture 
@@ -541,6 +555,11 @@ _End();
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.3  2008/08/17 23:48:42  leeten
+
+[2008/08/17]
+1. [ADD] Add 2 spinners to control the window size. To handle this event, the method _Gluifunc is thus overloaded, and a new event index WINDOW_SIZE is added.
+
 Revision 1.2  2008/08/15 14:27:31  leeten
 
 [2008/08/15]
