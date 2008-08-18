@@ -35,6 +35,9 @@ CTfUi::_Undo(int c)
 			break;
 		}
 	}
+	// ADD-BY-LEETEN 2008/08/17-BEGIN
+	_ClearSelectedKnots(c);
+	// ADD-BY-LEETEN 2008/08/17-END
 }
 
 void 
@@ -63,6 +66,9 @@ CTfUi::_Redo(int c)
 			break;
 		}
 	}
+	// ADD-BY-LEETEN 2008/08/17-BEGIN
+	_ClearSelectedKnots(c);
+	// ADD-BY-LEETEN 2008/08/17-END
 }
 
 /////////////////////////////////////////////////////////////////////////
@@ -125,7 +131,11 @@ CTfUi::_DeleteSelectedKnots(int c)
 		pcTransFunc->plSplines[c].erase(viKnot);
 	}
 
-	pviSelectedKnots[c].clear();
+	// MOD-BY-LEETEN 2008/08/17-FROM:
+		//	pviSelectedKnots[c].clear();
+	// TO:
+	_ClearSelectedKnots(c);
+	// MOD-BY-LEETEN 2008/08/17-END
 }
 
 		// select knots in the region
@@ -531,7 +541,11 @@ CTfUi::_ClearChannel(int channel)
 	pcTransFunc->plSplines[channel].push_back(cEnd);
 
 	// ADD-By-TLEE 08/14/2008-BEGIN
-	pviSelectedKnots[channel].clear();
+	// MOD-BY-LEETEN 2008/08/17-FROM:
+		// pviSelectedKnots[channel].clear();
+	// TO:
+	_ClearSelectedKnots(channel);
+	// MOD-BY-LEETEN 2008/08/17-END
 	// ADD-By-TLEE 08/14/2008-END
 }
 
@@ -825,6 +839,14 @@ CTfUi::~CTfUi(void)
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.5  2008/08/17 23:53:28  leeten
+
+[2008/08/17]
+1. [ADD] Add a button to delete selected knots. To handle this event, a new event index EDIT_DELETE is defined.
+2. [ADD] Add a hotkey 'D' to delete selected knots.
+3. [CHANGE] Use rollouts other than panels to group user control.
+4. [ADD] When plot the histogram, also display the range of the histogram. Two variables dHistogramMin and dHistogramMax are thus defined.
+
 Revision 1.4  2008/08/16 16:36:34  leeten
 
 [2008/08/14]
