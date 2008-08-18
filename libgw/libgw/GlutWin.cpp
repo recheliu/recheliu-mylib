@@ -343,6 +343,11 @@ CGlutWin::_DisplayCB()
 		// MOD-BY-LEETEN 2008/08/17-END
 	}
 
+	// ADD-BY-TLEE 2008/08/18-BEGIN
+	if( iGluiEnum | GLUI_WIN || iGluiEnum | GLUI_SUBWIN  )
+		GLUI_Master.sync_live_all();
+	// ADD-BY-TLEE 2008/08/18-END
+
 	if( CGlutWin::bSwapBuffer )
 		glutSwapBuffers();	
 	// ADD-BY-LEETEN 08/12/2008-END
@@ -360,11 +365,19 @@ CGlutWin::_ReshapeCB(int w, int h)
 	glGetIntegerv(GL_VIEWPORT, piViewport);
 	// ADD-BY-LEETEN 08/13/2008-END
 
-	if( tw & th )
+	// MOD-BY-LEETEN 08/18/2008-FROM:
+		// if( tw & th )
+	// TO:
+	if( tw && th )
+	// MOD-BY-LEETEN 08/18/2008-END
 	{
 		glMatrixMode(GL_PROJECTION);
 		glLoadIdentity();
+#if 0	// TEST-MOD
 		gluPerspective(30.0f, (float)piViewport[2]/(float)piViewport[3], 0.05f, 20.0f);
+#else
+		gluPerspective(30.0f, (float)piViewport[2]/(float)piViewport[3], 0.05f, 1000.0f);
+#endif
 		glGetDoublev(GL_PROJECTION_MATRIX, tProjectionMatrix);
 	
 		_ReshapeFunc(tw, th);
@@ -611,7 +624,6 @@ CGlutWin::CGlutWin()
 	bDisplayFps = false;	// by default the FPS is not shown
 	bKeepUpdate = false;	// by default the frame is not keep updating
 	// ADD-BY-LEETEN 08/12/2008-END
-
 }
 
 // destructor
@@ -902,6 +914,12 @@ CGlutWin::_End()
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.9  2008/08/17 23:57:49  leeten
+
+[2008/08/17]
+1. [CHANGE] Redefined the method _DrawString such that the user can control the position of the string.
+2. [CHANGE] Change the fraction digits to 2 when displaying FPS.
+
 Revision 1.8  2008/08/16 21:20:25  leeten
 
 [2008/08/16]
