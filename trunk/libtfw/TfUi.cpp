@@ -645,12 +645,16 @@ CTfUi::_InitFunc()
 	// MOD-BY-LEETEN 08/16/2008-END
 		pcEditText_Dir		= PCGetGluiSubwin()->add_edittext_to_panel(pcFilePanel, "Dir",		GLUI_EDITTEXT_TEXT, szDir,		IAddWid(FILE_DIR),		&CGlutWin::_GluiCB_static);
 		pcEditText_Filename = PCGetGluiSubwin()->add_edittext_to_panel(pcFilePanel, "Filename", GLUI_EDITTEXT_TEXT, szFilename, IAddWid(FILE_FILENAME), &CGlutWin::_GluiCB_static);
-		_AddButton("Save", FILE_SAVE, pcFilePanel);
-		_AddButton("Open", FILE_OPEN, pcFilePanel);
+		#if	0	// MOD-BY-LEETEN 2008/08/19-FROM:
+			_AddButton("Save", FILE_SAVE, pcFilePanel);
+			_AddButton("Open", FILE_OPEN, pcFilePanel);
+		#else	// MOD-BY-LEETEN 2008/08/19-TO:
+		PCGetGluiSubwin()->add_button_to_panel(pcFilePanel, "Save", IAddWid(FILE_SAVE), &CGlutWin::_GluiCB_static);
+		PCGetGluiSubwin()->add_button_to_panel(pcFilePanel, "Open", IAddWid(FILE_OPEN), &CGlutWin::_GluiCB_static);
+		#endif	// MOD-BY-LEETEN 2008/08/19-END
 
 									// by default, use current director and *.* as the filename
 	char szDir[1024+1];
-
 	#if defined(WIN32)
 		GetCurrentDirectoryA((DWORD)strlen(szDir), szDir);
 	#else
@@ -685,12 +689,19 @@ CTfUi::_InitFunc()
 		PCGetGluiSubwin()->add_radiobutton_to_group(pcRadioGroup_Channel, "A");
 		pcRadioGroup_Channel->set_int_val(iEditingChannel);
 
-	_AddButton("Redo", EDIT_REDO, pcEditPanel);
-	_AddButton("Undo", EDIT_UNDO, pcEditPanel);
-	_AddButton("Clear", EDIT_CLEAR, pcEditPanel);
-	// ADD-BY-LEETEN 2008/08/17-BEGIN
-	_AddButton("Delete", EDIT_DELETE, pcEditPanel);
-	// ADD-BY-LEETEN 2008/08/17-END
+		#if	0	// MOD-BY-LEETEN 08/19/2008-FROM:
+			_AddButton("Redo", EDIT_REDO, pcEditPanel);
+			_AddButton("Undo", EDIT_UNDO, pcEditPanel);
+			_AddButton("Clear", EDIT_CLEAR, pcEditPanel);
+			// ADD-BY-LEETEN 2008/08/17-BEGIN
+			_AddButton("Delete", EDIT_DELETE, pcEditPanel);
+			// ADD-BY-LEETEN 2008/08/17-END
+		#else	// MOD-BY-LEETEN 08/19/2008-TO:
+		PCGetGluiSubwin()->add_button_to_panel(pcEditPanel, "Redo",		IAddWid(EDIT_REDO),		&CGlutWin::_GluiCB_static);
+		PCGetGluiSubwin()->add_button_to_panel(pcEditPanel, "Undo",		IAddWid(EDIT_UNDO),		&CGlutWin::_GluiCB_static);
+		PCGetGluiSubwin()->add_button_to_panel(pcEditPanel, "Clear",	IAddWid(EDIT_CLEAR),	&CGlutWin::_GluiCB_static);
+		PCGetGluiSubwin()->add_button_to_panel(pcEditPanel, "Delete",	IAddWid(EDIT_DELETE),	&CGlutWin::_GluiCB_static);
+		#endif	// MOD-BY-LEETEN 08/19/2008-END
 	#endif	// MOD-BY-LEETEN 08/15/2008-END
 
 	#if	0	// DEL-BY-LEETEN 08/15/2008-BEGIN
@@ -716,8 +727,13 @@ CTfUi::_InitFunc()
 
 	#endif	// DEL-BY-LEETEN 08/15/2008-BEGIN
 
-	_AddButton("Update", EDIT_UPDATE);
-	_AddButton("Exit", EDIT_EXIT);
+	#if	0	// MOD-BY-LEETEN 08/19/2008-FROM:
+		_AddButton("Update", EDIT_UPDATE);
+		_AddButton("Exit", EDIT_EXIT);
+	#else	// MOD-BY-LEETEN 08/19/2008-TO:
+	PCGetGluiSubwin()->add_button("Update",	IAddWid(EDIT_UPDATE),	&CGlutWin::_GluiCB_static);
+	PCGetGluiSubwin()->add_button("Exit",	IAddWid(EDIT_EXIT),		&CGlutWin::_GluiCB_static);
+	#endif	// MOD-BY-LEETEN 08/19/2008-END
 
 							// specify a default window size for the TF editor
 	// ADD-BY-LEETEN 08/15/2008-BEGIN
@@ -766,8 +782,8 @@ CTfUi::_DisplayFunc()
 		// ADD-BY-LEETEN 2008/08/17-BEGIN
 		// plot the range
 		glColor4f(0.0f, 1.0f, 1.0f, 1.0f);
-		_DrawString(SZSprintf("%.2f", dHistogramMin), 0, 0, false);
-		_DrawString(SZSprintf("%.2f", dHistogramMax), -1, 0, true);
+		_DrawString(SZSprintf("%.2e", dHistogramMin), 0, 0, false);
+		_DrawString(SZSprintf("%.2e", dHistogramMax), -1, 0, true);
 		// ADD-BY-LEETEN 2008/08/17-END
 
 		// plot the transfer func. as lines
@@ -839,6 +855,11 @@ CTfUi::~CTfUi(void)
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.6  2008/08/18 00:41:59  leeten
+
+[2008/08/17]
+1. [DEBUG] Clear the selected knots after any of the edit buttons are pressed.
+
 Revision 1.5  2008/08/17 23:53:28  leeten
 
 [2008/08/17]
