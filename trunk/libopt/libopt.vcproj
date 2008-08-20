@@ -168,8 +168,17 @@
 					>
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="copy &quot;$(InputPath)&quot; ..\include\$(InputFileName)&#x0D;&#x0A;"
-						Outputs="..\include\$(InputFileName)"
+						CommandLine="copy &quot;$(InputPath)&quot; &quot;$(ProjectDir)&quot;\..\include\&quot;$(InputFileName)&quot;"
+						Outputs="&quot;$(ProjectDir)&quot;\..\include\&quot;$(InputFileName)&quot;"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="copy &quot;$(InputPath)&quot; &quot;$(ProjectDir)&quot;\..\include\&quot;$(InputFileName)&quot;"
+						Outputs="&quot;$(ProjectDir)&quot;\..\include\&quot;$(InputFileName)&quot;"
 					/>
 				</FileConfiguration>
 			</File>

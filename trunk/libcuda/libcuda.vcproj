@@ -170,12 +170,21 @@
 				RelativePath="cuda_macro.h"
 				>
 				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="copy &quot;$(InputPath)&quot; &quot;$(ProjectDir)&quot;\..\include\&quot;$(InputFileName)&quot;"
+						Outputs="&quot;$(ProjectDir)&quot;\..\include\&quot;$(InputFileName)&quot;"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Debug|Win32"
 					>
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="copy &quot;$(InputPath)&quot; ..\include\&quot;$(InputFileName)&quot;&#x0D;&#x0A;"
-						Outputs="..\include\$(InputFileName)"
+						CommandLine="copy &quot;$(InputPath)&quot; &quot;$(ProjectDir)&quot;\..\include\&quot;$(InputFileName)&quot;"
+						Outputs="&quot;$(ProjectDir)&quot;\..\include\&quot;$(InputFileName)&quot;"
 					/>
 				</FileConfiguration>
 			</File>
