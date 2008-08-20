@@ -318,34 +318,36 @@ CGlutWin::_Init(
 }
 // ADD-BY-LEETEN 08/12/2008-END
 
-// ADD-BY-LEETEN 08/13/2008-BEGIN
-void 
-CGlutWin::_AddButton(
-	CGlutWin *win,
-	char *szName,
-	unsigned short usValue,
-								// Add a new parameter to specify the panel
-	// ADD-BY-LEETEN 2008/08/15-BEGIN
-	GLUI_Panel *pcPanel
-	// ADD-BY-LEETEN 2008/08/15-END
-	)
-{
-	// MOD-BY-LEETEN 2008/08/15-FROM:
-		// int iWidValue = win->IGetId() * 0x0100 + usValue;
-	// TO:
-	int iWidValue = win->IAddWid(usValue);
-	// MOD-BY-LEETEN 2008/08/15-FROM:
-	
-								// Add the button to the specified panel if given
-	// MOD-BY-LEETEN 2008/08/15-FROM:
-		// win->PCGetGluiSubwin()->add_button(szName, iWidValue, CGlutWin_static::_GluiCB);
-	//	TO:
-	if(	pcPanel )
-		win->PCGetGluiSubwin()->add_button_to_panel(pcPanel, szName, iWidValue, &CGlutWin::_GluiCB_static);
-	else
-		win->PCGetGluiSubwin()->add_button(szName, iWidValue, &CGlutWin::_GluiCB_static);
-	// MOD-BY-LEETEN 2008/08/15-END
-}
+#if	0	// DEL-BY-LEETEN 08/19/2008-BEGIN
+	// ADD-BY-LEETEN 08/13/2008-BEGIN
+	void 
+	CGlutWin::_AddButton(
+		CGlutWin *win,
+		char *szName,
+		unsigned short usValue,
+									// Add a new parameter to specify the panel
+		// ADD-BY-LEETEN 2008/08/15-BEGIN
+		GLUI_Panel *pcPanel
+		// ADD-BY-LEETEN 2008/08/15-END
+		)
+	{
+		// MOD-BY-LEETEN 2008/08/15-FROM:
+			// int iWidValue = win->IGetId() * 0x0100 + usValue;
+		// TO:
+		int iWidValue = win->IAddWid(usValue);
+		// MOD-BY-LEETEN 2008/08/15-FROM:
+		
+									// Add the button to the specified panel if given
+		// MOD-BY-LEETEN 2008/08/15-FROM:
+			// win->PCGetGluiSubwin()->add_button(szName, iWidValue, CGlutWin_static::_GluiCB);
+		//	TO:
+		if(	pcPanel )
+			win->PCGetGluiSubwin()->add_button_to_panel(pcPanel, szName, iWidValue, &CGlutWin::_GluiCB_static);
+		else
+			win->PCGetGluiSubwin()->add_button(szName, iWidValue, &CGlutWin::_GluiCB_static);
+		// MOD-BY-LEETEN 2008/08/15-END
+	}
+#endif	// DEL-BY-LEETEN 08/19/2008-END
 
 // ADD-BY-LEETEN 08/13/2008-END
 
@@ -369,6 +371,11 @@ CGlutWin::_GluiCB_static(int iIdValue)
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.8  2008/08/16 21:21:33  leeten
+
+[2008/08/16]
+1. [CHANGE] Change the type of the value for timer event from int to unsigned short.
+
 Revision 1.7  2008/08/16 16:03:33  leeten
 
 [2008/08/16]
