@@ -1,6 +1,8 @@
 #include <GL/glew.h>
 #include "shader.h"
-#include "libtf2.h"
+// DEL-BY-TLEE 2008/08/20-BEGIN
+	// #include "libtf2.h"
+// DEL-BY-TLEE 2008/08/20-END
 
 #include "DvrWin.h"
 
@@ -498,6 +500,9 @@ CDvrWin::_InitFunc()
 // load the volume and upload it as a 3D texture 
 void 
 CDvrWin::_SetVolume(
+	// ADD-BY-TLEE 2008/08/20-BEGIN
+	GLenum eInternalFormat,
+	// ADD-BY-TLEE 2008/08/20-END
 	const void *pVol, 
 	GLenum eType, 
 	GLenum eFormat, 
@@ -522,8 +527,12 @@ _Begin();
 	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);	
 	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);	
 	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);	
-	glTexImage3D(GL_TEXTURE_3D, 0, GL_LUMINANCE16F_ARB,	
+	// MOD-BY-TLEE 2008/08/20-FROM:
+		// glTexImage3D(GL_TEXTURE_3D, 0, GL_LUMINANCE16F_ARB,	
+	// TO:
+	glTexImage3D(GL_TEXTURE_3D, 0, eInternalFormat,	
 		(GLsizei)iXDim, (GLsizei)iYDim, (GLsizei)iZDim, 0, eType, eFormat, pVol);
+	// MOD-BY-TLEE 2008/08/20-END
 
 _End();
 }
@@ -555,6 +564,13 @@ _End();
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.4  2008/08/18 21:31:56  leeten
+
+[2008/08/18]
+1. [DEL] Remove the code to set viewport since it has been done in _ReshapeCB.
+2. [DEBUG] Remove the code that call GLUI_Spinner::set_int_val in _ReshapeFunc since it can cause the GLUI window lose the display event.
+3. [ADD] Assign the initial window size to the variables iWindowWidth and iWindowHeight.
+
 Revision 1.3  2008/08/17 23:48:42  leeten
 
 [2008/08/17]
