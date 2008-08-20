@@ -60,6 +60,33 @@ using namespace std;
 
 class CGlutWin {
 
+	// ADD-BY-LEETEN 08/19/2008-BEGIN
+protected:
+	// ADD-BY-TLEE 2008/08/20-BEGIN
+	struct CViewFrustrum
+	{
+		float fAngle_degree;
+		float fNear;
+		float fFar;
+
+		CViewFrustrum()
+		{
+			fAngle_degree = 30.0f;
+			fNear	= 0.05f;
+			fFar	= 1000.0f;
+		}
+	} cViewFrustrum;
+	// ADD-BY-TLEE 2008/08/20-END
+
+	struct CMouseEvent {
+		int iButton;
+		int iState;
+		int iX;
+		int iY;
+	};
+	vector<CMouseEvent> vcMouseEvents;
+	// ADD-BY-LEETEN 08/19/2008-END
+
 	// ADD-BY-LEETEN 08/12/2008-BEGIN
 				// variables and method for displaying FPS
 protected:
@@ -325,16 +352,18 @@ public:
 	}
 	// ADD-BY-LEETEN 2008/08/15-END
 
-	#if	0		// MOD-BY-LEETEN 2008/08/15-FROM:
-		void _AddButton(char *szName, unsigned short usValue);
-		static void _AddButton(CGlutWin *win, char *szName, unsigned short usValue);
-	#else		// MOD-BY-LEETEN 2008/08/15-TO:
-											// add one parameter to decide the panel
+	#if	0	// DEL-BY-LEETEN 08/19/2008-BEGIN
+		#if	0		// MOD-BY-LEETEN 2008/08/15-FROM:
+			void _AddButton(char *szName, unsigned short usValue);
+			static void _AddButton(CGlutWin *win, char *szName, unsigned short usValue);
+		#else		// MOD-BY-LEETEN 2008/08/15-TO:
+												// add one parameter to decide the panel
 
-	void _AddButton(char *szName, unsigned short usValue, GLUI_Panel *pcPanel = NULL);
-	static void _AddButton(CGlutWin *win, char *szName, unsigned short usValue, GLUI_Panel *pcPanel = NULL);
+		void _AddButton(char *szName, unsigned short usValue, GLUI_Panel *pcPanel = NULL);
+		static void _AddButton(CGlutWin *win, char *szName, unsigned short usValue, GLUI_Panel *pcPanel = NULL);
 
-	#endif		// MOD-BY-LEETEN 2008/08/15-END
+		#endif		// MOD-BY-LEETEN 2008/08/15-END
+	#endif	// DEL-BY-LEETEN 08/19/2008-END
 	// ADD-BY-LEETEN 08/13/2008-END
 
 	// ADD-BY-LEETEN 08/14/2008-BEGIN
@@ -352,6 +381,11 @@ public:
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.9  2008/08/17 23:58:04  leeten
+
+[2008/08/17]
+1. [CHANGE] Redefine the method _DrawString such that the user can control the position of the string.
+
 Revision 1.8  2008/08/16 21:21:05  leeten
 
 [2008/08/16]
