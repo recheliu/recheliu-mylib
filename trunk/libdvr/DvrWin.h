@@ -87,7 +87,11 @@ public:
 	// a flag to indicate if FBO is used
 	int ibRenderToFbo;
 
-	void _SetVolume(const void *pVol, GLenum eType, GLenum eFormat, int iXDim, int iYDim, int iZDim);
+	// MOD-BY-TLEE 2008/08/20-FROM:
+		// void _SetVolume(const void *pVol, GLenum eType, GLenum eFormat, int iXDim, int iYDim, int iZDim);
+	// TO:
+	void _SetVolume(GLenum eInternalFormat, const void *pVol, GLenum eType, GLenum eFormat, int iXDim, int iYDim, int iZDim);
+	// MOD-BY-TLEE 2008/08/20-END
 	void _SetTransferFunc(const void *pTf, GLenum eType, GLenum eFormat, int iNrOfTfEntries);
 
 public:
@@ -99,6 +103,11 @@ public:
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.4  2008/08/17 23:48:31  leeten
+
+[2008/08/17]
+1. [ADD] Add 2 spinners to control the window size. To handle this event, the method _Gluifunc is thus overloaded, and a new event index WINDOW_SIZE is added.
+
 Revision 1.3  2008/08/16 21:32:23  leeten
 
 [2008/08/16]
