@@ -373,11 +373,11 @@ CGlutWin::_ReshapeCB(int w, int h)
 	{
 		glMatrixMode(GL_PROJECTION);
 		glLoadIdentity();
-#if 0	// TEST-MOD
-		gluPerspective(30.0f, (float)piViewport[2]/(float)piViewport[3], 0.05f, 20.0f);
-#else
-		gluPerspective(30.0f, (float)piViewport[2]/(float)piViewport[3], 0.05f, 1000.0f);
-#endif
+		// MOD-BY-TLEE 2008/08/20-FROM:
+			// gluPerspective(30.0f, (float)piViewport[2]/(float)piViewport[3], 0.05f, 20.0f);
+		// TO:
+		gluPerspective(cViewFrustrum.fAngle_degree, (float)piViewport[2]/(float)piViewport[3], cViewFrustrum.fNear, cViewFrustrum.fFar);
+		// MOD-BY-TLEE 2008/08/20-END
 		glGetDoublev(GL_PROJECTION_MATRIX, tProjectionMatrix);
 	
 		_ReshapeFunc(tw, th);
@@ -840,22 +840,24 @@ CGlutWin::_GluiCB(unsigned short usValue)
 	_GluiFunc(usValue);
 }
 
-#if	0	// MOD-BY-LEETEN 08/15/2008-FROM:
+#if	0	// DEL-BY-LEETEN 08/19/2008-BEGIN
+	#if	0	// MOD-BY-LEETEN 08/15/2008-FROM:
+		void 
+		CGlutWin::_AddButton(char *szName, unsigned short usValue)
+		{
+			CGlutWin::_AddButton(this, szName, usValue);
+		}
+	#else	// MOD-BY-LEETEN 08/15/2008-TO:
+									// Add a new parameter to specify the panel
+
 	void 
-	CGlutWin::_AddButton(char *szName, unsigned short usValue)
+	CGlutWin::_AddButton(char *szName, unsigned short usValue, GLUI_Panel *pcPanel)
 	{
-		CGlutWin::_AddButton(this, szName, usValue);
+		CGlutWin::_AddButton(this, szName, usValue, pcPanel);
 	}
-#else	// MOD-BY-LEETEN 08/15/2008-TO:
-								// Add a new parameter to specify the panel
 
-void 
-CGlutWin::_AddButton(char *szName, unsigned short usValue, GLUI_Panel *pcPanel)
-{
-	CGlutWin::_AddButton(this, szName, usValue, pcPanel);
-}
-
-#endif	// MOD-BY-LEETEN 08/15/2008-END
+	#endif	// MOD-BY-LEETEN 08/15/2008-END
+#endif	// DEL-BY-LEETEN 08/19/2008-END
 
 // ADD-BY-LEETEN 08/13/2008-END
 
@@ -914,6 +916,13 @@ CGlutWin::_End()
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.10  2008/08/18 21:28:31  leeten
+
+[2008/08/18]
+1. [CHANGE] Change the far distance of the view spectrum from 20..0f to 1000.0f.
+2. [DEBUG] Change the condition check in _ReshapeCB from if( tw & th ) to if( tw && th ).
+3. [ADD] Sync all GLUI live varables at the end of _DisplayCB().
+
 Revision 1.9  2008/08/17 23:57:49  leeten
 
 [2008/08/17]
