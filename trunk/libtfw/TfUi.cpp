@@ -602,7 +602,10 @@ CTfUi::_GluiFunc(unsigned short usValue)
 				for(int c = 0; c < CTransFunc::NR_OF_COLORS; c++)
 				{
 												// clear the set of selected knots
-					pviSelectedKnots[c].clear();
+					// MOD-BY-TLEE 2008/08/20-FROM:
+						// pviSelectedKnots[c].clear();
+					// TO:
+					_ClearSelectedKnots(c);
 												// reset the edit history
 					plcEditHistorys[c]._Clear();
 				}
@@ -713,6 +716,19 @@ CTfUi::_InitFunc()
 		// ADD-BY-LEETEN 08/14/2008-END
 	#endif	// DEL-BY-LEETEN 08/15/2008-END
 
+	// ADD-BY-TLEE 2008/08/21-BEGIN
+	GLUI_Rollout* pcTfPanel = PCGetGluiSubwin()->add_rollout("TF Setting", false);
+	GLUI_Panel* pcPanel;
+	GLUI_Spinner *pcSpinner;
+		pcPanel = PCGetGluiSubwin()->add_panel_to_panel(pcTfPanel, "Data Value");
+			pcSpinner = PCGetGluiSubwin()->add_spinner_to_panel(pcPanel, "Min", GLUI_SPINNER_FLOAT, &fHistogramMin);
+			pcSpinner->disable();
+			pcSpinner = PCGetGluiSubwin()->add_spinner_to_panel(pcPanel, "Max", GLUI_SPINNER_FLOAT, &fHistogramMax);
+			pcSpinner->disable();
+		pcPanel = PCGetGluiSubwin()->add_panel_to_panel(pcTfPanel, "TF Domain");
+			PCGetGluiSubwin()->add_spinner_to_panel(pcPanel, "Min", GLUI_SPINNER_FLOAT, &pcTransFunc->fDomainMin);	
+			PCGetGluiSubwin()->add_spinner_to_panel(pcPanel, "Max", GLUI_SPINNER_FLOAT, &pcTransFunc->fDomainMax);	
+	// ADD-BY-TLEE 2008/08/21-END
 
 											// move the File panel to above the Edit panel
 	#if	0	// DEL-BY-LEETEN 08/15/2008-BEGIN
@@ -760,14 +776,26 @@ CTfUi::_DisplayFunc()
 
 		// plot the histogram as backgroun
 		glPushMatrix();
-			glScalef(1.0f / (float)pfHistogram.num, 1.0f, 1.0f);
-			glBegin(GL_QUADS);
+		// MOD-BY-TLEE 2008/08/21-FROM:
+			// glScalef(1.0f / (float)pfHistogram.num, 1.0f, 1.0f);
+		// TO:
+		glScalef(1.0f / (float)(pcTransFunc->fDomainMax - pcTransFunc->fDomainMin), 1.0f, 1.0f);
+		glTranslatef(-pcTransFunc->fDomainMin, 0.0f, 0.0f);
+		// MOD-BY-TLEE 2008/08/21-END
+		
+		glBegin(GL_QUADS);
 			glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 			for(int i = 0; i < pfHistogram.num; i++)
 			{
 				float l, r, b, t;
-				l = (float)i;
-				r = (float)i + 1;
+				#if	0	// MOD-BY-TLEE 2008/08/21-FROM:
+					l = (float)i;
+					r = (float)i + 1;
+				#else	// MOD-BY-TLEE 2008/08/21-TO:
+				l = (float) i / (float) pfHistogram.num * (float)(fHistogramMax - fHistogramMin);
+				r = (float) (i + 1) / (float) pfHistogram.num * (float)(fHistogramMax - fHistogramMin);
+				#endif	// MOD-BY-TLEE 2008/08/21-END
+
 				b = 0.0f;
 				t = pfHistogram[i];
 				glVertex2f(l, b);
@@ -779,12 +807,18 @@ CTfUi::_DisplayFunc()
 
 		glPopMatrix();
 
-		// ADD-BY-LEETEN 2008/08/17-BEGIN
-		// plot the range
+		#if	0	// MOD-BY-TLEE 2008/08/21-FROM:
+			// ADD-BY-LEETEN 2008/08/17-BEGIN
+			// plot the range
+			glColor4f(0.0f, 1.0f, 1.0f, 1.0f);
+			_DrawString(SZSprintf("%.2e", fHistogramMin), 0, 0, false);
+			_DrawString(SZSprintf("%.2e", fHistogramMax), -1, 0, true);
+			// ADD-BY-LEETEN 2008/08/17-END
+		#else	// MOD-BY-TLEE 2008/08/21-TO:
 		glColor4f(0.0f, 1.0f, 1.0f, 1.0f);
-		_DrawString(SZSprintf("%.2e", dHistogramMin), 0, 0, false);
-		_DrawString(SZSprintf("%.2e", dHistogramMax), -1, 0, true);
-		// ADD-BY-LEETEN 2008/08/17-END
+		_DrawString(SZSprintf("%.2e", pcTransFunc->fDomainMin), 0, 0, false);
+		_DrawString(SZSprintf("%.2e", pcTransFunc->fDomainMax), -1, 0, true);
+		#endif	// MOD-BY-TLEE 2008/08/21-END
 
 		// plot the transfer func. as lines
 		for(int c = 0; c < CTransFunc::NR_OF_COLORS; c++)	
@@ -843,8 +877,8 @@ CTfUi::CTfUi()
 	// ADD-BY-LEETEN 08/15/2008-END
 
 	// ADD-BY-LEETEN 2008/08/17-BEGIN
-	dHistogramMin = 0.0f;
-	dHistogramMax = 1.0f;
+	fHistogramMin = 0.0f;
+	fHistogramMax = 1.0f;
 	// ADD-BY-LEETEN 2008/08/17-END
 }
 
@@ -855,6 +889,12 @@ CTfUi::~CTfUi(void)
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.7  2008/08/20 19:55:20  leeten
+
+[2008/08/20]
+1. [CHANGE] Use GLUI::add_button to replace CGlutWin::_AddButton.
+2. [CHANGE] Change the precision of the printed data range.
+
 Revision 1.6  2008/08/18 00:41:59  leeten
 
 [2008/08/17]
@@ -866,7 +906,7 @@ Revision 1.5  2008/08/17 23:53:28  leeten
 1. [ADD] Add a button to delete selected knots. To handle this event, a new event index EDIT_DELETE is defined.
 2. [ADD] Add a hotkey 'D' to delete selected knots.
 3. [CHANGE] Use rollouts other than panels to group user control.
-4. [ADD] When plot the histogram, also display the range of the histogram. Two variables dHistogramMin and dHistogramMax are thus defined.
+4. [ADD] When plot the histogram, also display the range of the histogram. Two variables fHistogramMin and fHistogramMax are thus defined.
 
 Revision 1.4  2008/08/16 16:36:34  leeten
 
