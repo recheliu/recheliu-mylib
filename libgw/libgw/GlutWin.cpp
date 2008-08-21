@@ -405,6 +405,16 @@ CGlutWin::_KeyboardCB(unsigned char key, int x, int y)
 	// ADD-BY-LEETEN 08/13/2008-END
 
 	switch(key) {
+		// ADD-BY-LEETEN 08/20/2008-BEGIN
+		case 'm':		// load matrix
+			_OpenMatrix(szMatrixFilename);
+			break;
+
+		case 'M':		// save matrix
+			_SaveMatrix(szMatrixFilename);
+			break;
+		// ADD-BY-LEETEN 08/20/2008-END
+
 		case 'x':	case 'X':
 			memcpy(tViewMatrix, tInitViewMatrix, sizeof(tViewMatrix));;
 
@@ -624,12 +634,89 @@ CGlutWin::CGlutWin()
 	bDisplayFps = false;	// by default the FPS is not shown
 	bKeepUpdate = false;	// by default the frame is not keep updating
 	// ADD-BY-LEETEN 08/12/2008-END
+
+	// ADD-BY-TLEE 2008/08/20-BEGIN
+	szMatrixFilename[0] = '\0';
+	// ADD-BY-TLEE 2008/08/20-END
 }
 
 // destructor
 CGlutWin::~CGlutWin()
 {
 }
+
+// ADD-BY-TLEE 2008/08/20-BEGIN
+void 
+CGlutWin::_SaveMatrix(char *szMatrixFilename)
+{
+	FILE *fpMatrix;
+	fpMatrix = fopen(szMatrixFilename, "wt");
+	if( !fpMatrix )
+	{
+		_AddToLog("Error in CGlutWin::_KeyboardCB(): storing matrix failed.");
+		return;
+	}
+	for(int i = 0,	r = 0; r < 4; r++)
+	{
+		for(int		c = 0; c < 4; c++, i++)
+			fprintf(fpMatrix, "%f ", tModelMatrix[i]);
+		fprintf(fpMatrix, "\n");
+	}
+	for(int i = 0,	r = 0; r < 4; r++)
+	{
+		for(int		c = 0; c < 4; c++, i++)
+			fprintf(fpMatrix, "%f ", tViewMatrix[i]);
+		fprintf(fpMatrix, "\n");
+	}
+	fclose(fpMatrix);
+}
+
+void 
+CGlutWin::_OpenMatrix(char *szMatrixFilename)
+{
+	if( !iId )
+	{
+		_AddToLog("Wanring in CGlutWin::_SetMatrix(): This window hasn't been created yet.");
+		return;
+	}
+
+	FILE *fpMatrix;
+	fpMatrix = fopen(szMatrixFilename, "rt") ;
+
+	if( !fpMatrix )
+	{
+		_AddToLog(SZSprintf("Error in CGlutWin::_OpenMatrix(): the matrix file %s cannot be opened.", szMatrixFilename));
+		return;
+	}
+
+	for(int i = 0,	r = 0; r < 4; r++)
+		for(int		c = 0; c < 4; c++, i++)
+		{
+			float fTemp;
+			fscanf(fpMatrix, "%f", &fTemp);
+			tModelMatrix[i] = (double)fTemp;
+		}
+
+	for(int i = 0,	r = 0; r < 4; r++)
+		for(int		c = 0; c < 4; c++, i++)
+		{
+			float fTemp;
+			fscanf(fpMatrix, "%f", &fTemp);
+			tViewMatrix[i] = (double)fTemp;
+		}
+
+	fclose(fpMatrix);
+
+}
+
+void 
+CGlutWin::_LoadSavedMatrix(char *szMatrixFilename)
+{
+	if( szMatrixFilename )
+		strcpy(this->szMatrixFilename, szMatrixFilename);
+	_OpenMatrix(this->szMatrixFilename);
+}
+// ADD-BY-TLEE 2008/08/20-END
 
 int 
 CGlutWin::IGetId()
@@ -686,6 +773,13 @@ CGlutWin::ICreate(
 	sprintf(szReshape,	"%s: _Reshape() ", szTitle);
 	sprintf(szDisplay,	"%s: _Display() ", szTitle);
 	sprintf(szInit,		"%s: _Init() ",	szTitle);
+
+	// ADD-BY-TLEE 2008/08/20-BEGIN
+	sprintf(szMatrixFilename, "%s.matrix.txt", szTitle);
+	for(char *cp = NULL; NULL != (cp = strchr(szMatrixFilename, ' ')); *cp = '-')
+		;
+	// ADD-BY-TLEE 2008/08/20-END
+
 	iId = glutCreateWindow(szTitle);
 
 	if( !bUseDefault )
@@ -916,6 +1010,11 @@ CGlutWin::_End()
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.11  2008/08/20 19:33:58  leeten
+
+[2008/08/20]
+1. [CHANGE] Use three variables fAngle_degree, fNear and fFar to specify the view frustrum.
+
 Revision 1.10  2008/08/18 21:28:31  leeten
 
 [2008/08/18]
