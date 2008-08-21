@@ -42,6 +42,13 @@ CDvrWin::CDvrWin(void)
 	pcWidth_spinner  = NULL;
 	pcHeight_spinner = NULL;
 	// ADD-BY-TLEE 2008/08/17-END
+
+	// ADD-BY-TLEE 08/21/2008-BEGIN
+	fTfDomainMin = 0.0f;
+	fTfDomainMax = 1.0f;
+	fDataValueMin = 0.0f;
+	fDataValueMax = 1.0f;
+	// ADD-BY-TLEE 08/21/2008-END
 }
 
 CDvrWin::~CDvrWin(void)
@@ -152,6 +159,15 @@ CDvrWin::_DisplayVolume()
 	SET_1F_VALUE_BY_NAME(uPidTf1d, "fWindowWidth", (float)piViewport[2]);
 	SET_1F_VALUE_BY_NAME(uPidTf1d, "fWindowHeight", (float)piViewport[3]);
 
+	// ADD-BY-TLEE 08/21/2008-BEGIN
+						// setup the range of the data
+	SET_1F_VALUE_BY_NAME(uPidTf1d, "fDataValueMin", fDataValueMin);
+	SET_1F_VALUE_BY_NAME(uPidTf1d, "fDataValueMax", fDataValueMax);
+
+						// setup the range of the TF's support 
+	SET_1F_VALUE_BY_NAME(uPidTf1d, "fTfDomainMin", fTfDomainMin);
+	SET_1F_VALUE_BY_NAME(uPidTf1d, "fTfDomainMax", fTfDomainMax);
+	// ADD-BY-TLEE 08/21/2008-END
 
 	glColor4d(1.0, 1.0, 1.0, 1.0 / (double)iNrOfSlices);
 	for(int z=0; z<=iNrOfSlices; z++)
@@ -349,31 +365,6 @@ CDvrWin::_KeyboardFunc(unsigned char key, int x, int y)
 
 		break;
 
-	/*
-	case 'M': case 'm':	// M for matrix
-		fprintf(stderr, "Outputing modelview matrix to file %s...", szMatrixFilename);
-
-		FILE *fpMatrix;
-		fopen_s(&fpMatrix , szMatrixFilename, "wt");
-		assert( fpMatrix );
-		for(int i = 0, r = 0; r < 4; r++)
-		{
-			for(int c = 0; c < 4; c++, i++)
-				fprintf(fpMatrix, "%f ", tViewMatrix[i]);
-			fprintf(fpMatrix, "\n");
-		}
-
-		for(int i = 0, r = 0; r < 4; r++)
-		{
-			for(int c = 0; c < 4; c++, i++)
-				fprintf(fpMatrix, "%f ", tModelMatrix[i]);
-			fprintf(fpMatrix, "\n");
-		}
-		fclose( fpMatrix );
-		fprintf(stderr, "done\n");
-		break;
-	*/
-
 	// double #slices
 	case '*':
 		if( iNrOfSlices * 2 <= iMaxNrOfSlices )
@@ -564,6 +555,11 @@ _End();
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.5  2008/08/20 19:53:32  leeten
+
+[2008/08/20]
+1. [CHNAGE] Add a new parameter eInternalFormat to the method _SetVolume to decide the texture format in the graphic hardware.
+
 Revision 1.4  2008/08/18 21:31:56  leeten
 
 [2008/08/18]
