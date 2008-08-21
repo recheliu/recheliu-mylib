@@ -63,8 +63,8 @@ protected:
 	TBuffer<float> pfHistogram;
 
 	// ADD-BY-LEETEN 2008/08/17-BEGIN
-	double dHistogramMin;
-	double dHistogramMax;
+	float fHistogramMin;
+	float fHistogramMax;
 	// ADD-BY-LEETEN 2008/08/17-END
 
 public:
@@ -75,16 +75,32 @@ public:
 			memcpy(&this->pfHistogram[0], pfHistogram, sizeof(pfHistogram[0]) * iNrOfEntries);
 		}
 	#else	// MOD-BY-LEETEN 2008/08/17-TO:
-	void _SetHistogramAsBackground(float pfHistogram[], int iNrOfEntries, double dHistogramMin, double dHistogramMax)
+	#if	0	// MOD-BY-LEETEN 2008/08/21-FROM:
+		void _SetHistogramAsBackground(float pfHistogram[], int iNrOfEntries, double fHistogramMin, double fHistogramMax)
+		{
+														// store the histogram 
+			this->pfHistogram.alloc(iNrOfEntries);
+			memcpy(&this->pfHistogram[0], pfHistogram, sizeof(pfHistogram[0]) * iNrOfEntries);
+
+														// store the range
+			this->fHistogramMin = fHistogramMin;
+			this->fHistogramMax = fHistogramMax;
+		}
+	#else	// MOD-BY-LEETEN 2008/08/21-TO:
+	void _SetHistogramAsBackground(float *pfHistogram, int iNrOfEntries, double fHistogramMin, double fHistogramMax)
 	{
-													// store the histogram 
-		this->pfHistogram.alloc(iNrOfEntries);
-		memcpy(&this->pfHistogram[0], pfHistogram, sizeof(pfHistogram[0]) * iNrOfEntries);
+		if( pfHistogram )
+		{
+														// store the histogram 
+			this->pfHistogram.alloc(iNrOfEntries);
+			memcpy(&this->pfHistogram[0], pfHistogram, sizeof(pfHistogram[0]) * iNrOfEntries);
+		}
 
 													// store the range
-		this->dHistogramMin = dHistogramMin;
-		this->dHistogramMax = dHistogramMax;
+		this->fHistogramMin = fHistogramMin;
+		this->fHistogramMax = fHistogramMax;
 	}
+	#endif	// MOD-BY-LEETEN 2008/08/21-END
 	#endif	// MOD-BY-LEETEN 2008/08/17-END
 
 	///////////////////////////////////////////////
@@ -328,6 +344,13 @@ public:
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.3  2008/08/17 23:54:20  leeten
+
+[2008/08/17]
+1. [ADD] Add a button to delete selected knots. To handle this event, a new event index EDIT_DELETE is defined.
+2. [CHANGE] Use rollouts other than panels to group user control.
+3. [ADD] When plot the histogram, also display the range of the histogram. Two variables fHistogramMin and fHistogramMax are thus defined. To do this, the method _SetHistogramAsBackground is redefined by adding two parameters to indicate the range.
+
 Revision 1.2  2008/08/15 14:49:45  leeten
 
 [2008/08/15]
