@@ -11,7 +11,7 @@ display window.
 The proecduer to use this class is as below:
 
 1. declare a object of class CDvrWin.
-2. Set up a volume and a transfer function before entering the GLUT main loop. 
+2. Set up a volume and a transfer function before entering the GLinUT main loop. 
 (NOTE: both the volume and transfer function can be alternated later)
 
 **************************************************/
@@ -29,6 +29,27 @@ The proecduer to use this class is as below:
 class CDvrWin :
 	public CGlutWin
 {
+	// ADD-BY-TLEE 08/21/2008-BEGIN
+protected:
+	float fTfDomainMin, fTfDomainMax;
+	float fDataValueMin, fDataValueMax;
+public:
+	void _SetTfDomain(float fMin, float fMax)
+	{
+		fTfDomainMin = fMin;
+		fTfDomainMax = fMax;
+	}
+	void _SetDataValue(float fMin, float fMax)
+	{
+		fDataValueMin = fMin;
+		fDataValueMax = fMax;
+	}
+	// ADD-BY-TLEE 08/21/2008-END
+
+// ADD-BY-TLEE 08/21/2008-BEGIN
+protected:
+// ADD-BY-TLEE 08/21/2008-END
+
 	// ADD-BY-TLEE 2008/08/17-BEGIN
 	enum {
 		WINDOW_SIZE	= 0x10
@@ -103,6 +124,11 @@ public:
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.5  2008/08/20 19:53:24  leeten
+
+[2008/08/20]
+1. [CHNAGE] Add a new parameter eInternalFormat to the method _SetVolume to decide the texture format in the graphic hardware.
+
 Revision 1.4  2008/08/17 23:48:31  leeten
 
 [2008/08/17]
