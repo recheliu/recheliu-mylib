@@ -99,6 +99,12 @@ CTfWin::_DisplayFunc()
 					glVertex2f((float)i, pfColorMap[i*4 + c]);
 			glEnd();
 		}
+
+		// ADD-BY-TLEE 2008/08/21-BEGIN
+		glColor4f(0.0f, 1.0f, 1.0f, 1.0f);
+		_DrawString(SZSprintf("%.2e", pcTransFunc->fDomainMin), 0, 0, false);
+		_DrawString(SZSprintf("%.2e", pcTransFunc->fDomainMax), -1, 0, true);
+		// ADD-BY-TLEE 2008/08/21-END
 	glMatrixMode(GL_PROJECTION);
 	glPopMatrix();
 
@@ -214,6 +220,11 @@ _End();
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.1.1.1  2008/08/14 14:44:02  leeten
+
+[2008/08/14]
+1. [FIRST TIME CHECKIN]. This library defines classes for trasnfer functions, including editing and displaying.
+
 Revision 1.2  2008/08/13 21:16:37  leeten
 
 [2008/08/13]
