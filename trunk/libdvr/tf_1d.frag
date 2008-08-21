@@ -13,6 +13,16 @@ This is the shader program for direct volume rendering
 	uniform float fWindowWidth;
 	uniform float fWindowHeight;
 
+	// ADD-BY-TLEE 08/21/2008-BEGIN
+	// range of the data
+	uniform float fDataValueMin;
+	uniform float fDataValueMax;
+
+	// range of the TF's support 
+	uniform float fTfDomainMin;
+	uniform float fTfDomainMax;
+	// ADD-BY-TLEE 08/21/2008-END
+
 void 
 main()
 {
@@ -20,7 +30,18 @@ main()
 	float fV = texture3D(t3dVol, gl_TexCoord[0].xyz).x;
 
 				// convert the value into color via the transfer function
-	vec4 v4Color = texture1D(t1dTf, fV);
+	// MOD-BY-TLEE 08/21/2008-FROM:
+		// vec4 v4Color = texture1D(t1dTf, fV);
+	// TO:
+	vec4 v4Color;
+	fV = fDataValueMin + fV * (fDataValueMax - fDataValueMin);
+	fV = (fV - fTfDomainMin) / (fTfDomainMax - fTfDomainMin);
+	if( fV < 0.0 || fV > 1.0 )
+		v4Color = vec4(0.0);
+	else
+		v4Color = texture1D(t1dTf, fV);
+	// MOD-BY-TLEE 08/21/2008-END
+
 
 				// calcualte the distance between this fragment and the previous fragment in the object space 
 	vec4 v4PrevCoord_eye = gl_FragCoord;
@@ -47,6 +68,11 @@ main()
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.2  2008/08/15 14:34:49  leeten
+
+[2008/08/15]
+1. [Change] change the comments.
+
 Revision 1.1.1.1  2008/08/14 22:54:48  leeten
 
 [2008/08/14]
