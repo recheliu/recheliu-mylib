@@ -162,6 +162,10 @@ protected:
 						// the window id
 	int iId;
 
+	// ADD-BY-TLEE 2008/08/20-BEGIN
+	char szMatrixFilename[1024+1];
+	// ADD-BY-TLEE 2008/08/20-END
+
 						// title
 	char szTitle[1024+1];
 	char szReshape[1024+1];
@@ -232,6 +236,12 @@ protected:
 	// ADD-BY-LEETEN 08/16/2008-END
 
 public:
+	// ADD-BY-TLEE 2008/08/20-BEGIN
+	void _SaveMatrix(char *szMatrixFilename);
+	void _OpenMatrix(char *szMatrixFilename);
+	void _LoadSavedMatrix(char *szMatrixFilename = NULL);
+	// ADD-BY-TLEE 2008/08/20-END
+
 	virtual void _DisplayCB();
 	virtual void _ReshapeCB(int w, int h);
 	virtual void _KeyboardCB(unsigned char key, int x, int y);
@@ -381,6 +391,13 @@ public:
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.10  2008/08/20 19:35:14  leeten
+
+[2008/08/20]
+1. [ADD] Declare three variables fAngle_degree, fNear and fFar to specify the view frustrum.
+2. [ADD] Define a new structure CMouseEvent to record the events of mouse.
+3. [DEL] Remove the method _AddButton() and related methods
+
 Revision 1.9  2008/08/17 23:58:04  leeten
 
 [2008/08/17]
