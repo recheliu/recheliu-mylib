@@ -26,6 +26,23 @@ using namespace std;
 	#include "knot.h"
 
 class CTransFunc {
+
+// ADD-BY-TLEE 08/21/2008-BEGIN
+	float fDomainMin, fDomainMax;
+public:
+	void _SetTfDomain(float fMin, float fMax)
+	{
+		fDomainMin = fMin;
+		fDomainMax = fMax;
+	}
+
+	void _GetTfDomain(float *pfMin, float *pfMax)
+	{
+		*pfMin = fDomainMin;
+		*pfMax = fDomainMax;
+	}
+// ADD-BY-TLEE 08/21/2008-END
+
 public:
 	enum {
 		COLOR_R,
@@ -47,6 +64,10 @@ public:
 			plSplines[c].push_back(cBegin);
 			plSplines[c].push_back(cEnd);
 		}
+		// ADD-BY-TLEE 08/14/2008-BEGIN
+		fDomainMin = 0.0;
+		fDomainMax = 1.0;
+		// ADD-BY-TLEE 08/14/2008-END
 	}
 
 public:
@@ -104,6 +125,13 @@ public:
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.2  2008/08/15 14:54:11  leeten
+
+[2008/08/15]
+1. [ADD] Declare new methods BOpenFile/BSaveFile to open/save the TF as files.
+2. [ADD] Declare a new methods BCheckFile to check the validabilty of a file. It is used to prevent from loading wrong TF and destroying the current TF because calling another method BOpenFile can immediately destroy the TF.
+3. [ADD] Define a new method BCheckFilenameExt to check if the file extension is '.TF.'
+
 Revision 1.1.1.1  2008/08/14 14:44:02  leeten
 
 [2008/08/14]
