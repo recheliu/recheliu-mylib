@@ -64,6 +64,13 @@ CTransFunc::BCheckFile(const char szFilename[])
 	}
 
 	list<CKnot> plTempSplines[NR_OF_COLORS];
+
+	// ADD-BY-TLEE 08/21/2008-BEGIN
+	float fTempMin, fTempMax;
+	fscanf(fpTf, "%f\n", &fTempMin);
+	fscanf(fpTf, "%f\n", &fTempMax);
+	// ADD-BY-TLEE 08/21/2008-END
+
 	for(int c = 0; c < NR_OF_COLORS; c++)
 	{
 		int n;
@@ -97,6 +104,12 @@ CTransFunc::BOpenFile(const char szFilename[])
 		return false;
 
 	FILE *fpTf = fopen(szFilename, "rt");
+
+	// ADD-BY-TLEE 08/21/2008-BEGIN
+	fscanf(fpTf, "%f\n", &fDomainMin);
+	fscanf(fpTf, "%f\n", &fDomainMax);
+	// ADD-BY-TLEE 08/21/2008-END
+
 	for(int c = 0; c < NR_OF_COLORS; c++)
 	{
 		plSplines[c].clear();
@@ -133,6 +146,11 @@ CTransFunc::BSaveFile(const char szFilename[])
 		fprintf(stderr, "Warning s in CTransFunc::BOpenFile(): %s cannot be opened.\n", szFilename);
 		return false;
 	}
+
+	// ADD-BY-TLEE 08/21/2008-BEGIN
+	fprintf(fpTf, "%f\n", fDomainMin);
+	fprintf(fpTf, "%f\n", fDomainMax);
+	// ADD-BY-TLEE 08/21/2008-END
 
 	for(int c = 0; c < NR_OF_COLORS; c++)
 	{
@@ -184,6 +202,11 @@ CTransFunc::_ExportColorMap(float pfColorMap[], int iNrOfEntries)
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.4  2008/08/17 23:55:58  leeten
+
+[2008/08/17]
+1[CHANGE] Fix the typo in the output message when file cannot be opened.
+
 Revision 1.3  2008/08/16 16:39:56  leeten
 
 [2008/08/14]
