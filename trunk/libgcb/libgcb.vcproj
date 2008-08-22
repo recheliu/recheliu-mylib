@@ -116,7 +116,7 @@
 				Optimization="0"
 				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;GLUT_BUILDING_LIB;_CRT_SECURE_NO_DEPRECATE"
 				BasicRuntimeChecks="3"
-				RuntimeLibrary="1"
+				RuntimeLibrary="3"
 				UsePrecompiledHeader="0"
 				PrecompiledHeaderFile=".\Debug/libgcb.pch"
 				AssemblerListingLocation=".\Debug/"
@@ -202,7 +202,7 @@
 					>
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="copy &quot;$(InputPath)&quot; &quot;$(ProjectDir)&quot;\..\include\&quot;$(InputFileName)&quot;"
+						CommandLine="copy &quot;$(InputPath)&quot; &quot;$(ProjectDir)&quot;\..\include\&quot;$(InputFileName)&quot;&#x0D;&#x0A;"
 						Outputs="&quot;$(ProjectDir)&quot;\..\include\&quot;$(InputFileName)&quot;"
 					/>
 				</FileConfiguration>
@@ -211,7 +211,7 @@
 					>
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="copy &quot;$(InputPath)&quot; &quot;$(ProjectDir)&quot;\..\include\&quot;$(InputFileName)&quot;"
+						CommandLine="copy &quot;$(InputPath)&quot; &quot;$(ProjectDir)&quot;\..\include\&quot;$(InputFileName)&quot;&#x0D;&#x0A;"
 						Outputs="&quot;$(ProjectDir)&quot;\..\include\&quot;$(InputFileName)&quot;"
 					/>
 				</FileConfiguration>
