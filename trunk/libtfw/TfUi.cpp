@@ -659,7 +659,11 @@ CTfUi::_InitFunc()
 									// by default, use current director and *.* as the filename
 	char szDir[1024+1];
 	#if defined(WIN32)
-		GetCurrentDirectoryA((DWORD)strlen(szDir), szDir);
+		// MOD-BY-TLEE 2008/08/23-FROM:
+			// GetCurrentDirectoryA((DWORD)strlen(szDir), szDir);
+		// TO:
+		GetCurrentDirectoryA((DWORD)sizeof(szDir), szDir);
+		// MOD-BY-TLEE 2008/08/23-END
 	#else
 		getcwd(szDir, strlen(szDir));
 	#endif
@@ -889,6 +893,13 @@ CTfUi::~CTfUi(void)
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.8  2008/08/21 14:53:47  leeten
+
+[2008/08/21]
+1. [ADD] Display the range of the data value as disabled spinners
+2. [ADD] Add two spinners to control the TF domain.
+3. [CHANGE] When plot the TF, draw the support of TF other than data range.
+
 Revision 1.7  2008/08/20 19:55:20  leeten
 
 [2008/08/20]
