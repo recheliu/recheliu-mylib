@@ -665,7 +665,7 @@ CTfUi::_InitFunc()
 		GetCurrentDirectoryA((DWORD)sizeof(szDir), szDir);
 		// MOD-BY-TLEE 2008/08/23-END
 	#else
-		getcwd(szDir, strlen(szDir));
+		getcwd(szDir, sizeof(szDir));
 	#endif
 	_SetDir(szDir);
 	_SetFilename("*.*");
@@ -893,6 +893,11 @@ CTfUi::~CTfUi(void)
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.9  2008/08/24 14:52:14  leeten
+
+[2008/08/22]
+1. [DEBUG] When get current directory, pass the  size of array via sizeof other  than strlen().
+
 Revision 1.8  2008/08/21 14:53:47  leeten
 
 [2008/08/21]
