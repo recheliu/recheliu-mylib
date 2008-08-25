@@ -1,3 +1,8 @@
+	// ADD-BY-LEETEN 08/25/2008-BEGIN
+	#include <GL/glew.h>
+	#include <time.h>
+	// ADD-BY-LEETEN 08/25/2008-END
+
 #include "GlutWin.h"
 
 void 
@@ -251,15 +256,6 @@ CGlutWin::SZSprintf
 }
 
 				// draw a string on the screen. It will be drawn in the origin in current coordinate
-#if	0	// MOD-BY-LEETEN 2008/08/17-FROM:
-	void
-	CGlutWin::_DrawString(char *szString)
-	{
-		glRasterPos3f(0.0, 0.0, 0.0);
-		for(const char *pc = szString; *pc; pc++)
-			glutBitmapCharacter(GLUT_BITMAP_9_BY_15, *pc);
-	}
-#else	// MOD-BY-LEETEN 2008/08/17-TO:
 void
 CGlutWin::_DrawString(
 	char *szString, int iX, int iY, bool bAlignToRight)
@@ -293,7 +289,6 @@ _Begin();
 	glPopMatrix();
 _End();
 }
-#endif	// MOD-BY-LEETEN 2008/08/17-END
 
 				// print out a string on the console with a prefix to indicate this window 
 				// a newline will be printed at the end.
@@ -638,11 +633,19 @@ CGlutWin::CGlutWin()
 	// ADD-BY-TLEE 2008/08/20-BEGIN
 	szMatrixFilename[0] = '\0';
 	// ADD-BY-TLEE 2008/08/20-END
+
+	// ADD-BY-LEETEN 08/25/2008-BEGIN
+	pcSnapshot = NULL;
+	// ADD-BY-LEETEN 08/25/2008-END
 }
 
 // destructor
 CGlutWin::~CGlutWin()
 {
+	// ADD-BY-LEETEN 08/25/2008-BEGIN
+	if( pcSnapshot )
+		cvReleaseImage(&pcSnapshot);
+	// ADD-BY-LEETEN 08/25/2008-END
 }
 
 // ADD-BY-TLEE 2008/08/20-BEGIN
@@ -887,33 +890,21 @@ _End();
 }
 
 void
-// MOD-BY-TLEE 2008/08/16-FROM:
-	// CGlutWin::_TimerFunc(int value)
-// TO:
 CGlutWin::_TimerFunc(unsigned short value)
-// MOD-BY-TLEE 2008/08/16-END
 {
 }
 
 						// The member method to handle the callback
 						// It is called by CGlutWin_static:_TimerCB.
 void 
-// MOD-BY-TLEE 2008/08/16-FROM:
-	// CGlutWin::_TimerCB(int value)
-// TO:
 CGlutWin::_TimerCB(unsigned short value)
-// MOD-BY-TLEE 2008/08/16-END
 {
 	// call the timer func
 	_TimerFunc(value);
 }
 
 void 
-// MOD-BY-TLEE 2008/08/16-FROM:
-	// CGlutWin::_AddTimer(unsigned int msecs, short value)
-// TO:
 CGlutWin::_AddTimer(unsigned int msecs, unsigned short value)
-// MOD-BY-TLEE 2008/08/16-END
 {
 						// call the static method to create a timer event for this window
 						// the static method will implicitly combine this window's id and the value
@@ -933,25 +924,6 @@ CGlutWin::_GluiCB(unsigned short usValue)
 {
 	_GluiFunc(usValue);
 }
-
-#if	0	// DEL-BY-LEETEN 08/19/2008-BEGIN
-	#if	0	// MOD-BY-LEETEN 08/15/2008-FROM:
-		void 
-		CGlutWin::_AddButton(char *szName, unsigned short usValue)
-		{
-			CGlutWin::_AddButton(this, szName, usValue);
-		}
-	#else	// MOD-BY-LEETEN 08/15/2008-TO:
-									// Add a new parameter to specify the panel
-
-	void 
-	CGlutWin::_AddButton(char *szName, unsigned short usValue, GLUI_Panel *pcPanel)
-	{
-		CGlutWin::_AddButton(this, szName, usValue, pcPanel);
-	}
-
-	#endif	// MOD-BY-LEETEN 08/15/2008-END
-#endif	// DEL-BY-LEETEN 08/19/2008-END
 
 // ADD-BY-LEETEN 08/13/2008-END
 
@@ -1006,10 +978,55 @@ CGlutWin::_End()
 	_PopWid();
 }
 
+// ADD-BY-LEETEN 08/25/2008-BEGIN
+void 
+CGlutWin::_SaveSnapshot(char *szSnapshotFilename)
+{
+	if( !piViewport[2] || !piViewport[3] )
+	{
+		_AddToLog("Warning: the size of the viewport is zero.");
+		return;
+	}
+
+								// check whether the snapshot buffer (type: IplImage) has been allocated
+	if( pcSnapshot	&& 
+		(pcSnapshot->width != piViewport[2] && pcSnapshot->height != piViewport[3]) )
+	{
+		cvReleaseImage(&pcSnapshot);
+		pcSnapshot = NULL;
+	}
+
+	if( !pcSnapshot	)
+	{
+		pcSnapshot	 = cvCreateImage(cvSize(piViewport[2], piViewport[3]), IPL_DEPTH_8U, 3);
+	}
+
+								// check the filename 
+	char szTempSnapshotFilename[1024+1];
+	if( !szSnapshotFilename )
+	{
+		sprintf(szTempSnapshotFilename, "%s_snapshot_%d.png", typeid(*this).name(), time(NULL));
+		for(char *pc = strchr(szTempSnapshotFilename, ' '); pc; pc = strchr(pc, ' '))
+			*pc = '_';
+		szSnapshotFilename  = szTempSnapshotFilename;
+	}
+
+	glReadPixels(piViewport[0], piViewport[1], piViewport[2], piViewport[3], GL_BGR, GL_UNSIGNED_BYTE, pcSnapshot->imageData);
+	cvSaveImage(szSnapshotFilename, pcSnapshot);
+}
+
+// ADD-BY-LEETEN 08/25/2008-END
+
 
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.12  2008/08/21 14:44:19  leeten
+
+[2008/08/21]
+1. [ADD] Define methods to open/save the modelview matrixs
+2. [ADD] Add hotkey 'm' to load the modelveiw matrix from the file and hotkey 'M' to store current modelview matrix to a file.
+
 Revision 1.11  2008/08/20 19:33:58  leeten
 
 [2008/08/20]
