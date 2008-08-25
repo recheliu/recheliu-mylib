@@ -7,6 +7,16 @@
 using namespace std;
 // ADD-BY-LEETEN 08/09/2008-END
 
+	// ADD-BY-LEETEN 08/25/2008-BEGIN
+	#include "cxcore.h"
+	#include "highgui.h"
+
+	#pragma comment (lib, "cv.lib")      // link with my own library libfps
+	#pragma comment (lib, "cxcore.lib")      // link with my own library libfps
+	#pragma comment (lib, "highgui.lib")      // link with my own library libfps
+	#pragma comment (lib, "cvaux.lib")      // link with my own library libfps
+	// ADD-BY-LEETEN 08/25/2008-END
+
 #pragma comment (lib, "winmm.lib")      /* link with Windows MultiMedia lib */
 
 #pragma comment (lib, "libfps.lib")      // link with my own library libfps
@@ -235,7 +245,16 @@ protected:
 		CGlutWin *win); 
 	// ADD-BY-LEETEN 08/16/2008-END
 
+	// ADD-BY-LEETEN 08/25/2008-BEGIN
+	IplImage *pcSnapshot;
+
 public:
+							// save the current snapshot to an file
+	void _SaveSnapshot(char *szSnapshotFilename = NULL);
+	// ADD-BY-LEETEN 08/25/2008-END
+
+public:
+
 	// ADD-BY-TLEE 2008/08/20-BEGIN
 	void _SaveMatrix(char *szMatrixFilename);
 	void _OpenMatrix(char *szMatrixFilename);
@@ -391,6 +410,11 @@ public:
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.11  2008/08/21 14:43:17  leeten
+
+[2008/08/21]
+1. [ADD] Add variables szMatrixFilename and methods to open/save the modelview matrixs
+
 Revision 1.10  2008/08/20 19:35:14  leeten
 
 [2008/08/20]
