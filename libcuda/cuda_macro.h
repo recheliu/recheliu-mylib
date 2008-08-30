@@ -7,6 +7,10 @@ This file defines several important macros for CUDA.
 #ifndef __CUDA__MACRO__H__
 #define __CUDA__MACRO__H__
 
+	// ADD-BY-TLEE 2008/08/29-BEGIN
+	#include <cuda_runtime_api.h>
+	// ADD-BY-TLEE 2008/08/29-END
+
 #include <cutil.h>
 
 // ADD-BY-TLEE 07/30/2008-BEGIN
@@ -172,6 +176,11 @@ struct CBuffer2D
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.2  2008/08/10 18:40:50  leeten
+
+[2008/08/10]
+1. [CHANGE] Redefine CUDA_INIT for consistency among version 1 and version 2.
+
 Revision 1.1.1.1  2008/06/12 22:37:55  leeten
 
 [06/12/2008]
