@@ -337,6 +337,12 @@ _OptPrintComment()
 	{
 		switch( pvcOptEntry->eType )
 		{
+		// ADD-BY-LEETEN 2008/11/03-BEGIN
+		case OPT_TYPE_FLAG:
+			PRINT_OPTION_USAGE(pvcOptEntry->szArgName, "", 0);
+			break;
+		// ADD-BY-LEETEN 2008/11/03-END
+
 		case OPT_TYPE_BOOL:
 			PRINT_OPTION_USAGE(pvcOptEntry->szArgName, "<bool>", 1);
 			break;
@@ -507,6 +513,11 @@ bool BOPTParse(char* argv[], int argc, int iBegin, int *piEnd)
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.7  2008/07/08 18:36:03  leeten
+
+[2008/07/07]
+1. Move the required header from stdafx.h to here.
+
 Revision 1.6  2008/07/07 15:06:14  leeten
 
 [07/07/2008]
