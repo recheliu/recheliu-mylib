@@ -21,6 +21,13 @@ using namespace std;
 
 #pragma comment (lib, "libfps.lib")      // link with my own library libfps
 
+
+	// ADD-BY-LEETEN 11/17/2008-BEGIN
+	#pragma comment (lib, "opengl32.lib")      /* link with Windows MultiMedia lib */
+	#pragma comment (lib, "glu32.lib")      /* link with Windows MultiMedia lib */
+	#pragma comment (lib, "glut32.lib")      /* link with Windows MultiMedia lib */
+	// ADD-BY-LEETEN 11/17/2008-END
+
 #if		defined(_WIN32)
 	#define GLUT_BUILDING_LIB	
 #endif
@@ -126,6 +133,10 @@ public:
 	void _KeepUpdateOff();
 
 	// ADD-BY-LEETEN 08/12/2008-END
+
+	// ADD-BY-LEETEN 11/17/2008-BEGIN
+	void _DisableVerticalSync();
+	// ADD-BY-LEETEN 11/1/7/2008-END
 
 // ADD-BY-LEETEN 08/11/2008-BEGIN
 
@@ -249,6 +260,7 @@ protected:
 	IplImage *pcSnapshot;
 
 public:
+
 							// save the current snapshot to an file
 	void _SaveSnapshot(char *szSnapshotFilename = NULL);
 	// ADD-BY-LEETEN 08/25/2008-END
@@ -410,6 +422,12 @@ public:
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.12  2008/08/25 20:39:12  leeten
+
+[2008/08/25]
+1. [ADD] Add a new method _SaveSnapshot() to save current frame.
+2. [DEL] Remove old deleted codes.
+
 Revision 1.11  2008/08/21 14:43:17  leeten
 
 [2008/08/21]
