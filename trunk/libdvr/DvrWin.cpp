@@ -468,6 +468,11 @@ CDvrWin::_InitFunc()
 	// MOD-BY-TLEE 2008/08/15-END
 	// ADD-BY-TLEE 2008/08/14-END
 
+	// ADD-BY-TLEE 2008/11/17-BEGIN
+							// set the thickness ratio for DVR
+	GLUI_Spinner *pcSpinner_ThicknessRatio = PCGetGluiWin()->add_spinner("Thickness Gain", GLUI_SPINNER_FLOAT, &fThicknessRatio);	
+	// ADD-BY-TLEE 2008/11/17-END
+
 	// ADD-BY-TLEE 2008/08/17-BEGIN
 							// create two spinners to specify the window resolution
 	GLUI_Rollout* pcWindowPaenl = PCGetGluiWin()->add_rollout("Window", false);
@@ -486,6 +491,11 @@ CDvrWin::_InitFunc()
 	iWindowWidth	= glutGet(GLUT_WINDOW_WIDTH);
 	iWindowHeight	= glutGet(GLUT_WINDOW_HEIGHT);
 	// ADD-BY-TLEE 2008/08/18-END
+
+	// ADD-BY-LEETEN 2008/11/17-BEGIN
+	_DisableVerticalSync();
+	// ADD-BY-LEETEN 2008/11/17-END
+
 }
 
 // load the volume and upload it as a 3D texture 
@@ -555,6 +565,12 @@ _End();
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.6  2008/08/21 14:56:54  leeten
+
+[2008/08/21]
+1. [ADD] Pass the the variables for TF domain and data range to the shader program
+2. [DEL] Remove old useless code in the method _KeyboardFunc().
+
 Revision 1.5  2008/08/20 19:53:32  leeten
 
 [2008/08/20]
