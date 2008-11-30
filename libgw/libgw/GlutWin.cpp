@@ -1,5 +1,11 @@
 	// ADD-BY-LEETEN 08/25/2008-BEGIN
 	#include <GL/glew.h>
+
+	// ADD-BY-LEETEN 11/17/2008-BEGIN
+	#include <GL/wglew.h>
+	#pragma comment (lib, "glew32.lib")      
+	// ADD-BY-LEETEN 11/17/2008-END
+
 	#include <time.h>
 	// ADD-BY-LEETEN 08/25/2008-END
 
@@ -400,6 +406,12 @@ CGlutWin::_KeyboardCB(unsigned char key, int x, int y)
 	// ADD-BY-LEETEN 08/13/2008-END
 
 	switch(key) {
+		// ADD-BY-LEETEN 2008/11/29-BEGIN
+		case 's':
+			_SaveSnapshot();
+			break;
+		// ADD-BY-LEETEN 2008/11/29-END
+
 		// ADD-BY-LEETEN 08/20/2008-BEGIN
 		case 'm':		// load matrix
 			_OpenMatrix(szMatrixFilename);
@@ -1005,7 +1017,13 @@ CGlutWin::_SaveSnapshot(char *szSnapshotFilename)
 	char szTempSnapshotFilename[1024+1];
 	if( !szSnapshotFilename )
 	{
-		sprintf(szTempSnapshotFilename, "%s_snapshot_%d.png", typeid(*this).name(), time(NULL));
+		// MOD-BY-LEETEN 2008/11/29-FROM:
+			// sprintf(szTempSnapshotFilename, "%s_snapshot_%d.png", typeid(*this).name(), time(NULL));
+		// TO:
+		static int iSnapshotIndex = 0;
+		sprintf(szTempSnapshotFilename, "%s_snapshot.%d.png", typeid(*this).name(), iSnapshotIndex++);
+		// MOD-BY-LEETEN 2008/11/29-END
+
 		for(char *pc = strchr(szTempSnapshotFilename, ' '); pc; pc = strchr(pc, ' '))
 			*pc = '_';
 		szSnapshotFilename  = szTempSnapshotFilename;
@@ -1013,14 +1031,38 @@ CGlutWin::_SaveSnapshot(char *szSnapshotFilename)
 
 	glReadPixels(piViewport[0], piViewport[1], piViewport[2], piViewport[3], GL_BGR, GL_UNSIGNED_BYTE, pcSnapshot->imageData);
 	cvSaveImage(szSnapshotFilename, pcSnapshot);
+
+	// ADD-BY-LEETEN 2008/11/29-BEGIN
+	_AddToLog(SZSprintf("Snapshot %s was saved\n", szSnapshotFilename));
+	// ADD-BY-LEETEN 2008/11/29-END
 }
 
 // ADD-BY-LEETEN 08/25/2008-END
+
+// ADD-BY-LEETEN 11/17/2008-BEGIN
+void 
+CGlutWin::_DisableVerticalSync()
+{
+	if( GLEW_OK != glewInit() )
+		fprintf(stderr, "Warning: GLEW cannot be initialized.\n");
+	else
+	if 	( !WGL_EXT_swap_control )
+		fprintf(stderr, "Warning: WGL_EXT_swap_control is not supported.\n");
+	else
+		wglSwapIntervalEXT(0);
+}
+// ADD-BY-LEETEN 11/17/2008-END
+
 
 
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.13  2008/08/25 20:39:23  leeten
+
+[2008/08/25]
+1. [ADD] Declare a new method _SaveSnapshot() to save current frame.
+
 Revision 1.12  2008/08/21 14:44:19  leeten
 
 [2008/08/21]
