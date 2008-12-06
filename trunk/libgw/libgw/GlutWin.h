@@ -79,6 +79,11 @@ class CGlutWin {
 
 	// ADD-BY-LEETEN 08/19/2008-BEGIN
 protected:
+
+	// ADD-BY-LEETEN 12/05/2008-BEGIN
+	int iSnapshotIndex;
+	// ADD-BY-LEETEN 12/05/2008-END
+
 	// ADD-BY-TLEE 2008/08/20-BEGIN
 	struct CViewFrustrum
 	{
@@ -422,6 +427,12 @@ public:
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.13  2008/11/30 04:18:40  leeten
+
+[2008/11/29]
+1. [ADD] Implicitly Include the opengl32.lib, glu32.lib and glut32.lib.
+2. [ADD] Declare a new method _DisableVerticalSync().
+
 Revision 1.12  2008/08/25 20:39:12  leeten
 
 [2008/08/25]
