@@ -649,6 +649,11 @@ CGlutWin::CGlutWin()
 	// ADD-BY-LEETEN 08/25/2008-BEGIN
 	pcSnapshot = NULL;
 	// ADD-BY-LEETEN 08/25/2008-END
+
+	// ADD-BY-LEETEN 12/05/2008-BEGIN
+	iSnapshotIndex = 0;
+	// ADD-BY-LEETEN 12/05/2008-END
+
 }
 
 // destructor
@@ -994,6 +999,9 @@ CGlutWin::_End()
 void 
 CGlutWin::_SaveSnapshot(char *szSnapshotFilename)
 {
+	// ADD-BY-LEETEN 12/05/2008-BEGIN
+_Begin();
+	// ADD-BY-LEETEN 12/05/2008-END
 	if( !piViewport[2] || !piViewport[3] )
 	{
 		_AddToLog("Warning: the size of the viewport is zero.");
@@ -1020,7 +1028,9 @@ CGlutWin::_SaveSnapshot(char *szSnapshotFilename)
 		// MOD-BY-LEETEN 2008/11/29-FROM:
 			// sprintf(szTempSnapshotFilename, "%s_snapshot_%d.png", typeid(*this).name(), time(NULL));
 		// TO:
-		static int iSnapshotIndex = 0;
+		// DEL-BY-LEETEN 12/05/2008-BEGIN
+			// static int iSnapshotIndex = 0;
+		// DEL-BY-LEETEN 12/05/2008-END
 		sprintf(szTempSnapshotFilename, "%s_snapshot.%d.png", typeid(*this).name(), iSnapshotIndex++);
 		// MOD-BY-LEETEN 2008/11/29-END
 
@@ -1035,6 +1045,10 @@ CGlutWin::_SaveSnapshot(char *szSnapshotFilename)
 	// ADD-BY-LEETEN 2008/11/29-BEGIN
 	_AddToLog(SZSprintf("Snapshot %s was saved\n", szSnapshotFilename));
 	// ADD-BY-LEETEN 2008/11/29-END
+
+// ADD-BY-LEETEN 12/05/2008-BEGIN
+_End();
+// ADD-BY-LEETEN 12/05/2008-END
 }
 
 // ADD-BY-LEETEN 08/25/2008-END
@@ -1058,6 +1072,14 @@ CGlutWin::_DisableVerticalSync()
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.14  2008/11/30 04:18:10  leeten
+
+[2008/11/29]
+1. [ADD] Add a hotkey 's' to save the snapshot.
+2. [ADD] Implicitly Include the glew32.lib.
+3. [ADD] Change thje naming rule of the the snapshotot.
+4. [ADD] Define a new method _DisableVerticalSync().
+
 Revision 1.13  2008/08/25 20:39:23  leeten
 
 [2008/08/25]
