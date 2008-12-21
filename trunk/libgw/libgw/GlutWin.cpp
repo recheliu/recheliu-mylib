@@ -261,6 +261,27 @@ CGlutWin::SZSprintf
 	return szBuffer;
 }
 
+// ADD-BY-LEETEN 2008/12/21-BEGIN
+			// draw a string in the origin of current 3D coordinate
+void 
+CGlutWin::_DrawString3D(char *szString, float fX, float fY, float fZ)		
+{
+_Begin();
+	glPushMatrix();
+							// normalize the coordinate to be window coordinate
+
+
+		glTranslatef(fX, fY, fZ);
+
+		glRasterPos3f(0.0, 0.0, 0.0);
+		for(const char *pc = szString; *pc; pc++)
+			glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, *pc);
+
+	glPopMatrix();
+_End();
+}
+// ADD-BY-LEETEN 2008/12/21-END
+
 				// draw a string on the screen. It will be drawn in the origin in current coordinate
 void
 CGlutWin::_DrawString(
@@ -1072,6 +1093,11 @@ CGlutWin::_DisableVerticalSync()
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.15  2008/12/06 21:36:59  leeten
+
+[2008/12/05]
+1. [ADD] When saving the snapshot, the filename is determined by the new-adeed member variabel iSnapshotIndex.
+
 Revision 1.14  2008/11/30 04:18:10  leeten
 
 [2008/11/29]
