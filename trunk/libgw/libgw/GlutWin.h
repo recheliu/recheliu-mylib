@@ -129,6 +129,11 @@ public:
 	// MOD-BY-LEETEN 2008/08/17-END
 	void _AddToLog(char *szString, FILE* fpOutput = stderr);			// print out a string on the console as the log
 
+	// ADD-BY-LEETEN 2008/12/21-BEGIN
+				// draw a string in the origin of current 3D coordinate
+	void _DrawString3D(char *szString, float fX = 0.0f, float fY = 0.0f, float fZ = 0.0f);		
+	// ADD-BY-LEETEN 2008/12/21-END
+
 				// variables and method for deciding if the screen should be keep updating
 protected:
 						
@@ -427,6 +432,11 @@ public:
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.14  2008/12/06 21:36:19  leeten
+
+[2008/12/05]
+1. [ADD] Declare a member variabel iSnapshotIndex.
+
 Revision 1.13  2008/11/30 04:18:40  leeten
 
 [2008/11/29]
