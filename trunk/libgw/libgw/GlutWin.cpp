@@ -297,7 +297,12 @@ _Begin();
 
 	float fX, fY;
 							// calculate the x coordinate
-	fX = (float)(( iX >= 0 ) ? iX : (piViewport[2] - iX));
+	// MOD-BY-LEETEN 2009/01/09-FROM:
+		// fX = (float)(( iX >= 0 ) ? iX : (piViewport[2] - iX));
+	// TO:
+	fX = (float)(( iX >= 0 ) ? iX : (piViewport[2] + iX));
+	// MOD-BY-LEETEN 2009/01/09-END
+
 	if( bAlignToRight )
 	{
 		int iLen = (int)strlen(szString);
@@ -305,7 +310,11 @@ _Begin();
 	}
 
 							// calculate the y coordinate
-	fY = (float)(( iY >= 0 ) ? iY : (piViewport[3] - iY));
+	// MOD-BY-LEETEN 2009/01/09-FROM:
+		// fY = (float)(( iY >= 0 ) ? iY : (piViewport[3] - iY));
+	// TO:
+	fY = (float)(( iY >= 0 ) ? iY : (piViewport[3] + iY));
+	// MOD-BY-LEETEN 2009/01/09-END
 
 	glTranslatef(fX, fY, 0.0f);
 
@@ -1054,13 +1063,25 @@ _Begin();
 		// DEL-BY-LEETEN 12/05/2008-END
 		sprintf(szTempSnapshotFilename, "%s_snapshot.%d.png", typeid(*this).name(), iSnapshotIndex++);
 		// MOD-BY-LEETEN 2008/11/29-END
-
-		for(char *pc = strchr(szTempSnapshotFilename, ' '); pc; pc = strchr(pc, ' '))
-			*pc = '_';
+		#if	0	// DEL-BY-LEETEN 2009/01/09-BEGIN
+			for(char *pc = strchr(szTempSnapshotFilename, ' '); pc; pc = strchr(pc, ' '))
+				*pc = '_';
+		#endif	// END
 		szSnapshotFilename  = szTempSnapshotFilename;
 	}
+	#if	1	// ADD-BY-LEETEN 2009/01/09-BEGIN
+	for(char *pc = strchr(szTempSnapshotFilename, ' '); pc; pc = strchr(pc, ' '))
+		*pc = '_';
+
+	for(char *pc = strchr(szTempSnapshotFilename, ':'); pc; pc = strchr(pc, ':'))
+		*pc = '_';
+	#endif	// ADD-BY-LEETEN 2009/01/09-END
 
 	glReadPixels(piViewport[0], piViewport[1], piViewport[2], piViewport[3], GL_BGR, GL_UNSIGNED_BYTE, pcSnapshot->imageData);
+
+	#if	1	// ADD-BY-LEETEN 2009/01/09-BEGIN
+	cvFlip(pcSnapshot);
+	#endif	// END
 	cvSaveImage(szSnapshotFilename, pcSnapshot);
 
 	// ADD-BY-LEETEN 2008/11/29-BEGIN
@@ -1093,6 +1114,11 @@ CGlutWin::_DisableVerticalSync()
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.16  2008/12/21 21:59:29  leeten
+
+[2008/12/21]
+1. [ADD] Define a new method _DrawString3D() to draw a string in the local coordinate.
+
 Revision 1.15  2008/12/06 21:36:59  leeten
 
 [2008/12/05]
