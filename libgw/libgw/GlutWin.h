@@ -77,6 +77,30 @@ using namespace std;
 
 class CGlutWin {
 
+	// ADD-BY-LEETEN 2009/01/15-BEGIN
+	// a function pointer to the function that handle all windows events (e.g. window display and resize/ and GLUI events)
+	// the meaning of the paramters: 
+	//	iGlutWid:	the GLUT window id
+	//	uiCbId:		the event or callback ID
+protected:
+	static void (*_GlobalFunc)(int iWid, unsigned int uiCbId, va_list vaArgs);
+public:
+	static void _RegisterGlobalFunc(void (*_MyGlobalFunc)(int iWid, unsigned int uiCbId, va_list vaArgs));
+public:
+	static void _GlobalCB(int iWid, unsigned int uiCbId, ...);
+public:
+	enum {
+		CB_DISPLAY,
+		CB_RESHAPE,
+		CB_KEYBOARD,
+		CB_SPECIAL,
+		CB_MOTION,
+		CB_MOUSE,
+		CB_TIMER,
+		CB_GLUI,	// used to indicate GLUI control event
+	};
+	// ADD-BY-LEETEN 2009/01/15-END
+
 	// ADD-BY-LEETEN 08/19/2008-BEGIN
 protected:
 
@@ -432,6 +456,11 @@ public:
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.15  2008/12/21 22:00:13  leeten
+
+[2008/12/21]
+1. [ADD] Declare a new method _DrawString3D() to draw a string in the local coordinate.
+
 Revision 1.14  2008/12/06 21:36:19  leeten
 
 [2008/12/05]
