@@ -23,6 +23,10 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "example_multi_wins_glui", "
 		{E4AF0299-6BF4-468F-82DA-68BE4D3B4621} = {E4AF0299-6BF4-468F-82DA-68BE4D3B4621}
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "example_multi_wins_global", "examples\example_multi_wins_global\example_multi_wins_global.vcproj", "{18A307E5-F58E-4FFB-BBD5-1FF59D28C396}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "example_single_win_global", "examples\example_single_win_global\example_single_win_glui.vcproj", "{4863FDCD-BB09-45AA-93AC-A94AADFFD624}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -49,6 +53,14 @@ Global
 		{E4DD47A1-61A0-47C5-9479-0F1F0251C5BF}.Debug|Win32.Build.0 = Debug|Win32
 		{E4DD47A1-61A0-47C5-9479-0F1F0251C5BF}.Release|Win32.ActiveCfg = Release|Win32
 		{E4DD47A1-61A0-47C5-9479-0F1F0251C5BF}.Release|Win32.Build.0 = Release|Win32
+		{18A307E5-F58E-4FFB-BBD5-1FF59D28C396}.Debug|Win32.ActiveCfg = Debug|Win32
+		{18A307E5-F58E-4FFB-BBD5-1FF59D28C396}.Debug|Win32.Build.0 = Debug|Win32
+		{18A307E5-F58E-4FFB-BBD5-1FF59D28C396}.Release|Win32.ActiveCfg = Release|Win32
+		{18A307E5-F58E-4FFB-BBD5-1FF59D28C396}.Release|Win32.Build.0 = Release|Win32
+		{4863FDCD-BB09-45AA-93AC-A94AADFFD624}.Debug|Win32.ActiveCfg = Debug|Win32
+		{4863FDCD-BB09-45AA-93AC-A94AADFFD624}.Debug|Win32.Build.0 = Debug|Win32
+		{4863FDCD-BB09-45AA-93AC-A94AADFFD624}.Release|Win32.ActiveCfg = Release|Win32
+		{4863FDCD-BB09-45AA-93AC-A94AADFFD624}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
