@@ -6,6 +6,9 @@ void
 _DisplayCB()
 {
 	CGlutWin::PCGetActiveWin()->_DisplayCB();
+	// ADD-BY-LEETEN 2009/01/15-BEGIN
+	CGlutWin::_GlobalCB(CGlutWin::PCGetActiveWin()->IGetId(), CGlutWin::CB_DISPLAY);
+	// ADD-BY-LEETEN 2009/01/15-END
 }
 
 static 
@@ -13,6 +16,9 @@ void
 _ReshapeCB(int w, int h)
 {
 	CGlutWin::PCGetActiveWin()->_ReshapeCB(w, h);
+	// ADD-BY-LEETEN 2009/01/15-BEGIN
+	CGlutWin::_GlobalCB(CGlutWin::PCGetActiveWin()->IGetId(), CGlutWin::CB_RESHAPE, w, h);
+	// ADD-BY-LEETEN 2009/01/15-END
 }
 
 static 
@@ -28,6 +34,9 @@ _KeyboardCB(unsigned char key, int x, int y)
 
 	default:
 		CGlutWin::PCGetActiveWin()->_KeyboardCB(key, x, y);
+		// ADD-BY-LEETEN 2009/01/15-BEGIN
+		CGlutWin::_GlobalCB(CGlutWin::PCGetActiveWin()->IGetId(), CGlutWin::CB_KEYBOARD, key, x, y);
+		// ADD-BY-LEETEN 2009/01/15-END
 	}
 }
 
@@ -36,6 +45,9 @@ void
 _SpecialCB(int skey, int x, int y)
 {
 	CGlutWin::PCGetActiveWin()->_SpecialCB(skey, x, y);
+	// ADD-BY-LEETEN 2009/01/15-BEGIN
+	CGlutWin::_GlobalCB(CGlutWin::PCGetActiveWin()->IGetId(), CGlutWin::CB_SPECIAL, skey, x, y);
+	// ADD-BY-LEETEN 2009/01/15-END
 }
 
 static 
@@ -54,6 +66,9 @@ void
 _MotionCB(int x, int y)
 {
 	CGlutWin::PCGetActiveWin()->_MotionCB(x, y);
+	// ADD-BY-LEETEN 2009/01/15-BEGIN
+	CGlutWin::_GlobalCB(CGlutWin::PCGetActiveWin()->IGetId(), CGlutWin::CB_MOTION, x, y);
+	// ADD-BY-LEETEN 2009/01/15-END
 }
 
 static 
@@ -61,6 +76,9 @@ void
 _MouseCB(int button, int state, int x, int y)
 {
 	CGlutWin::PCGetActiveWin()->_MouseCB(button, state, x, y);
+	// ADD-BY-LEETEN 2009/01/15-BEGIN
+	CGlutWin::_GlobalCB(CGlutWin::PCGetActiveWin()->IGetId(), CGlutWin::CB_MOUSE, button, state, x, y);
+	// ADD-BY-LEETEN 2009/01/15-END
 }
 
 // ADD-BY-LEETEN 08/11/2008-BEGIN
@@ -80,6 +98,10 @@ _TimerCB(int iIdValue)
 		// TO:
 		CGlutWin::PCGetActiveWin()->_TimerCB((unsigned short)iValue);
 		// MOD-BY-TLEE 2008/08/16-END
+
+		// ADD-BY-LEETEN 2009/01/15-BEGIN
+		CGlutWin::_GlobalCB(CGlutWin::PCGetActiveWin()->IGetId(), CGlutWin::CB_TIMER, iValue);
+		// ADD-BY-LEETEN 2009/01/15-END
 	}
 }
 // ADD-BY-LEETEN 08/11/2008-END
@@ -368,9 +390,44 @@ CGlutWin::_GluiCB_static(int iIdValue)
 }
 // ADD-BY-LEETEN 2008/08/15-END
 
+// ADD-BY-LEETEN 2009/01/15-BEGIN
+void 
+(*CGlutWin::_GlobalFunc)(int iWid, unsigned int uiCbId, va_list vaArgs) = NULL;
+
+void 
+CGlutWin::_GlobalCB
+(
+	int iWid, 
+	unsigned int uiCbId, 
+	...
+)
+{
+	if( NULL == _GlobalFunc )
+		return;
+
+	va_list args;
+	va_start(args, uiCbId);
+	_GlobalFunc(iWid, uiCbId, args);
+	va_end (args);
+}
+
+void 
+CGlutWin::_RegisterGlobalFunc(
+	void (*_MyGlobalFunc)(int iWid, unsigned int uiCbId, va_list vaArgs))
+{
+	_GlobalFunc = _MyGlobalFunc;
+}
+
+// ADD-BY-LEETEN 2009/01/15-END
+
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.9  2008/08/20 19:35:24  leeten
+
+[2008/08/20]
+1. [DEL] Remove the method _AddButton() and related methods
+
 Revision 1.8  2008/08/16 21:21:33  leeten
 
 [2008/08/16]
