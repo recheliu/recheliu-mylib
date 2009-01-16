@@ -30,11 +30,79 @@ public:
 		this->b = b;
 		this->a = a;
 	}
+
+	// ADD-BY-LEETEN 2009/01/16-BEGIN
+	void 
+	_PrintEvent(unsigned int uiCbId, va_list vaArgs)
+	{
+		switch( uiCbId )
+		{
+		case CGlutWin::CB_DISPLAY:
+			_AddToLog("DISPLAY");
+			break;
+		case CGlutWin::CB_RESHAPE:
+			{
+				int w = va_arg(vaArgs, int);
+				int h = va_arg(vaArgs, int);
+				_AddToLog(SZSprintf("RESHAPE %d %d", w, h));
+			}
+			break;
+		case CGlutWin::CB_KEYBOARD:
+			{
+				int ub_key = va_arg(vaArgs, int);
+				int w = va_arg(vaArgs, int);
+				int h = va_arg(vaArgs, int);
+				_AddToLog(SZSprintf("KEYBOARD %c %d %d", ub_key, w, h));
+			}
+			break;
+		case CGlutWin::CB_SPECIAL:
+			{
+				int skey = va_arg(vaArgs, int);
+				int w = va_arg(vaArgs, int);
+				int h = va_arg(vaArgs, int);
+				_AddToLog(SZSprintf("SPECIAL %d %d %d", skey, w, h));
+			}
+			break;
+		case CGlutWin::CB_MOTION:
+			{
+				int x = va_arg(vaArgs, int);
+				int y = va_arg(vaArgs, int);
+				_AddToLog(SZSprintf("MOTION %d %d", x, y));
+			}
+			break;
+		case CGlutWin::CB_MOUSE:
+			{
+				int button = va_arg(vaArgs, int);
+				int state = va_arg(vaArgs, int);
+				int x = va_arg(vaArgs, int);
+				int y = va_arg(vaArgs, int);
+				_AddToLog(SZSprintf("MOUSE %d %d %d %d", button, state, x, y));
+			}
+			break;
+		case CGlutWin::CB_TIMER:
+			{
+				int button = va_arg(vaArgs, int);
+				int state = va_arg(vaArgs, int);
+				int x = va_arg(vaArgs, int);
+				int y = va_arg(vaArgs, int);
+				_AddToLog(SZSprintf("MOUSE %d %d %d %d", button, state, x, y));
+			}
+			break;
+		case CGlutWin::CB_GLUI:
+			;
+		}
+	}
+	// ADD-BY-LEETEN 2009/01/16-END
 };
 
 
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.1.1.1  2008/08/16 16:26:16  leeten
+
+[2008/08/16]
+1. [FIRST TIME CHECKIN].
+
 
 */
