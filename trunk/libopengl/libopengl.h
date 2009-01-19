@@ -8,11 +8,11 @@
 	#include <vector_types.h>
 
 	template<typename VT, typename CT, typename TT>
-	typedef struct CVectorArray {
+	struct CVectorArray {
 		TBuffer<VT> pvCoords;
 		TBuffer<CT> pvColors;
 		TBuffer<TT> pvTexCoords;
-	} CVectorArray ;
+	};
 
 // ADD-BY-LEETEN 2009/01/18-END
 
@@ -73,6 +73,13 @@ GLenum EGetFboStatus(bool bPrint=false);
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.4  2009/01/19 17:04:58  leeten
+
+[2009/01/19]
+1. [ADD] Include the CUDA builtin vectors.
+2. [ADD] Define new macros CREATE_1D_TEXTURE and CREATE_3D_TEXTURE.
+3. [ADD] Define a new structure CVectorArray.
+
 Revision 1.3  2008/08/15 15:08:25  leeten
 
 [2008/08/15]
