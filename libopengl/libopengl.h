@@ -28,7 +28,7 @@
 		glTexParameteri(TARGET, GL_TEXTURE_MAG_FILTER, FILTER);	\
 		glTexParameteri(TARGET, GL_TEXTURE_MIN_FILTER, FILTER);	\
 		glTexImage3D(TARGET, 0, INT_FORMAT,	\
-			(WIDTH), (HEIGHT), (DEPTH) 0, (FORMAT), (TYPE), (PTR));	\
+			(WIDTH), (HEIGHT), (DEPTH), 0, (FORMAT), (TYPE), (PTR));	\
 		}
 
 #define CREATE_1D_TEXTURE(TARGET, TID, FILTER, INT_FORMAT, WIDTH, FORMAT, TYPE, PTR)	\
@@ -73,6 +73,11 @@ GLenum EGetFboStatus(bool bPrint=false);
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.5  2009/01/19 17:20:38  leeten
+
+[2009/01/19]
+1. [CHANGE] Change the declaration to avoid the compilation error.
+
 Revision 1.4  2009/01/19 17:04:58  leeten
 
 [2009/01/19]
