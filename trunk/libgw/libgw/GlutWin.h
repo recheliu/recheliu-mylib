@@ -98,6 +98,9 @@ public:
 		CB_MOUSE,
 		CB_TIMER,
 		CB_GLUI,	// used to indicate GLUI control event
+		// ADD-BY-LEETEN 2009/01/22-BEGIN
+		CB_MANUAL,	// user-defined events
+		// ADD-BY-LEETEN 2009/01/22-END
 	};
 	// ADD-BY-LEETEN 2009/01/15-END
 
@@ -270,6 +273,11 @@ protected:
 	virtual void _KeyboardFunc(unsigned char, int, int);
 	virtual void _SpecialFunc(int, int, int);
 	virtual void _IdleFunc();
+
+	// ADD-BY-LEETEN 2009/01/22-BEGIN
+	virtual void _MotionFunc(int x, int y);
+	virtual void _MouseFunc(int button, int state, int x, int y);
+	// ADD-BY-LEETEN 2009/01/22-END
 
 	virtual void _InitFunc();
 
@@ -456,6 +464,11 @@ public:
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.16  2009/01/16 14:30:56  leeten
+
+[2009/01/16]
+1. [ADD] Allow the passing of events to a global function. The global function can be registered via _RegisterGlobalFunc().
+
 Revision 1.15  2008/12/21 22:00:13  leeten
 
 [2008/12/21]

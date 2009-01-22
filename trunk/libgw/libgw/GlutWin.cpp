@@ -537,6 +537,10 @@ CGlutWin::_MotionCB(int x, int y)
 
 	iCursorX = x;
 	iCursorY = y;
+
+	// ADD-BY-LEETEN 2009/01/22-BEGIN
+	_MotionFunc(x, y);
+	// ADD-BY-LEETEN 2009/01/22-END
 }
 
 void 
@@ -560,6 +564,10 @@ CGlutWin::_MouseCB(int button, int state, int x, int y)
 
 	dXDiffOnScreen = pdCurrentModelCenterOnScreen[0] - (double)iCursorX;
 	dYDiffOnScreen = pdCurrentModelCenterOnScreen[1] - (double)iCursorY;
+
+	// ADD-BY-LEETEN 2009/01/22-BEGIN
+	_MouseFunc(button, state, x, y);
+	// ADD-BY-LEETEN 2009/01/22-END
 }
 
 void 
@@ -618,6 +626,18 @@ CGlutWin::_IdleCB()
 		_Redisplay();
 	// ADD-BY-LEETEN 08/12/2008-END
 }
+
+// ADD-BY-LEETEN 2009/01/22-BEGIN
+void 
+CGlutWin::_MotionFunc(int x, int y)
+{
+}
+
+void 
+CGlutWin::_MouseFunc(int button, int state, int x, int y)
+{
+}
+// ADD-BY-LEETEN 2009/01/22-END
 
 void 
 CGlutWin::_DisplayFunc()
@@ -1114,6 +1134,12 @@ CGlutWin::_DisableVerticalSync()
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.17  2009/01/10 05:04:54  leeten
+
+[2009/01/09]
+1. [DEBUG] Sovle the bug In the member method _AddString
+2. [ADD] In the method _SaveSnapshot, flip the obtained framebuffer before saving to the specified file.
+
 Revision 1.16  2008/12/21 21:59:29  leeten
 
 [2008/12/21]
