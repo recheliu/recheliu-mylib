@@ -431,7 +431,11 @@ public:
 											// for GLUI controls
 	int IAddWid(unsigned short usValue)
 	{
-		return IGetId() * 0x0100 + usValue;
+		// MOD-BY-LEETEN 2009/02/22-FROM:
+			// return IGetId() * 0x0100 + usValue;
+		// TO:
+		return IGetId() * 0x010000 + (int)usValue;
+		// MOD-BY-LEETEN 2009/02/22-END
 	}
 	// ADD-BY-LEETEN 2008/08/15-END
 
@@ -464,6 +468,12 @@ public:
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.17  2009/01/22 17:13:49  leeten
+
+[2009/01/22]
+1. [ADD] Define a new constant CB_MANUAL for user-defined events.
+2. [ADD] Define new methods _MouseFunc and _MotionFunc to track the location of trhe cursor.
+
 Revision 1.16  2009/01/16 14:30:56  leeten
 
 [2009/01/16]
