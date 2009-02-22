@@ -22,6 +22,11 @@ template <typename t> struct TBuffer
 		data = NULL;	
 	}
 
+	// ADD-BY-TLEE 2009/02/14-BEGIN
+	bool BIsAllocated()		{	return (NULL != data)?true:false;	}
+	unsigned int USize()	{	return (unsigned int)num;			}
+	// ADD-BY-TLEE 2009/02/14-END
+
 	// ADD-BY-TLEE 2008/08/14-BEGIN
 	void free()
 	{
@@ -79,6 +84,11 @@ template <typename t> struct TBuffer
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.2  2008/08/14 22:52:24  leeten
+
+[2008/08/14]
+1. [ADD] Add a new method free() to explictly free the allocated buffer.
+
 Revision 1.1.1.1  2008/08/10 18:54:05  leeten
 
 [2008/08/10]
