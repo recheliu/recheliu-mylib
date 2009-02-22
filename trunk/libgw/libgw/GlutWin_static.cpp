@@ -86,8 +86,15 @@ static
 void 
 _TimerCB(int iIdValue)
 {
-	int iWid =		iIdValue	/ 0x0100;
-	int iValue =	iIdValue	% 0x0100;
+	#if	0	// MOD-BY-LEETEN 2009/02/22-FROM:
+		int iWid =		iIdValue	/ 0x0100;
+		int iValue =	iIdValue	% 0x0100;
+	#else	// MOD-BY-LEETEN 2009/02/22-TO:
+
+	int iWid =		iIdValue	/ 0x010000;
+	int iValue =	iIdValue	% 0x010000;
+
+	#endif	// MOD-BY-LEETEN 2009/02/22-END
 
 	int iWin = CGlutWin::IGetWin(iWid);
 	if( iWin >= 0 )
@@ -378,8 +385,13 @@ CGlutWin::_Init(
 void 
 CGlutWin::_GluiCB_static(int iIdValue)
 {
-	int iWid =		iIdValue	/ 0x0100;
-	int iValue =	iIdValue	% 0x0100;
+	#if	0	// MOD-BY-LEETEN 2009/02/22-FROM:
+		int iWid =		iIdValue	/ 0x0100;
+		int iValue =	iIdValue	% 0x0100;
+	#else	// MOD-BY-LEETEN 2009/02/22-TO:
+	int iWid =		iIdValue	/ 0x010000;
+	int iValue =	iIdValue	% 0x010000;
+	#endif	// MOD-BY-LEETEN 2009/02/22-END
 
 	int iWin = CGlutWin::IGetWin(iWid);
 	if( iWin >= 0 )
@@ -423,6 +435,11 @@ CGlutWin::_RegisterGlobalFunc(
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.10  2009/01/16 14:31:37  leeten
+
+[2009/01/16]
+1. [ADD] Pass the window event as default events to the registered global function.
+
 Revision 1.9  2008/08/20 19:35:24  leeten
 
 [2008/08/20]
