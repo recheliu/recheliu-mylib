@@ -530,6 +530,19 @@ CGlutWin::_SpecialCB(int skey, int x, int y)
 	}
 }
 
+// ADD-BY-LEETEN 2009/03/04-BEGIN
+void 
+CGlutWin::_PassiveMotionCB(int x, int y)
+{
+	_UpdateWinCoord(&x, &y);
+
+	iPassiveCursorX = x;
+	iPassiveCursorY = y;
+
+	_PassiveMotionFunc(x, y);
+}
+// ADD-BY-LEETEN 2009/03/04-END
+
 void 
 CGlutWin::_MotionCB(int x, int y)
 {
@@ -638,6 +651,13 @@ CGlutWin::_MouseFunc(int button, int state, int x, int y)
 {
 }
 // ADD-BY-LEETEN 2009/01/22-END
+
+// ADD-BY-LEETEN 2009/03/04-BEGIN
+void 
+CGlutWin::_PassiveMotionFunc(int x, int y)
+{
+}
+// ADD-BY-LEETEN 2009/03/04-END
 
 void 
 CGlutWin::_DisplayFunc()
@@ -1134,6 +1154,12 @@ CGlutWin::_DisableVerticalSync()
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.18  2009/01/22 17:13:49  leeten
+
+[2009/01/22]
+1. [ADD] Define a new constant CB_MANUAL for user-defined events.
+2. [ADD] Define new methods _MouseFunc and _MotionFunc to track the location of trhe cursor.
+
 Revision 1.17  2009/01/10 05:04:54  leeten
 
 [2009/01/09]

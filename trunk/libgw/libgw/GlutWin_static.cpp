@@ -61,6 +61,16 @@ void
 	// MOD-BY-LEETEN 08/14/2008-END:
 }
 
+// ADD-BY-LEETEN 2009/03/04-BEGIN
+static 
+void 
+_PassiveMotionCB(int x, int y)
+{
+	CGlutWin::PCGetActiveWin()->_PassiveMotionCB(x, y);
+	CGlutWin::_GlobalCB(CGlutWin::PCGetActiveWin()->IGetId(), CGlutWin::CB_PASSIVE_MOTION, x, y);
+}
+// ADD-BY-LEETEN 2009/03/04-END
+
 static 
 void 
 _MotionCB(int x, int y)
@@ -280,6 +290,10 @@ CGlutWin::_AddWin(
 
 	glutMotionFunc(		CGlutWin_static::_MotionCB);
 
+	// ADD-BY-LEETEN 2009/03/04-BEGIN
+	glutPassiveMotionFunc(	CGlutWin_static::_PassiveMotionCB);
+	// ADD-BY-LEETEN 2009/03/04-END
+
 	GLUI_Master.set_glutIdleFunc(		CGlutWin_static::_IdleCB);
 
 	#if	0	// DEL-BY-TLEE 2008/08/16-BEGIN
@@ -435,6 +449,11 @@ CGlutWin::_RegisterGlobalFunc(
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.11  2009/02/22 22:09:45  leeten
+
+[2009/02/22]
+1. [DEBUG] Change the offset for the windows from 8 bits to 16 bits.
+
 Revision 1.10  2009/01/16 14:31:37  leeten
 
 [2009/01/16]
