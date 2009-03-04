@@ -95,6 +95,9 @@ public:
 		CB_KEYBOARD,
 		CB_SPECIAL,
 		CB_MOTION,
+		// ADD-BY-LEETEN 2009/03/04-BEGIN
+		CB_PASSIVE_MOTION,
+		// ADD-BY-LEETEN 2009/03/04-END
 		CB_MOUSE,
 		CB_TIMER,
 		CB_GLUI,	// used to indicate GLUI control event
@@ -251,6 +254,11 @@ protected:
 	GLenum eModifier;
 	bool bMoving;
 
+	// ADD-BY-LEETEN 2009/03/04-BEGIN
+	int iPassiveCursorX;
+	int iPassiveCursorY;
+	// ADD-BY-LEETEN 2009/03/04-END
+
 	double pdOldCoord[3], pdNewCoord[3];
 	double pdCurPos[3], pdBeginPos[3];
 	double dX, dY, dZ;
@@ -278,6 +286,10 @@ protected:
 	virtual void _MotionFunc(int x, int y);
 	virtual void _MouseFunc(int button, int state, int x, int y);
 	// ADD-BY-LEETEN 2009/01/22-END
+
+	// ADD-BY-LEETEN 2009/03/04-BEGIN
+	virtual void _PassiveMotionFunc(int x, int y);
+	// ADD-BY-LEETEN 2009/03/04-END
 
 	virtual void _InitFunc();
 
@@ -322,6 +334,10 @@ public:
 	virtual void _MotionCB(int x, int y);
 	virtual void _MouseCB(int button, int state, int x, int y);
 	virtual void _IdleCB();
+
+	// ADD-BY-LEETEN 2009/03/04-BEGIN
+	virtual void _PassiveMotionCB(int x, int y);
+	// ADD-BY-LEETEN 2009/03/04-END
 
 	// ADD-BY-LEETEN 08/11/2008-BEGIN
 	// MOD-BY-TLEE 2008/08/16-FROM:
@@ -468,6 +484,11 @@ public:
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.18  2009/02/22 22:09:19  leeten
+
+[2009/02/22]
+1. [DEBUG] Change the offset for the windows from 8 bits to 16 bits.
+
 Revision 1.17  2009/01/22 17:13:49  leeten
 
 [2009/01/22]
