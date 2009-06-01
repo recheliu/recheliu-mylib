@@ -1,9 +1,20 @@
+	// ADD-BY-LEETEN 06/01/2008-BEGIN
+	#include <typeinfo>
+	// ADD-BY-LEETEN 06/01/2008-END
+
 	// ADD-BY-LEETEN 08/25/2008-BEGIN
 	#include <GL/glew.h>
 
 	// ADD-BY-LEETEN 11/17/2008-BEGIN
+
+	// ADD-BY-LEETEN 06/01/2008-BEGIN
+	#ifdef WIN32	
+	// ADD-BY-LEETEN 06/01/2008-END
 	#include <GL/wglew.h>
 	#pragma comment (lib, "glew32.lib")      
+	// ADD-BY-LEETEN 06/01/2008-BEGIN
+	#endif
+	// ADD-BY-LEETEN 06/01/2008-END
 	// ADD-BY-LEETEN 11/17/2008-END
 
 	#include <time.h>
@@ -1142,10 +1153,14 @@ CGlutWin::_DisableVerticalSync()
 	if( GLEW_OK != glewInit() )
 		fprintf(stderr, "Warning: GLEW cannot be initialized.\n");
 	else
+#ifdef WIN32
 	if 	( !WGL_EXT_swap_control )
 		fprintf(stderr, "Warning: WGL_EXT_swap_control is not supported.\n");
 	else
 		wglSwapIntervalEXT(0);
+#else
+	;
+#endif
 }
 // ADD-BY-LEETEN 11/17/2008-END
 
@@ -1154,6 +1169,11 @@ CGlutWin::_DisableVerticalSync()
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.19  2009/03/04 22:21:04  leeten
+
+[2009/03/04]
+1. [ADD] Support the handling of the passive mouse motion. The cursor coordinates will be stored in two variabel iPassiveCursorX and iPassiveCursorY. The subclass of CGlutWin can overload the callback _PassiveMotionFunc() (recommended) or _PassiveMotionCB().
+
 Revision 1.18  2009/01/22 17:13:49  leeten
 
 [2009/01/22]
