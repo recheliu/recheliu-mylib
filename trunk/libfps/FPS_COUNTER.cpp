@@ -6,15 +6,35 @@
 //	Downloaded from: www.paulsprojects.net
 //	Created:	20th July 2002
 //////////////////////////////////////////////////////////////////////////////////////////
-#define WIN32_LEAN_AND_MEAN
-#include <windows.h>
-#include <mmsystem.h>
+	// ADD-BY-LEETEN-2009/06/01-BEGIN
+	#ifdef WIN32	
+	// ADD-BY-LEETEN-2009/06/01-END
+	#define WIN32_LEAN_AND_MEAN
+	#include <windows.h>
+	#include <mmsystem.h>
+	// ADD-BY-LEETEN-2009/06/01-BEGIN
+	#else
+	#include <time.h>
+	#endif
+	// ADD-BY-LEETEN-2009/06/01-END
+
 #include "FPS_COUNTER.h"
 
 void FPS_COUNTER::Update(void)
 {
 	//keep track of time passed and frame count
+
+	// ADD-BY-LEETEN-2009/06/01-BEGIN
+	#ifdef WIN32
+	// ADD-BY-LEETEN-2009/06/01-END
+
 	time=timeGetTime()*0.001f;
+
+	// ADD-BY-LEETEN-2009/06/01-BEGIN
+	#else
+	time=(float)clock() * 0.001;
+	#endif
+	// ADD-BY-LEETEN-2009/06/01-END
 	++frames;
 
 	//If a second has passed
