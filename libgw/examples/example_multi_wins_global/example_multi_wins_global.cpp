@@ -9,7 +9,7 @@ to create an application with three GLUT windows.
 
 #pragma comment (lib, "libgw.lib")      // link with the library libgw
 
-#include "..\include\TestWin.h"
+#include "../include/TestWin.h"
 
 CTestWin 
 	cGreenWin(0.0, 1.0, 0.0, 1.0), 
@@ -53,5 +53,10 @@ main(int argn, char *argv[])
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.1  2009/01/16 14:37:00  leeten
+
+[2009/01/16]
+1. [FIRST TIME CHECKIN] This is an example to test how the global function can work in multiple window environment.
+
 
 */
