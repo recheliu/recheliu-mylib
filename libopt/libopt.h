@@ -84,6 +84,13 @@ bool BOPTParse(char* argv[], int argc, int iBegin, int *piEnd = NULL);
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.4  2008/07/07 15:00:32  leeten
+
+[07/07/2008]
+1. [ADD] Declare new function _OPTAddEnum() to parse a command argument from string to predefined constants.
+2. [ADD] Declare new function _OPTAddComment() to define comment with the arguments.
+3. [ADD] Declare new function _OptPrintComment() to print out comments.
+
 Revision 1.3  2008/02/23 05:16:38  leeten
 
 [02/23/2008]
@@ -97,4 +104,3 @@ Revision 1.2  2007/04/12 19:03:16  leeten
 
 */
 
-	
