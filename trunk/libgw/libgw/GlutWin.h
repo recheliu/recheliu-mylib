@@ -17,9 +17,8 @@ using namespace std;
 	#pragma comment (lib, "cvaux.lib")      // link with my own library libfps
 	// ADD-BY-LEETEN 08/25/2008-END
 
-#pragma comment (lib, "winmm.lib")      /* link with Windows MultiMedia lib */
-
-#pragma comment (lib, "libfps.lib")      // link with my own library libfps
+	#pragma comment (lib, "winmm.lib")      /* link with Windows MultiMedia lib */
+	#pragma comment (lib, "libfps.lib")      // link with my own library libfps
 
 
 	// ADD-BY-LEETEN 11/17/2008-BEGIN
@@ -63,8 +62,21 @@ using namespace std;
 	#include <assert.h>
 #endif
 
-#define M_PI		(3.14159)
-#define M_PI_2		(M_PI / 2.0)
+// ADD-BY-LEETEN 2009/06/01-BEGIN
+#ifndef M_PI
+// ADD-BY-LEETEN 2009/06/01-END
+	#define M_PI		(3.14159)
+// ADD-BY-LEETEN 2009/06/01-BEGIN
+#endif
+// ADD-BY-LEETEN 2009/06/01-END
+
+// ADD-BY-LEETEN 2009/06/01-BEGIN
+#ifndef M_PI_2
+// ADD-BY-LEETEN 2009/06/01-END
+	#define M_PI_2		(M_PI / 2.0)
+// ADD-BY-LEETEN 2009/06/01-BEGIN
+#endif
+// ADD-BY-LEETEN 2009/06/01-END
 
 #include "libopengl.h"
 
@@ -484,6 +496,11 @@ public:
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.19  2009/03/04 22:21:04  leeten
+
+[2009/03/04]
+1. [ADD] Support the handling of the passive mouse motion. The cursor coordinates will be stored in two variabel iPassiveCursorX and iPassiveCursorY. The subclass of CGlutWin can overload the callback _PassiveMotionFunc() (recommended) or _PassiveMotionCB().
+
 Revision 1.18  2009/02/22 22:09:19  leeten
 
 [2009/02/22]
