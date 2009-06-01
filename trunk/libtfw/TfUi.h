@@ -22,7 +22,11 @@ The proecduer to use this class is as below:
 #include <list>
 
 #pragma once
-#include "glutwin.h"
+// MOD-BY-LEETEN 2009/06/01-FROM:
+	// #include "glutwin.h"
+// TO:
+#include "GlutWin.h"
+// MOD-BY-LEETEN 2009/06/01-END
 
 	#include "libbuf.h"
 
@@ -117,7 +121,12 @@ protected:
 		// MOD-BY-TLEE 08/14/2008-FROM:
 			// CTfUi::_PlotSpline(int c, bool bPlotKnots = false);
 		// TO:
-		CTfUi::_PlotSpline(int c, bool bEnhance = false);
+		// MOD-BY-LEETEN 2009/06/01-FROM:
+			// CTfUi::_PlotSpline(int c, bool bEnhance = false);
+		// TO:
+		_PlotSpline(int c, bool bEnhance = false);
+		// MOD-BY-LEETEN 2009/06/01-END
+
 		// MOD-BY-TLEE 08/14/2008-END
 
 	vector<list<CKnot>::iterator>	
@@ -344,6 +353,12 @@ public:
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.4  2008/08/21 14:52:33  leeten
+
+[2008/08/21]
+1. [ADD] Add variable fHistogramMin/fHistogramMax as the range of the data value.
+2. [CHANGE] Modify method _SetHistogramAsBackground: if pfHistogram is NULL, only the histogram range will be set.
+
 Revision 1.3  2008/08/17 23:54:20  leeten
 
 [2008/08/17]
