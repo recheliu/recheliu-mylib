@@ -8,8 +8,16 @@ Description:
 
 */
 
-#include <gl/glew.h>
-#include <gl/glut.h>
+#if	0	// MOD-BY-LEETEN 2009/06/01-FROM:
+	#include <gl/glew.h>
+	#include <gl/glut.h>
+#else		// MOD-BY-LEETEN 2009/06/01-TO:
+
+#include <GL/glew.h>
+#include <GL/glut.h>
+
+#endif		// MOD-BY-LEETEN 2009/06/01-END
+
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -72,5 +80,10 @@ EGetFboStatus(bool bPrint)
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.1  2006/11/26 00:08:55  leeten
+
+[11/25/2006]
+1. First time checkin.
+
 
 */
