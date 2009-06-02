@@ -47,10 +47,14 @@ main(int argn, char * argv[])
 			fputc(*pc, fpShaderHeader);
 			break;
 
-		#if defined(WIN32)
+		// DEL-BY-LEETEN 2009/06/01-BEGIN
+			// #if defined(WIN32)
+		// DEL-BY-LEETEN 2009/06/01-END
 		case '\r':
 			continue;
-		#endif
+		// DEL-BY-LEETEN 2009/06/01-BEGIN
+		// #endif
+		// DEL-BY-LEETEN 2009/06/01-END
 
 		case '\\':
 			fputc('\\', fpShaderHeader);
@@ -74,6 +78,11 @@ main(int argn, char * argv[])
 	if( '\n' == *pc )
 		fputc('"', fpShaderHeader);
 
+	// ADD-BY-LEETEN 2009/06/01-BEGIN
+	fputc('\n', fpShaderHeader);
+	// ADD-BY-LEETEN 2009/06/01-END
+
+
 	fclose(fpShaderHeader);
 	free(szShaderContext);
 
@@ -86,5 +95,10 @@ main(int argn, char * argv[])
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.1.1.1  2008/08/15 02:16:03  leeten
+
+[2008/08/14]
+1. [FIRST TIME CHECKIN] This application is used to convert a ASCII file into a C/C++ multiple line string. The main purpos is used to embed a shader program into the source code.
+
 
 */
