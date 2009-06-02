@@ -13,6 +13,21 @@ This file defines several important macros for CUDA.
 
 #include <cutil.h>
 
+// ADD-BY-LEETEN 2009/06/02-BEGIN
+#include <math.h>
+
+#ifndef __DEVICE_EMULATION__
+
+	#undef _HUGE
+	#define _HUGE	1.0e+10
+
+	#undef HUGE_VAL
+	#define HUGE_VAL _HUGE
+
+#endif	// __DEVICE_EMULATION__
+
+// ADD-BY-LEETEN 2009/06/02-END
+
 // ADD-BY-TLEE 07/30/2008-BEGIN
 #if CUDART_VERSION <= 1010
 
@@ -176,6 +191,11 @@ struct CBuffer2D
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.3  2008/08/30 00:23:21  leeten
+
+[2008/08/29]
+1. [ADD] Include the header cuda_runtime_api.h
+
 Revision 1.2  2008/08/10 18:40:50  leeten
 
 [2008/08/10]
