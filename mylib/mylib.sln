@@ -58,6 +58,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "shader2string", "..\libshad
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libfbow", "..\libfbow\libfbow.vcproj", "{352D4BE3-C265-493E-BB08-0A5835CDE3E0}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "liblog", "..\liblog\liblog.vcproj", "{B4C9D1FC-9BBF-47D6-A086-7763B7E7D70E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -128,6 +130,10 @@ Global
 		{352D4BE3-C265-493E-BB08-0A5835CDE3E0}.Debug|Win32.Build.0 = Debug|Win32
 		{352D4BE3-C265-493E-BB08-0A5835CDE3E0}.Release|Win32.ActiveCfg = Release|Win32
 		{352D4BE3-C265-493E-BB08-0A5835CDE3E0}.Release|Win32.Build.0 = Release|Win32
+		{B4C9D1FC-9BBF-47D6-A086-7763B7E7D70E}.Debug|Win32.ActiveCfg = Debug|Win32
+		{B4C9D1FC-9BBF-47D6-A086-7763B7E7D70E}.Debug|Win32.Build.0 = Debug|Win32
+		{B4C9D1FC-9BBF-47D6-A086-7763B7E7D70E}.Release|Win32.ActiveCfg = Release|Win32
+		{B4C9D1FC-9BBF-47D6-A086-7763B7E7D70E}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
