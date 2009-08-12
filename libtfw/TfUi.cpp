@@ -725,13 +725,35 @@ CTfUi::_InitFunc()
 	GLUI_Panel* pcPanel;
 	GLUI_Spinner *pcSpinner;
 		pcPanel = PCGetGluiSubwin()->add_panel_to_panel(pcTfPanel, "Data Value");
-			pcSpinner = PCGetGluiSubwin()->add_spinner_to_panel(pcPanel, "Min", GLUI_SPINNER_FLOAT, &fHistogramMin);
+			#if	0	// MOD-BY-LEETEN 08/12/2009-FROM:
+				pcSpinner = PCGetGluiSubwin()->add_spinner_to_panel(pcPanel, "Min", GLUI_SPINNER_FLOAT, &fHistogramMin);
+				pcSpinner->disable();
+				pcSpinner = PCGetGluiSubwin()->add_spinner_to_panel(pcPanel, "Max", GLUI_SPINNER_FLOAT, &fHistogramMax);
+				pcSpinner->disable();
+			#else	// MOD-BY-LEETEN 08/12/2009-TO:
+			pcSpinner = PCGetGluiSubwin()->add_spinner_to_panel(pcPanel, "Min (Significand)",	GLUI_SPINNER_FLOAT, &cHistogramMin.fSignificand);
 			pcSpinner->disable();
-			pcSpinner = PCGetGluiSubwin()->add_spinner_to_panel(pcPanel, "Max", GLUI_SPINNER_FLOAT, &fHistogramMax);
+			pcSpinner = PCGetGluiSubwin()->add_spinner_to_panel(pcPanel, "Min (Exponent)",		GLUI_SPINNER_FLOAT, &cHistogramMin.fExponent);
 			pcSpinner->disable();
+
+			pcSpinner = PCGetGluiSubwin()->add_spinner_to_panel(pcPanel, "Max (Significand)",	GLUI_SPINNER_FLOAT, &cHistogramMax.fSignificand);
+			pcSpinner->disable();
+			pcSpinner = PCGetGluiSubwin()->add_spinner_to_panel(pcPanel, "Max (Exponent)",		GLUI_SPINNER_FLOAT, &cHistogramMax.fExponent);
+			pcSpinner->disable();
+			#endif	// MOD-BY-LEETEN 08/12/2009-END
+
 		pcPanel = PCGetGluiSubwin()->add_panel_to_panel(pcTfPanel, "TF Domain");
-			PCGetGluiSubwin()->add_spinner_to_panel(pcPanel, "Min", GLUI_SPINNER_FLOAT, &pcTransFunc->fDomainMin);	
-			PCGetGluiSubwin()->add_spinner_to_panel(pcPanel, "Max", GLUI_SPINNER_FLOAT, &pcTransFunc->fDomainMax);	
+
+		#if	0	// MOD-BY-LEETEN 08/12/2009-FROM:
+				PCGetGluiSubwin()->add_spinner_to_panel(pcPanel, "Min", GLUI_SPINNER_FLOAT, &pcTransFunc->fDomainMin);	
+				PCGetGluiSubwin()->add_spinner_to_panel(pcPanel, "Max", GLUI_SPINNER_FLOAT, &pcTransFunc->fDomainMax);	
+		#else	// MOD-BY-LEETEN 08/12/2009-TO:
+			PCGetGluiSubwin()->add_spinner_to_panel(pcPanel, "Min (Significand)",	GLUI_SPINNER_FLOAT, &pcTransFunc->cDomainMin.fSignificand);	
+			PCGetGluiSubwin()->add_spinner_to_panel(pcPanel, "Min (Exponent)",		GLUI_SPINNER_FLOAT, &pcTransFunc->cDomainMin.fExponent);	
+
+			PCGetGluiSubwin()->add_spinner_to_panel(pcPanel, "Max (Significand)",	GLUI_SPINNER_FLOAT, &pcTransFunc->cDomainMax.fSignificand);	
+			PCGetGluiSubwin()->add_spinner_to_panel(pcPanel, "Max (Exponent)",		GLUI_SPINNER_FLOAT, &pcTransFunc->cDomainMax.fExponent);	
+		#endif	// MOD-BY-LEETEN 08/12/2009-END
 	// ADD-BY-TLEE 2008/08/21-END
 
 											// move the File panel to above the Edit panel
@@ -783,8 +805,18 @@ CTfUi::_DisplayFunc()
 		// MOD-BY-TLEE 2008/08/21-FROM:
 			// glScalef(1.0f / (float)pfHistogram.num, 1.0f, 1.0f);
 		// TO:
-		glScalef(1.0f / (float)(pcTransFunc->fDomainMax - pcTransFunc->fDomainMin), 1.0f, 1.0f);
-		glTranslatef(-pcTransFunc->fDomainMin, 0.0f, 0.0f);
+		#if	0	// MOD-BY-LEETEN 08/12/2009-FROM:
+			glScalef(1.0f / (float)(pcTransFunc->fDomainMax - pcTransFunc->fDomainMin), 1.0f, 1.0f);
+			glTranslatef(-pcTransFunc->fDomainMin, 0.0f, 0.0f);
+		#else	// MOD-BY-LEETEN 08/12/2009-TO:
+		float fDomainMin  = pcTransFunc->cDomainMin.FGetValue();
+		float fDomainMax  = pcTransFunc->cDomainMax.FGetValue();
+		float fHistogramMin = cHistogramMin.FGetValue();
+		float fHistogramMax = cHistogramMax.FGetValue();
+
+		glScalef(1.0f / (float)(fDomainMax - fDomainMin), 1.0f, 1.0f);
+		glTranslatef(-fDomainMin, 0.0f, 0.0f);
+		#endif	// MOD-BY-LEETEN 08/12/2009-END
 		// MOD-BY-TLEE 2008/08/21-END
 		
 		glBegin(GL_QUADS);
@@ -796,8 +828,13 @@ CTfUi::_DisplayFunc()
 					l = (float)i;
 					r = (float)i + 1;
 				#else	// MOD-BY-TLEE 2008/08/21-TO:
-				l = (float) i / (float) pfHistogram.num * (float)(fHistogramMax - fHistogramMin);
-				r = (float) (i + 1) / (float) pfHistogram.num * (float)(fHistogramMax - fHistogramMin);
+				#if	0	// MOD-BY-LEETEN 08/12/2009-FROM:
+					l = (float) i / (float) pfHistogram.num * (float)(fHistogramMax - fHistogramMin);
+					r = (float) (i + 1) / (float) pfHistogram.num * (float)(fHistogramMax - fHistogramMin);
+				#else	// MOD-BY-LEETEN 08/12/2009-TO:
+				l = (float) i / (float) pfHistogram.num * (float)(fHistogramMax - fHistogramMin) + fHistogramMin;
+				r = (float) (i + 1) / (float) pfHistogram.num * (float)(fHistogramMax - fHistogramMin) + fHistogramMin;
+				#endif	// MOD-BY-LEETEN 08/12/2009-END
 				#endif	// MOD-BY-TLEE 2008/08/21-END
 
 				b = 0.0f;
@@ -820,8 +857,13 @@ CTfUi::_DisplayFunc()
 			// ADD-BY-LEETEN 2008/08/17-END
 		#else	// MOD-BY-TLEE 2008/08/21-TO:
 		glColor4f(0.0f, 1.0f, 1.0f, 1.0f);
-		_DrawString(SZSprintf("%.2e", pcTransFunc->fDomainMin), 0, 0, false);
-		_DrawString(SZSprintf("%.2e", pcTransFunc->fDomainMax), -1, 0, true);
+		#if	0	// MOD-BY-LEETEN 08/12/2009-FROM:
+			_DrawString(SZSprintf("%.2e", pcTransFunc->fDomainMin), 0, 0, false);
+			_DrawString(SZSprintf("%.2e", pcTransFunc->fDomainMax), -1, 0, true);
+		#else	// MOD-BY-LEETEN 08/12/2009-TO:
+		_DrawString(SZSprintf("%.2e", pcTransFunc->cDomainMin.FGetValue()), 0, 0, false);
+		_DrawString(SZSprintf("%.2e", pcTransFunc->cDomainMax.FGetValue()), -1, 0, true);
+		#endif	// MOD-BY-LEETEN 08/12/2009-END
 		#endif	// MOD-BY-TLEE 2008/08/21-END
 
 		// plot the transfer func. as lines
@@ -880,10 +922,12 @@ CTfUi::CTfUi()
 	pcEditText_Dir = NULL;
 	// ADD-BY-LEETEN 08/15/2008-END
 
-	// ADD-BY-LEETEN 2008/08/17-BEGIN
-	fHistogramMin = 0.0f;
-	fHistogramMax = 1.0f;
-	// ADD-BY-LEETEN 2008/08/17-END
+	#if	0	// DEL-BY-LEETEN 08/12/2009-BEGIN
+		// ADD-BY-LEETEN 2008/08/17-BEGIN
+		fHistogramMin = 0.0f;
+		fHistogramMax = 1.0f;
+		// ADD-BY-LEETEN 2008/08/17-END
+	#endif	// DEL-BY-LEETEN 08/12/2009-END
 }
 
 CTfUi::~CTfUi(void)
@@ -893,6 +937,11 @@ CTfUi::~CTfUi(void)
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.10  2008/08/24 15:35:19  leeten
+
+[2008/08/22]
+1. [DEBUG] When get current directory, pass the  size of array via sizeof other  than strlen().
+
 Revision 1.9  2008/08/24 14:52:14  leeten
 
 [2008/08/22]
