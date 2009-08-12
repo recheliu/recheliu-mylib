@@ -35,6 +35,10 @@ The proecduer to use this class is as below:
 	#include "TransFunc.h"
 	// ADD-BY-LEETEN 08/14/2008-END
 
+	// ADD-BY-LEETEN 08/12/2009-BEGIN
+	#include "FloatValue.h"
+	// ADD-BY-LEETEN 08/12/2009-END
+
 class CTfUi :
 	public CGlutWin
 {
@@ -67,9 +71,16 @@ protected:
 	TBuffer<float> pfHistogram;
 
 	// ADD-BY-LEETEN 2008/08/17-BEGIN
-	float fHistogramMin;
-	float fHistogramMax;
+	#if	0	// MOD-BY-LEETEN 08/12/2009-FROM:
+		float fHistogramMin;
+		float fHistogramMax;
+	#else	// MOD-BY-LEETEN 08/12/2009-TO:
+	CFloatValue cHistogramMin;
+	CFloatValue cHistogramMax;
+	#endif	// MOD-BY-LEETEN 08/12/2009-END
 	// ADD-BY-LEETEN 2008/08/17-END
+
+
 
 public:
 	#if	0	// MOD-BY-LEETEN 2008/08/17-FROM:
@@ -101,8 +112,13 @@ public:
 		}
 
 													// store the range
-		this->fHistogramMin = fHistogramMin;
-		this->fHistogramMax = fHistogramMax;
+		#if	0	// MOD-BY-LEETEN 08/12/2009-FROM:
+			this->fHistogramMin = fHistogramMin;
+			this->fHistogramMax = fHistogramMax;
+		#else	// MOD-BY-LEETEN 08/12/2009-TO:
+		this->cHistogramMin._SetValue(fHistogramMin);
+		this->cHistogramMax._SetValue(fHistogramMax);
+		#endif	// MOD-BY-LEETEN 08/12/2009-END
 	}
 	#endif	// MOD-BY-LEETEN 2008/08/21-END
 	#endif	// MOD-BY-LEETEN 2008/08/17-END
@@ -353,6 +369,12 @@ public:
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.5  2009/06/01 21:29:05  leeten
+
+[2009/06/01]
+1. [DEL] Remove CTfUi:: in the declaration of PlotSpline().
+2. [MOD] Change glutwin.h to GlutWin.h
+
 Revision 1.4  2008/08/21 14:52:33  leeten
 
 [2008/08/21]
