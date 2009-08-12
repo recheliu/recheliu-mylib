@@ -25,21 +25,40 @@ using namespace std;
 
 	#include "knot.h"
 
+	// ADD-BY-LEETEN 08/12/2009-BEGIN
+	#include "FloatValue.h"
+	// ADD-BY-LEETEN 08/12/2009-END
+
 class CTransFunc {
 
 // ADD-BY-TLEE 08/21/2008-BEGIN
-	float fDomainMin, fDomainMax;
+	// MOD-BY-LEETEN 08/12/2009-FROM:
+		// float fDomainMin, fDomainMax;
+	// TO:
+	CFloatValue cDomainMin, cDomainMax;
+	// MOD-BY-LEETEN 08/12/2009-END
+
 public:
 	void _SetTfDomain(float fMin, float fMax)
 	{
-		fDomainMin = fMin;
-		fDomainMax = fMax;
+		#if	0	// MOD-BY-LEETEN 08/12/2009-FROM:
+			fDomainMin = fMin;
+			fDomainMax = fMax;
+		#else	// MOD-BY-LEETEN 08/12/2009-TO:
+		cDomainMin._SetValue(fMin);
+		cDomainMax._SetValue(fMax);
+		#endif	// MOD-BY-LEETEN 08/12/2009-END
 	}
 
 	void _GetTfDomain(float *pfMin, float *pfMax)
 	{
-		*pfMin = fDomainMin;
-		*pfMax = fDomainMax;
+		#if	0	// MOD-BY-LEETEN 08/12/2009-FROM:
+			*pfMin = fDomainMin;
+			*pfMax = fDomainMax;
+		#else	// MOD-BY-LEETEN 08/12/2009-TO:
+		*pfMin = cDomainMin.FGetValue();
+		*pfMax = cDomainMax.FGetValue();
+		#endif	// MOD-BY-LEETEN 08/12/2009-END
 	}
 // ADD-BY-TLEE 08/21/2008-END
 
@@ -64,10 +83,13 @@ public:
 			plSplines[c].push_back(cBegin);
 			plSplines[c].push_back(cEnd);
 		}
-		// ADD-BY-TLEE 08/14/2008-BEGIN
-		fDomainMin = 0.0;
-		fDomainMax = 1.0;
-		// ADD-BY-TLEE 08/14/2008-END
+
+		#if	0	// DEL-BY-LEETEN 08/12/2009-BEGIN
+			// ADD-BY-TLEE 08/14/2008-BEGIN
+			fDomainMin = 0.0;
+			fDomainMax = 1.0;
+			// ADD-BY-TLEE 08/14/2008-END
+		#endif	// DEL-BY-LEETEN 08/12/2009-END
 	}
 
 public:
@@ -125,6 +147,12 @@ public:
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.3  2008/08/21 14:49:36  leeten
+
+[2008/08/21]
+1. [ADD] Define variables fDomainMin/fDomainMax as the support.
+2. [ADD] Define methods _GetDomain/_SetDomain to get/set the domain.
+
 Revision 1.2  2008/08/15 14:54:11  leeten
 
 [2008/08/15]

@@ -105,10 +105,19 @@ CTransFunc::BOpenFile(const char szFilename[])
 
 	FILE *fpTf = fopen(szFilename, "rt");
 
+	// ADD-BY-LEETEN 08/12/2009-BEGIN
+	float fDomainMin, fDomainMax;
+	// ADD-BY-LEETEN 08/12/2009-END
+
 	// ADD-BY-TLEE 08/21/2008-BEGIN
 	fscanf(fpTf, "%f\n", &fDomainMin);
 	fscanf(fpTf, "%f\n", &fDomainMax);
 	// ADD-BY-TLEE 08/21/2008-END
+
+	// ADD-BY-LEETEN 08/12/2009-BEGIN
+	cDomainMin._SetValue(fDomainMin);
+	cDomainMax._SetValue(fDomainMax);
+	// ADD-BY-LEETEN 08/12/2009-END
 
 	for(int c = 0; c < NR_OF_COLORS; c++)
 	{
@@ -146,6 +155,15 @@ CTransFunc::BSaveFile(const char szFilename[])
 		fprintf(stderr, "Warning s in CTransFunc::BOpenFile(): %s cannot be opened.\n", szFilename);
 		return false;
 	}
+
+	// ADD-BY-LEETEN 08/12/2009-BEGIN
+	float fDomainMin, fDomainMax;
+	// ADD-BY-LEETEN 08/12/2009-END
+	fDomainMin = cDomainMin.FGetValue();
+	fDomainMax = cDomainMax.FGetValue();
+#endif
+
+#endif
 
 	// ADD-BY-TLEE 08/21/2008-BEGIN
 	fprintf(fpTf, "%f\n", fDomainMin);
@@ -202,6 +220,11 @@ CTransFunc::_ExportColorMap(float pfColorMap[], int iNrOfEntries)
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.5  2008/08/21 14:50:10  leeten
+
+[2008/08/21]
+1. [CHANGE] Add the domain of the TF to the .tf file format.
+
 Revision 1.4  2008/08/17 23:55:58  leeten
 
 [2008/08/17]

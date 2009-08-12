@@ -102,8 +102,13 @@ CTfWin::_DisplayFunc()
 
 		// ADD-BY-TLEE 2008/08/21-BEGIN
 		glColor4f(0.0f, 1.0f, 1.0f, 1.0f);
-		_DrawString(SZSprintf("%.2e", pcTransFunc->fDomainMin), 0, 0, false);
-		_DrawString(SZSprintf("%.2e", pcTransFunc->fDomainMax), -1, 0, true);
+		#if	0	// MOD-BY-LEETEN 08/12/2009-FROM:
+			_DrawString(SZSprintf("%.2e", pcTransFunc->fDomainMin), 0, 0, false);
+			_DrawString(SZSprintf("%.2e", pcTransFunc->fDomainMax), -1, 0, true);
+		#else	// MOD-BY-LEETEN 08/12/2009-TO:
+		_DrawString(SZSprintf("%.2e", pcTransFunc->cDomainMin.FGetValue()), 0, 0, false);
+		_DrawString(SZSprintf("%.2e", pcTransFunc->cDomainMax.FGetValue()), -1, 0, true);
+		#endif	// MOD-BY-LEETEN 08/12/2009-END
 		// ADD-BY-TLEE 2008/08/21-END
 	glMatrixMode(GL_PROJECTION);
 	glPopMatrix();
@@ -220,6 +225,11 @@ _End();
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.2  2008/08/21 14:50:47  leeten
+
+[2008/08/21]
+1. [ADD] Indicate the domain in _DisplayFunc().
+
 Revision 1.1.1.1  2008/08/14 14:44:02  leeten
 
 [2008/08/14]
