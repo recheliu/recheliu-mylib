@@ -156,19 +156,25 @@ CTransFunc::BSaveFile(const char szFilename[])
 		return false;
 	}
 
-	// ADD-BY-LEETEN 08/12/2009-BEGIN
-	float fDomainMin, fDomainMax;
-	// ADD-BY-LEETEN 08/12/2009-END
-	fDomainMin = cDomainMin.FGetValue();
-	fDomainMax = cDomainMax.FGetValue();
-#endif
+	#if	0	// MOD-BY-LEETEN 2009/08/13-FROM:
+		// ADD-BY-LEETEN 08/12/2009-BEGIN
+		float fDomainMin, fDomainMax;
+		// ADD-BY-LEETEN 08/12/2009-END
+		fDomainMin = cDomainMin.FGetValue();
+		fDomainMax = cDomainMax.FGetValue();
 
-#endif
+		// ADD-BY-TLEE 08/21/2008-BEGIN
+		fprintf(fpTf, "%f\n", fDomainMin);
+		fprintf(fpTf, "%f\n", fDomainMax);
+		// ADD-BY-TLEE 08/21/2008-END
+	#else	// MOD-BY-LEETEN 2009/08/13-TO:
+	CFloatValue cTemp;
+	cTemp._SetValue(cDomainMin.FGetValue());
+	fprintf(fpTf, "%fe%d\n", cTemp.fSignificand, (int)cTemp.fExponent);
 
-	// ADD-BY-TLEE 08/21/2008-BEGIN
-	fprintf(fpTf, "%f\n", fDomainMin);
-	fprintf(fpTf, "%f\n", fDomainMax);
-	// ADD-BY-TLEE 08/21/2008-END
+	cTemp._SetValue(cDomainMax.FGetValue());
+	fprintf(fpTf, "%fe%d\n", cTemp.fSignificand, (int)cTemp.fExponent);
+	#endif	// MOD-BY-LEETEN 2009/08/13-END
 
 	for(int c = 0; c < NR_OF_COLORS; c++)
 	{
@@ -220,6 +226,11 @@ CTransFunc::_ExportColorMap(float pfColorMap[], int iNrOfEntries)
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.6  2009/08/12 22:11:48  leeten
+
+[2009/08/12]
+1. [MOD] Change the range of transfer function's domain and the data's domain from floating point numbers to the structure CFloatValue.
+
 Revision 1.5  2008/08/21 14:50:10  leeten
 
 [2008/08/21]
