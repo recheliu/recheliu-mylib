@@ -58,6 +58,73 @@ CTfWin::_DisplayFunc()
 	glPushMatrix();
 		glLoadIdentity();
 
+	// ADD-BY-LEETEN 2009/08/16-BEGIN
+	if( cHistogram.pfBins.BIsAllocated() )
+	{
+		// normalize the coordinate
+		glTranslatef(-1.0f, -1.0f, -1.0f);
+		glScalef(2.0f, 2.0f, 2.0f);
+
+		float fDomainMin  = pcTransFunc->cDomainMin.FGetValue();
+		float fDomainMax  = pcTransFunc->cDomainMax.FGetValue();
+		float fHistogramMin = cHistogram.cMin.FGetValue();
+		float fHistogramMax = cHistogram.cMax.FGetValue();
+
+		glPushMatrix();
+		glScalef(1.0f / (float)(fHistogramMax - fHistogramMin), 1.0f, 1.0f);
+		glTranslatef(-fHistogramMin, 0.0f, 0.0f);
+		
+		glTranslatef(fDomainMin, 0.0f, 0.0f);
+		glScalef((fDomainMax - fDomainMin)/(float)iNrOfEntries, 1.0f, 1.0f);
+
+		glBegin(GL_QUADS);
+		for(int i = 0; i < iNrOfEntries; i++)
+		{
+			float l, r, b, t;
+			l = (float)i;
+			r = (float)i + 1;
+			b = 0.0f;
+			t = pfColorMap[i*4 + 3];	// use the alpha channel as the height
+			glColor3fv(&pfColorMap[i*4]);	// setup the color
+
+			glVertex2f(l, b);
+			glVertex2f(r, b);
+			glVertex2f(r, t);
+			glVertex2f(l, t);
+		}
+		glEnd();
+
+		glColor4f(1.0, 1.0, 1.0, 1.0);
+		_DrawString3D(SZSprintf("%.2e", fDomainMin), 0.0f, 0.5f, 0.0f);
+		_DrawString3D(SZSprintf("%.2e", fDomainMax), (float)iNrOfEntries, 0.5f, 0.0f);
+
+		glPopMatrix();
+
+		/////////////////////////////////////////////////////
+		glPushMatrix();
+		glScalef(1.0f / (float)(float)cHistogram.pfBins.USize(), 1.0f, 1.0f);
+
+		glPushAttrib(GL_LINE_BIT);
+		glLineWidth(4.0);
+
+		glBegin(GL_LINE_STRIP);
+		glColor4f(1.0, 1.0, 1.0, 1.0);
+		for(int i = 0; i < (int)cHistogram.pfBins.USize(); i++)
+		{
+			glVertex2f((float)i, cHistogram.pfBins[i]);
+		}
+		glEnd();
+		glPopAttrib();	// glPushAttrib(GL_LINE_BIT);
+		glPopMatrix();
+
+		_DrawString(SZSprintf("%.2e", fHistogramMin), 0, 2, false);
+		_DrawString(SZSprintf("%.2e", fHistogramMax), -1, 2, true);
+		_DrawString(SZSprintf("%.2e", cHistogram.fMaxCount), 0, -16, false);
+	}
+	else
+	{
+	// ADD-BY-LEETEN 2009/08/16-END
+
 		// normalize the coordinate
 		glTranslatef(-1.0f, -1.0f, -1.0f);
 		glScalef(2.0f, 2.0f, 2.0f);
@@ -110,6 +177,11 @@ CTfWin::_DisplayFunc()
 		_DrawString(SZSprintf("%.2e", pcTransFunc->cDomainMax.FGetValue()), -1, 0, true);
 		#endif	// MOD-BY-LEETEN 08/12/2009-END
 		// ADD-BY-TLEE 2008/08/21-END
+
+	// ADD-BY-LEETEN 2009/08/16-BEGIN
+	}
+	// ADD-BY-LEETEN 2009/08/16-END
+
 	glMatrixMode(GL_PROJECTION);
 	glPopMatrix();
 
@@ -225,6 +297,11 @@ _End();
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.3  2009/08/12 22:11:48  leeten
+
+[2009/08/12]
+1. [MOD] Change the range of transfer function's domain and the data's domain from floating point numbers to the structure CFloatValue.
+
 Revision 1.2  2008/08/21 14:50:47  leeten
 
 [2008/08/21]
