@@ -99,6 +99,15 @@ GLhandleARB CSetShaders(const char* szVertex, const char* szFragment);
 		SET_3FV_VALUE_BY_LOC(iLoc, LEN, PVALUES);	\
 	}
 
+// ADD-BY-LEETEN 2009/08/17-BEGIN
+#define SET_4FV_VALUE_BY_NAME(SHADER, NAME, LEN, PVALUES)	\
+	{	\
+		int iLoc;	\
+		GET_LOC(SHADER, NAME, iLoc);	\
+		SET_4FV_VALUE_BY_LOC(iLoc, LEN, PVALUES);	\
+	}
+// ADD-BY-LEETEN 2009/08/17-END
+
 // ADD-BY-LEETY 09/15/2006-END
 
 #endif	// __SHADER__H__
@@ -106,6 +115,12 @@ GLhandleARB CSetShaders(const char* szVertex, const char* szFragment);
 /*
 
   $Log: not supported by cvs2svn $
+  Revision 1.4  2008/08/15 02:18:22  leeten
+
+  [2008/08/14]
+  1. [ADD] Declare a new function CSetShadersByString to compile shader progoams as long strings.
+  2. [ADD] Export the function SzTextFileRead as a function.
+
   Revision 1.3  2007/03/12 23:40:22  leeten
 
   [03/12/2007]
