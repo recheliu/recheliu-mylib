@@ -60,6 +60,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libfbow", "..\libfbow\libfb
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "liblog", "..\liblog\liblog.vcproj", "{B4C9D1FC-9BBF-47D6-A086-7763B7E7D70E}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libclip", "..\libclip\libclip.vcproj", "{7CC4431F-6E4D-4643-B2D4-5E6B366C8B45}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -134,6 +136,10 @@ Global
 		{B4C9D1FC-9BBF-47D6-A086-7763B7E7D70E}.Debug|Win32.Build.0 = Debug|Win32
 		{B4C9D1FC-9BBF-47D6-A086-7763B7E7D70E}.Release|Win32.ActiveCfg = Release|Win32
 		{B4C9D1FC-9BBF-47D6-A086-7763B7E7D70E}.Release|Win32.Build.0 = Release|Win32
+		{7CC4431F-6E4D-4643-B2D4-5E6B366C8B45}.Debug|Win32.ActiveCfg = Debug|Win32
+		{7CC4431F-6E4D-4643-B2D4-5E6B366C8B45}.Debug|Win32.Build.0 = Debug|Win32
+		{7CC4431F-6E4D-4643-B2D4-5E6B366C8B45}.Release|Win32.ActiveCfg = Release|Win32
+		{7CC4431F-6E4D-4643-B2D4-5E6B366C8B45}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
