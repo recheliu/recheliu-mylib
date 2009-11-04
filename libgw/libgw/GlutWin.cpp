@@ -510,10 +510,16 @@ CGlutWin::_KeyboardCB(unsigned char key, int x, int y)
 			glutPostRedisplay();
 			break;
 
-		default:
-			_KeyboardFunc(key, x, y);
-			;
+		#if	0	// DEL-BY-LEETEN 2009/11/04-BEGIN
+			default:
+				_KeyboardFunc(key, x, y);
+				;
+		#endif	// ADD-BY-LEETEN 2009/11/04-END
 	}
+
+	// ADD-BY-LEETEN 2009/11/04-BEGIN
+	_KeyboardFunc(key, x, y);
+	// ADD-BY-LEETEN 2009/11/04-END
 }
 
 void 
@@ -1169,6 +1175,12 @@ CGlutWin::_DisableVerticalSync()
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.20  2009/06/01 21:34:47  leeten
+
+[2009/06/01]
+1. [ADD] Include the header typeinfo.
+2. [MOD] Only include wglew when the preprocessor WIN32 is defined.
+
 Revision 1.19  2009/03/04 22:21:04  leeten
 
 [2009/03/04]
