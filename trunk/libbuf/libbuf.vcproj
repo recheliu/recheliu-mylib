@@ -175,6 +175,50 @@
 					>
 					<Tool
 						Name="VCCustomBuildTool"
+						CommandLine="copy &quot;$(InputPath)&quot; &quot;$(ProjectDir)&quot;\..\include\&quot;$(InputFileName)&quot;&#x0D;&#x0A;"
+						Outputs="&quot;$(ProjectDir)&quot;\..\include\&quot;$(InputFileName)&quot;"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="copy &quot;$(InputPath)&quot; &quot;$(ProjectDir)&quot;\..\include\&quot;$(InputFileName)&quot;&#x0D;&#x0A;"
+						Outputs="&quot;$(ProjectDir)&quot;\..\include\&quot;$(InputFileName)&quot;"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\libbuf2d.h"
+				>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="copy &quot;$(InputPath)&quot; &quot;$(ProjectDir)&quot;\..\include\&quot;$(InputFileName)&quot;"
+						Outputs="&quot;$(ProjectDir)&quot;\..\include\&quot;$(InputFileName)&quot;"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="copy &quot;$(InputPath)&quot; &quot;$(ProjectDir)&quot;\..\include\&quot;$(InputFileName)&quot;"
+						Outputs="&quot;$(ProjectDir)&quot;\..\include\&quot;$(InputFileName)&quot;"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\libbuf3d.h"
+				>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
 						CommandLine="copy &quot;$(InputPath)&quot; &quot;$(ProjectDir)&quot;\..\include\&quot;$(InputFileName)&quot;"
 						Outputs="&quot;$(ProjectDir)&quot;\..\include\&quot;$(InputFileName)&quot;"
 					/>
