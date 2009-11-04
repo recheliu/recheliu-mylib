@@ -7,6 +7,10 @@ This file defines several important macros for CUDA.
 #ifndef __LIB_BUFFER_H__
 #define __LIB_BUFFER_H__
 
+// ADD-BY-LEETEN 2009/11/04-BEGIN
+#include <stdlib.h>
+// ADD-BY-LEETEN 2009/11/04-END
+
 #include <memory.h>
 #include <assert.h>
 
@@ -84,6 +88,12 @@ template <typename t> struct TBuffer
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.3  2009/02/22 22:04:50  leeten
+
+[2009/02/22]
+1. [ADD] Add a new method BIsAllocated() to check whether the buffer is allocated.
+2. [ADD] Add a new method USize() to check the length of the buffer.
+
 Revision 1.2  2008/08/14 22:52:24  leeten
 
 [2008/08/14]
