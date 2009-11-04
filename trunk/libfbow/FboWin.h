@@ -27,18 +27,47 @@ protected:
 				// id to the FBO
 	GLuint fid;	
 
-	template<GLenum eDefaultInternalFormat, GLenum eDefaultFormat>
+	// MOD-BY-LEETEN 2009/08/24-FROM:
+		// template<GLenum eDefaultInternalFormat, GLenum eDefaultFormat>
+	// TO:
+	template<GLenum eDefaultInternalFormat, GLenum eDefaultFormat, GLenum eTexTarget = GL_TEXTURE_2D>
+	// MOD-BY-LEETEN 2009/08/24-END
+
 	struct CFrameBufferTexture{
+		// ADD-BY-LEETEN 2009/08/24-BEGIN
+		GLenum eTarget;
+		// ADD-BY-LEETEN 2009/08/24-END
 		GLuint t2d;		// id to the texture
 		GLenum eInternalFormat;	// the internal format of the texture
 		GLenum eFormat;			// the external format of the texture
 
 		CFrameBufferTexture()
 		{
+			// ADD-BY-LEETEN 2009/08/24-BEGIN
+			eTarget = eTexTarget;
+			// ADD-BY-LEETEN 2009/08/24-END
 			t2d = 0;
 			eInternalFormat = eDefaultInternalFormat;
 			eFormat = eDefaultFormat;
 		}
+
+		// ADD-BY-LEETEN 2009/08/24-BEGIN
+		void _SetResolution(int w, int h)
+		{
+			glBindTexture(eTarget, t2d);
+			glTexImage2D(eTarget, 0, eInternalFormat,
+				w, h, 0, eFormat, GL_FLOAT, NULL);	
+		}
+
+		void _Create()
+		{
+			CREATE_2D_TEXTURE(
+				eTarget, t2d, 
+				GL_NEAREST, eInternalFormat, 
+				128, 128, // the real resolution will be determined later
+				eFormat, GL_FLOAT, NULL);
+		}
+		// ADD-BY-LEETEN 2009/08/24-END
 	};
 
 	CFrameBufferTexture<
@@ -66,17 +95,22 @@ public:
 	{
 		if( ibIsFboEnabled )
 		{
-			CREATE_2D_TEXTURE(
-				GL_TEXTURE_2D, cColor.t2d, 
-				GL_NEAREST, cColor.eInternalFormat, 
-				128, 128, // the real resolution will be determined later
-				cColor.eFormat, GL_FLOAT, NULL);
+			#if	0	// MOD-BY-LEETEN 2009/08/24-FROM:
+				CREATE_2D_TEXTURE(
+					GL_TEXTURE_2D, cColor.t2d, 
+					GL_NEAREST, cColor.eInternalFormat, 
+					128, 128, // the real resolution will be determined later
+					cColor.eFormat, GL_FLOAT, NULL);
 
-			CREATE_2D_TEXTURE(
-				GL_TEXTURE_2D, cDepth.t2d, 
-				GL_NEAREST, cDepth.eInternalFormat,
-				128, 128, // the real resolution will be determined later
-				cDepth.eFormat, GL_FLOAT, NULL); 
+				CREATE_2D_TEXTURE(
+					GL_TEXTURE_2D, cDepth.t2d, 
+					GL_NEAREST, cDepth.eInternalFormat,
+					128, 128, // the real resolution will be determined later
+					cDepth.eFormat, GL_FLOAT, NULL); 
+			#else	// MOD-BY-LEETEN 2009/08/24-TO:
+			cColor._Create();
+			cDepth._Create();
+			#endif	// MOD-BY-LEETEN 2009/08/24-END
 
 			glGenFramebuffersEXT(1, &fid);	// allocate framebuffer object
 		}
@@ -92,13 +126,22 @@ public:
 	{
 		if( ibIsFboEnabled )
 		{
+			// ADD-BY-LEETEN 2009/08/24-BEGIN
+			glPushAttrib(GL_ENABLE_BIT);
+			// ADD-BY-LEETEN 2009/08/24-END
+
 			glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
 
 			glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 
 			glActiveTexture(GL_TEXTURE0);
-			glBindTexture(GL_TEXTURE_2D, cColor.t2d);
-			glEnable(GL_TEXTURE_2D);
+			#if	0	// MOD-BY-LEETEN 2009/08/24-FROM:
+				glBindTexture(GL_TEXTURE_2D, cColor.t2d);
+				glEnable(GL_TEXTURE_2D);
+			#else	// MOD-BY-LEETEN 2009/08/24-TO:
+			glBindTexture(cColor.eTarget, cColor.t2d);
+			glEnable(cColor.eTarget);
+			#endif	// MOD-BY-LEETEN 2009/08/24-END
 
 			glMatrixMode(GL_PROJECTION);
 			glLoadIdentity();
@@ -112,7 +155,11 @@ public:
 				glTexCoord2f(1.0f, 1.0f);	glVertex2f( 1.0f,  1.0f);
 				glTexCoord2f(0.0f, 1.0f);	glVertex2f(-1.0f,  1.0f);
 			glEnd();
-			glDisable(GL_TEXTURE_2D);
+			// MOD-BY-LEETEN 2009/08/24-FROM:
+				//	glDisable(GL_TEXTURE_2D);
+			// TO:
+			glPopAttrib();	// glPushAttrib(GL_ENABLE_BIT);
+			// MOD-BY-LEETEN 2009/08/24-END
 		} // if 
 	}
 
@@ -122,22 +169,37 @@ public:
 		{
 			if( ibIsFboEnabled )
 			{
-				glBindTexture(GL_TEXTURE_2D, cColor.t2d);
-				glTexImage2D(GL_TEXTURE_2D, 0, cColor.eInternalFormat,
-					w, h, 0, cColor.eFormat, GL_FLOAT, NULL);	
+				#if	0	// MOD-BY-LEETEN 2009/08/24-FROM:
+					glBindTexture(GL_TEXTURE_2D, cColor.t2d);
+					glTexImage2D(GL_TEXTURE_2D, 0, cColor.eInternalFormat,
+						w, h, 0, cColor.eFormat, GL_FLOAT, NULL);	
 
-				glBindTexture(GL_TEXTURE_2D, cDepth.t2d);
-				glTexImage2D(GL_TEXTURE_2D, 0, cDepth.eInternalFormat,
-					w, h, 0, cDepth.eFormat, GL_FLOAT, NULL);	
+					glBindTexture(GL_TEXTURE_2D, cDepth.t2d);
+					glTexImage2D(GL_TEXTURE_2D, 0, cDepth.eInternalFormat,
+						w, h, 0, cDepth.eFormat, GL_FLOAT, NULL);	
+				#else	// MOD-BY-LEETEN 2009/08/24-TO:
+				cColor._SetResolution(w, h);
+				cDepth._SetResolution(w, h);
+				#endif	// MOD-BY-LEETEN 2009/08/24-END
 
 				glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, fid);
+				#if	0	// MOD-BY-LEETEN 2009/08/24-FROM:
+					glFramebufferTexture2DEXT(
+						GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT,
+						GL_TEXTURE_2D, cColor.t2d, 0);
+
+					glFramebufferTexture2DEXT(
+						GL_FRAMEBUFFER_EXT, GL_DEPTH_ATTACHMENT_EXT,
+						GL_TEXTURE_2D, cDepth.t2d, 0);
+				#else	// MOD-BY-LEETEN 2009/08/24-TO:
 				glFramebufferTexture2DEXT(
 					GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT,
-					GL_TEXTURE_2D, cColor.t2d, 0);
+					cColor.eTarget, cColor.t2d, 0);
 
 				glFramebufferTexture2DEXT(
 					GL_FRAMEBUFFER_EXT, GL_DEPTH_ATTACHMENT_EXT,
-					GL_TEXTURE_2D, cDepth.t2d, 0);
+					cColor.eTarget, cDepth.t2d, 0);
+				#endif	// MOD-BY-LEETEN 2009/08/24-END
 
 				assert( GL_FRAMEBUFFER_COMPLETE_EXT == EGetFboStatus(true) );
 				glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
@@ -164,5 +226,10 @@ public:
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.1  2009/03/09 19:28:12  leeten
+
+[2009/03/09]
+1. [1ST] This project define a subclass CFobWin inheriting from CGlutWin, which defines a GLUT window with FBO support.
+
 
 */
