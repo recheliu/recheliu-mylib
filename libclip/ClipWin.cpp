@@ -147,6 +147,10 @@ CClipWin::_DisplayFunc()
 		
 									// step-1:
 									// setup clipping planes
+		// ADD-BY-LEETEN 2009/11/04-BEGIN
+		if( !ibDisableAll )
+		// ADD-BY-LEETEN 2009/11/04-END
+
 		for(int i=0; i < CClipPlanes::NR_OF_CLIP_PLANES; i++) 
 		{
 			if( cClipPlanes.piFlags[i] )
@@ -243,15 +247,26 @@ CClipWin::_InitFunc()
 
 	PCGetGluiSubwin()->add_checkbox("Plot Clipping Planes?", &ibPlotClippingPlanes);
 	PCGetGluiSubwin()->add_checkbox("Keep Update?", &ibKeepUpdate);
-	PCGetGluiSubwin()->add_checkbox("Keep Update?", &ibDisableAll);
+	// MOD-BY-LEETEN 2009/11/04-FROM:
+		// PCGetGluiSubwin()->add_checkbox("Keep Update?", &ibDisableAll);
+	// TO:
+	PCGetGluiSubwin()->add_checkbox("Disable All?", &ibDisableAll);
+	// MOD-BY-LEETEN 2009/11/04-END
 	PCGetGluiSubwin()->add_button("Update", IAddWid(EVENT_BUTTON_UPDATE), &CGlutWin::_GluiCB_static);
 
 	PCGetGluiSubwin()->add_column();
 	cInteriorVolume._AddGlui(PCGetGluiSubwin());
 
+	// ADD-BY-LEETEN 2009/11/04-BEGIN
+	this->_DisableVerticalSync();
+	// ADD-BY-LEETEN 2009/11/04-END
 
 	cClipEditor._SetClipPlanes(&cClipPlanes);
 	cClipEditor.ICreate("Clip Plane Editor", false, 100, 100, 256, 384);
+	// ADD-BY-LEETEN 2009/11/04-BEGIN
+	cClipEditor._DisableVerticalSync();
+	// ADD-BY-LEETEN 2009/11/04-END
+
 
 	_Set();
 
@@ -265,7 +280,10 @@ CClipWin::_PassEnabledClipPlanes()
 	static double ppdEnalbedClipPlanes[CClipPlanes::NR_OF_CLIP_PLANES][4];
 	int iNrOfEnabledClipPlanes = 0;
 
-	if( 0 == ibDisableAll )
+	// ADD-BY-LEETEN 2009/11/04-BEGIN
+	if( !ibDisableAll )
+	// ADD-BY-LEETEN 2009/11/04-END
+
 		for(int cp = 0; cp < CClipPlanes::NR_OF_CLIP_PLANES; cp++)
 			if( cClipPlanes.piFlags[cp] )
 			{
@@ -319,5 +337,10 @@ CClipWin::~CClipWin(void)
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.1  2009/08/26 16:01:12  leeten
+
+[2009/08/26]
+1. [1ST] First time checkin.
+
 
 */
