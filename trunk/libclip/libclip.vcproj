@@ -153,6 +153,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ClipVolume.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ClipWin.cpp"
 				>
 			</File>
@@ -168,6 +172,28 @@
 			>
 			<File
 				RelativePath=".\ClipPlanes.h"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="copy &quot;$(InputPath)&quot; &quot;$(ProjectDir)&quot;\..\include\$(ProjectName)\$(InputFileName)&#x0D;&#x0A;"
+						Outputs="&quot;$(ProjectDir)&quot;\..\include\$(ProjectName)\$(InputFileName)"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="copy &quot;$(InputPath)&quot; &quot;$(ProjectDir)&quot;\..\include\$(ProjectName)\$(InputFileName)&#x0D;&#x0A;"
+						Outputs="&quot;$(ProjectDir)&quot;\..\include\$(ProjectName)\$(InputFileName)"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\ClipVolume.h"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -196,7 +222,7 @@
 					>
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="copy &quot;$(InputPath)&quot; &quot;$(ProjectDir)&quot;\..\include\$(ProjectName)\$(InputFileName)"
+						CommandLine="copy &quot;$(InputPath)&quot; &quot;$(ProjectDir)&quot;\..\include\$(ProjectName)\$(InputFileName)&#x0D;&#x0A;"
 						Outputs="&quot;$(ProjectDir)&quot;\..\include\$(ProjectName)\$(InputFileName)"
 					/>
 				</FileConfiguration>
@@ -205,7 +231,7 @@
 					>
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="copy &quot;$(InputPath)&quot; &quot;$(ProjectDir)&quot;\..\include\$(ProjectName)\$(InputFileName)"
+						CommandLine="copy &quot;$(InputPath)&quot; &quot;$(ProjectDir)&quot;\..\include\$(ProjectName)\$(InputFileName)&#x0D;&#x0A;"
 						Outputs="&quot;$(ProjectDir)&quot;\..\include\$(ProjectName)\$(InputFileName)"
 					/>
 				</FileConfiguration>
@@ -217,6 +243,28 @@
 			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
 			>
 		</Filter>
+		<File
+			RelativePath=".\clipvolume.frag"
+			>
+			<FileConfiguration
+				Name="Debug|Win32"
+				>
+				<Tool
+					Name="VCCustomBuildTool"
+					CommandLine="shader2string $(InputFileName) $(InputFileName).h"
+					Outputs="$(InputFileName).h"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release|Win32"
+				>
+				<Tool
+					Name="VCCustomBuildTool"
+					CommandLine="shader2string $(InputFileName) $(InputFileName).hshader2string $(InputFileName) $(InputFileName).h"
+					Outputs="$(InputFileName).h"
+				/>
+			</FileConfiguration>
+		</File>
 		<File
 			RelativePath=".\ReadMe.txt"
 			>
