@@ -4,6 +4,10 @@
 	// #include "libtf2.h"
 // DEL-BY-TLEE 2008/08/20-END
 
+// ADD-BY-LEETEN 2009/11/05-BEGIN
+#include "fbo.h"
+// ADD-BY-LEETEN 2009/11/05-END
+
 #include "DvrWin.h"
 
 CDvrWin::CDvrWin(void)
@@ -565,6 +569,12 @@ _End();
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.7  2008/11/30 04:21:14  leeten
+
+[2008/11/29]
+1. [ADD] Add control the modify the gain for ray integral.
+2. [ADD] Call CGlutWin::_DisableVerticalSync().
+
 Revision 1.6  2008/08/21 14:56:54  leeten
 
 [2008/08/21]
