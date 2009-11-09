@@ -20,6 +20,10 @@ existing projects.
 
 	#include "GlutWin.h"
 
+	// ADD-BY-LEETEN 2009/11/05-BEGIN
+	#include "fbo.h"
+	// ADD-BY-LEETEN 2009/11/05-END
+
 class CFboWin :
 	public CGlutWin
 {
@@ -27,48 +31,50 @@ protected:
 				// id to the FBO
 	GLuint fid;	
 
-	// MOD-BY-LEETEN 2009/08/24-FROM:
-		// template<GLenum eDefaultInternalFormat, GLenum eDefaultFormat>
-	// TO:
-	template<GLenum eDefaultInternalFormat, GLenum eDefaultFormat, GLenum eTexTarget = GL_TEXTURE_2D>
-	// MOD-BY-LEETEN 2009/08/24-END
+	#if	0	// DEL-BY-LEETEN 2009/11/05-BEGIN
+		// MOD-BY-LEETEN 2009/08/24-FROM:
+			// template<GLenum eDefaultInternalFormat, GLenum eDefaultFormat>
+		// TO:
+		template<GLenum eDefaultInternalFormat, GLenum eDefaultFormat, GLenum eTexTarget = GL_TEXTURE_2D>
+		// MOD-BY-LEETEN 2009/08/24-END
 
-	struct CFrameBufferTexture{
-		// ADD-BY-LEETEN 2009/08/24-BEGIN
-		GLenum eTarget;
-		// ADD-BY-LEETEN 2009/08/24-END
-		GLuint t2d;		// id to the texture
-		GLenum eInternalFormat;	// the internal format of the texture
-		GLenum eFormat;			// the external format of the texture
-
-		CFrameBufferTexture()
-		{
+		struct CFrameBufferTexture{
 			// ADD-BY-LEETEN 2009/08/24-BEGIN
-			eTarget = eTexTarget;
+			GLenum eTarget;
 			// ADD-BY-LEETEN 2009/08/24-END
-			t2d = 0;
-			eInternalFormat = eDefaultInternalFormat;
-			eFormat = eDefaultFormat;
-		}
+			GLuint t2d;		// id to the texture
+			GLenum eInternalFormat;	// the internal format of the texture
+			GLenum eFormat;			// the external format of the texture
 
-		// ADD-BY-LEETEN 2009/08/24-BEGIN
-		void _SetResolution(int w, int h)
-		{
-			glBindTexture(eTarget, t2d);
-			glTexImage2D(eTarget, 0, eInternalFormat,
-				w, h, 0, eFormat, GL_FLOAT, NULL);	
-		}
+			CFrameBufferTexture()
+			{
+				// ADD-BY-LEETEN 2009/08/24-BEGIN
+				eTarget = eTexTarget;
+				// ADD-BY-LEETEN 2009/08/24-END
+				t2d = 0;
+				eInternalFormat = eDefaultInternalFormat;
+				eFormat = eDefaultFormat;
+			}
 
-		void _Create()
-		{
-			CREATE_2D_TEXTURE(
-				eTarget, t2d, 
-				GL_NEAREST, eInternalFormat, 
-				128, 128, // the real resolution will be determined later
-				eFormat, GL_FLOAT, NULL);
-		}
-		// ADD-BY-LEETEN 2009/08/24-END
-	};
+			// ADD-BY-LEETEN 2009/08/24-BEGIN
+			void _SetResolution(int w, int h)
+			{
+				glBindTexture(eTarget, t2d);
+				glTexImage2D(eTarget, 0, eInternalFormat,
+					w, h, 0, eFormat, GL_FLOAT, NULL);	
+			}
+
+			void _Create()
+			{
+				CREATE_2D_TEXTURE(
+					eTarget, t2d, 
+					GL_NEAREST, eInternalFormat, 
+					128, 128, // the real resolution will be determined later
+					eFormat, GL_FLOAT, NULL);
+			}
+			// ADD-BY-LEETEN 2009/08/24-END
+		};
+	#endif	// DEL-BY-LEETEN 2009/11/05-END
 
 	CFrameBufferTexture<
 		GL_RGBA, 
@@ -226,6 +232,12 @@ public:
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.2  2009/11/04 20:49:59  leeten
+
+[2009/11/04]
+1. [ADD] Define new methods _SetResolution() to specify the resolution of the FBO.
+2. [ADD] Define new methods _Create() to allocate the FBO.
+
 Revision 1.1  2009/03/09 19:28:12  leeten
 
 [2009/03/09]
