@@ -65,14 +65,21 @@
 			}\
 		}
 
-// Declaration of functions
-GLenum EGetFboStatus(bool bPrint=false);
+	// Declaration of functions
+// DEL-BY-LEETEN 2009/11/05-BEGIN
+	// GLenum EGetFboStatus(bool bPrint=false);
+// DEL-BY-LEETEN 2009/11/05-END
 
 #endif // __LIB_OPENGL_LIB_H_
 
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.6  2009/01/20 23:00:35  leeten
+
+[2009/01/19]
+1. [DEBUG] Add the comma in CREATE_3D_TEXTURE to remove the compilation error.
+
 Revision 1.5  2009/01/19 17:20:38  leeten
 
 [2009/01/19]
