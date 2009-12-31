@@ -28,6 +28,15 @@ protected:
 							// the texture coordinate and as the source for ping-pong rendering
 	virtual void _BeginDisplay();	
 	virtual void _EndDisplay();		
+	// ADD-BY-LEETEN 12/30/2009-BEGIN
+	virtual void 
+		CDvrWin2::_RenderSlab(
+			int iSlab, int iNrOfSlabs,
+			double pdModelviewMatrix[], double pdProjectionMatrix[], int piViewport[],
+			double dMinX, double dMaxX, 
+			double dMinY, double dMaxY, 
+			double dMinZ, double dMaxZ);
+	// ADD-BY-LEETEN 12/30/2009-END
 
 						// inhered interfaces
 	void _DisplayFunc();
@@ -43,5 +52,10 @@ public:
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.1  2009/10/27 14:04:07  leeten
+
+[2009/10/27]
+1. [1ST] First time checkin. This library defined DvrWin2, a new class for volume rendering. This class already supports buildit-in ping-pong rendering.
+
 
 */
