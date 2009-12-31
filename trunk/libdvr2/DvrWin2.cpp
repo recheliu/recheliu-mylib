@@ -13,6 +13,51 @@ CDvrWin2::_EndDisplay()
 {
 }
 
+// ADD-BY-LEETEN 12/30/2009-BEGIN
+void 
+CDvrWin2::_RenderSlab(
+	int iSlab, int iNrOfSlabs,
+	double pdModelviewMatrix[],
+	double pdProjectionMatrix[],
+	int piViewport[],
+	double dMinX, double dMaxX, 
+	double dMinY, double dMaxY, 
+	double dMinZ, double dMaxZ)
+{
+	TMatrix tIdentityMatrix = 
+	{
+		1.0, 0.0, 0.0, 0.0,
+		0.0, 1.0, 0.0, 0.0,
+		0.0, 0.0, 1.0, 0.0,
+		0.0, 0.0, 0.0, 1.0,
+	};
+
+	double dX, dY, dZ;
+	double dX_win, dY_win, dZ_win;
+	double dColor = (double)iSlab / (double)iNrOfSlabs;
+	double dDepth = ((double)iSlab / (double)iNrOfSlabs) * (dMaxZ - dMinZ) + dMinZ; 
+
+	glBegin(GL_QUADS);
+		gluProject(		dMinX,	dMinY,	dDepth,	tIdentityMatrix,	pdProjectionMatrix, piViewport, &dX_win, &dY_win, &dZ_win);
+		gluUnProject(	dX_win, dY_win, dZ_win, pdModelviewMatrix,	pdProjectionMatrix, piViewport, &dX, &dY, &dZ);
+		glVertex3d(		dX, dY, dZ);
+
+		gluProject(		dMaxX,	dMinY, dDepth,	tIdentityMatrix,	pdProjectionMatrix, piViewport, &dX_win, &dY_win, &dZ_win);
+		gluUnProject(	dX_win, dY_win, dZ_win, pdModelviewMatrix,	pdProjectionMatrix, piViewport, &dX, &dY, &dZ);
+		glVertex3d(		dX, dY, dZ);
+
+		gluProject(		dMaxX,	dMaxY, dDepth,	tIdentityMatrix,	pdProjectionMatrix, piViewport, &dX_win, &dY_win, &dZ_win);
+		gluUnProject(	dX_win, dY_win, dZ_win, pdModelviewMatrix,	pdProjectionMatrix, piViewport, &dX, &dY, &dZ);
+		glVertex3d(		dX, dY, dZ);
+
+		gluProject(		dMinX,	dMaxY, dDepth,	tIdentityMatrix,	pdProjectionMatrix, piViewport, &dX_win, &dY_win, &dZ_win);
+		gluUnProject(	dX_win, dY_win, dZ_win, pdModelviewMatrix,	pdProjectionMatrix, piViewport, &dX, &dY, &dZ);
+		glVertex3d(		dX, dY, dZ);
+	glEnd();
+}
+// ADD-BY-LEETEN 12/30/2009-END
+
+
 //////////////////////////////////////////////////////
 void 
 CDvrWin2::_DisplayFunc()
@@ -82,25 +127,57 @@ CDvrWin2::_DisplayFunc()
 	double dMaxX, dMaxY, dMaxZ;
 	TMatrix tModelviewMatrix;
 
+	// ADD-BY-LEETEN 12/30/2009-BEGIN
+	TMatrix tIdentityMatrix = 
+	{
+		1.0, 0.0, 0.0, 0.0,
+		0.0, 1.0, 0.0, 0.0,
+		0.0, 0.0, 1.0, 0.0,
+		0.0, 0.0, 0.0, 1.0,
+	};
+	// ADD-BY-LEETEN 12/30/2009-END
+
+
 	dMinX = dMinY = dMinZ = HUGE_VAL;
 	dMaxX = dMaxY = dMaxZ = -HUGE_VAL;
 	glGetDoublev(GL_MODELVIEW_MATRIX, tModelviewMatrix);
 	for(int i=0; i<sizeof(pdCornerCoord)/sizeof(pdCornerCoord[0]); i++) 
 	{
-		double dX, dY, dZ;
+		#if	0		// MOD-BY-LEETEN 12/30/2009-FROM:
+			double dX, dY, dZ;
+			gluProject(
+				pdCornerCoord[i][0], pdCornerCoord[i][1], pdCornerCoord[i][2],
+				tModelviewMatrix, tProjectionMatrix, piViewport,
+				&dX, &dY, &dZ);
+
+			if( dX < dMinX )	dMinX = dX;
+			if( dX > dMaxX )	dMaxX = dX;
+
+			if( dY < dMinY )	dMinY = dY;
+			if( dY > dMaxY )	dMaxY = dY;
+
+			if( dZ < dMinZ )	dMinZ = dZ;
+			if( dZ > dMaxZ )	dMaxZ = dZ;
+		#else	// MOD-BY-LEETEN 12/30/2009-TO:
+		double dX_win, dY_win, dZ_win;
+		double dX_eye, dY_eye, dZ_eye;
 		gluProject(
 			pdCornerCoord[i][0], pdCornerCoord[i][1], pdCornerCoord[i][2],
 			tModelviewMatrix, tProjectionMatrix, piViewport,
-			&dX, &dY, &dZ);
+			&dX_win, &dY_win, &dZ_win);
 
-		if( dX < dMinX )	dMinX = dX;
-		if( dX > dMaxX )	dMaxX = dX;
+		gluUnProject(
+			dX_win, dY_win, dZ_win,
+			tIdentityMatrix, tProjectionMatrix, piViewport,
+			&dX_eye, &dY_eye, &dZ_eye);
 
-		if( dY < dMinY )	dMinY = dY;
-		if( dY > dMaxY )	dMaxY = dY;
-
-		if( dZ < dMinZ )	dMinZ = dZ;
-		if( dZ > dMaxZ )	dMaxZ = dZ;
+		dMinX = min(dMinX, dX_eye);
+		dMaxX = max(dMaxX, dX_eye);
+		dMinY = min(dMinY, dY_eye);
+		dMaxY = max(dMaxY, dY_eye);
+		dMinZ = min(dMinZ, dZ_eye);
+		dMaxZ = max(dMaxZ, dZ_eye);
+		#endif	// MOD-BY-LEETEN 12/30/2009-END
 	}
 
 						// initialize the index for pint-pong rendering			
@@ -149,32 +226,42 @@ CDvrWin2::_DisplayFunc()
 		glBindTexture(pcSlabs[1 - iSlab].cBuffer.eTarget, pcSlabs[1 - iSlab].cBuffer.t2d);
 	
 							// rendering the quad
-		double dX, dY, dZ;
+		#if	0	// MOD-BY-LEETEN 12/30/2009-FROM:
+			double dX, dY, dZ;
+			double dColor = (double)z / (double)iNrOfSlices;
 
-		double dColor = (double)z / (double)iNrOfSlices;
-		double dDepth = (1.0 - (double)z / (double)iNrOfSlices) * (dMaxZ - dMinZ) + dMinZ; 
+			double dDepth = (1.0 - (double)z / (double)iNrOfSlices) * (dMaxZ - dMinZ) + dMinZ; 
+			glBegin(GL_QUADS);
+				gluUnProject(dMinX, dMinY, dDepth,
+					tModelviewMatrix, tProjectionMatrix, piViewport,
+					&dX, &dY, &dZ);
+				glVertex3d(dX, dY, dZ);
 
-		glBegin(GL_QUADS);
-			gluUnProject(dMinX, dMinY, dDepth,
-				tModelviewMatrix, tProjectionMatrix, piViewport,
-				&dX, &dY, &dZ);
-			glVertex3d(dX, dY, dZ);
+				gluUnProject(dMaxX, dMinY, dDepth,
+					tModelviewMatrix, tProjectionMatrix, piViewport,
+					&dX, &dY, &dZ);
+				glVertex3d(dX, dY, dZ);
 
-			gluUnProject(dMaxX, dMinY, dDepth,
-				tModelviewMatrix, tProjectionMatrix, piViewport,
-				&dX, &dY, &dZ);
-			glVertex3d(dX, dY, dZ);
+				gluUnProject(dMaxX, dMaxY, dDepth,
+					tModelviewMatrix, tProjectionMatrix, piViewport,
+					&dX, &dY, &dZ);
+				glVertex3d(dX, dY, dZ);
 
-			gluUnProject(dMaxX, dMaxY, dDepth,
-				tModelviewMatrix, tProjectionMatrix, piViewport,
-				&dX, &dY, &dZ);
-			glVertex3d(dX, dY, dZ);
+				gluUnProject(dMinX, dMaxY, dDepth,
+					tModelviewMatrix, tProjectionMatrix, piViewport,
+					&dX, &dY, &dZ);
+				glVertex3d(dX, dY, dZ);
+			glEnd();
+		#else	// MOD-BY-LEETEN 12/30/2009-TO:
+		_RenderSlab(
+			z, iNrOfSlices, 
 
-			gluUnProject(dMinX, dMaxY, dDepth,
-				tModelviewMatrix, tProjectionMatrix, piViewport,
-				&dX, &dY, &dZ);
-			glVertex3d(dX, dY, dZ);
-		glEnd();
+			tModelviewMatrix, tProjectionMatrix, piViewport,
+			
+			dMinX, dMaxX, 
+			dMinY, dMaxY, 
+			dMinZ, dMaxZ);
+		#endif	// MOD-BY-LEETEN 12/30/2009-END
 
 							// switch the slab index for ping-pong rendering
 		iSlab = 1 - iSlab;
@@ -260,5 +347,10 @@ CDvrWin2::~CDvrWin2(void)
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.1  2009/10/27 14:04:07  leeten
+
+[2009/10/27]
+1. [1ST] First time checkin. This library defined DvrWin2, a new class for volume rendering. This class already supports buildit-in ping-pong rendering.
+
 
 */
