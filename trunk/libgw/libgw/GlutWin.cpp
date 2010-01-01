@@ -510,6 +510,51 @@ CGlutWin::_KeyboardCB(unsigned char key, int x, int y)
 			glutPostRedisplay();
 			break;
 
+#if	1	// TEST-ADD
+		case '1':	case '2':	case '3':
+		case '4':	case '5':	case '6':
+		case '7':	case '8':	case '9':
+			{
+				double pdAxis[3]; 
+				double dAngle;
+				switch(key){
+				case '1': case '3': case '7': case '9':
+					pdAxis[0] = 0.0;	pdAxis[1] = 0.0;	pdAxis[2] = 1.0;
+					break;
+
+				case '4': case '6':
+					pdAxis[0] = 0.0;	pdAxis[1] = 1.0;	pdAxis[2] = 0.0;
+					break;
+
+				case '2': case '8':
+					pdAxis[0] = 1.0;	pdAxis[1] = 0.0;	pdAxis[2] = 0.0;
+					break;
+				}
+				switch(key){
+				case '1':	dAngle = +45.0;		break;
+				case '7':	dAngle = +135.0;	break;
+				case '3':	dAngle = -45.0;		break;
+				case '9':	dAngle = -135.0;	break;
+				case '4':	dAngle = +45.0;		break;
+				case '6':	dAngle = -45.0;		break;
+				case '2':	dAngle = -45.0;		break;
+				case '8':	dAngle = +45.0;		break;
+				}
+
+				glMatrixMode(GL_MODELVIEW);
+				glLoadIdentity();
+
+				glTranslated(tModelMatrix[12], tModelMatrix[13], tModelMatrix[14]);
+				glRotated( dAngle, pdAxis[0], pdAxis[1], pdAxis[2]);
+				TMatrix tNormalMatrix;
+				memcpy(tNormalMatrix, tModelMatrix, sizeof(tNormalMatrix));
+				memset(&tNormalMatrix[12], 0, 3 * sizeof(tNormalMatrix[12]));
+				glMultMatrixd(tNormalMatrix);
+				glGetDoublev(GL_MODELVIEW_MATRIX, tModelMatrix);
+			}
+			break;
+#endif
+
 		#if	0	// DEL-BY-LEETEN 2009/11/04-BEGIN
 			default:
 				_KeyboardFunc(key, x, y);
@@ -1175,6 +1220,11 @@ CGlutWin::_DisableVerticalSync()
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.21  2009/11/04 20:51:37  leeten
+
+[2009/11/04]
+1. [MOD] Call the _Keyboardfunc() after the switch-case statement.
+
 Revision 1.20  2009/06/01 21:34:47  leeten
 
 [2009/06/01]
