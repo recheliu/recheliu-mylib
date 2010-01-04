@@ -510,7 +510,16 @@ CGlutWin::_KeyboardCB(unsigned char key, int x, int y)
 			glutPostRedisplay();
 			break;
 
-#if	1	// TEST-ADD
+		// ADD-BY-LEETEN 01/04/2010-BEGIN
+		case '0':
+			// reset the model matrix
+			glMatrixMode(GL_MODELVIEW);
+			glLoadIdentity();
+			glGetDoublev(GL_MODELVIEW_MATRIX, tModelMatrix);
+			break;
+		// ADD-BY-LEETEN 01/04/2010-END
+
+		// ADD-BY-LEETEN 01/02/2010-BEGIN
 		case '1':	case '2':	case '3':
 		case '4':	case '5':	case '6':
 		case '7':	case '8':	case '9':
@@ -535,10 +544,17 @@ CGlutWin::_KeyboardCB(unsigned char key, int x, int y)
 				case '7':	dAngle = +135.0;	break;
 				case '3':	dAngle = -45.0;		break;
 				case '9':	dAngle = -135.0;	break;
-				case '4':	dAngle = +45.0;		break;
-				case '6':	dAngle = -45.0;		break;
-				case '2':	dAngle = -45.0;		break;
-				case '8':	dAngle = +45.0;		break;
+				#if	0	// MOD-BY-LEETEN 01/04/2010-FROM:
+					case '4':	dAngle = +45.0;		break;
+					case '6':	dAngle = -45.0;		break;
+					case '2':	dAngle = -45.0;		break;
+					case '8':	dAngle = +45.0;		break;
+				#else	// MOD-BY-LEETEN 01/04/2010-TO:
+				case '4':	dAngle = -45.0;		break;
+				case '6':	dAngle = +45.0;		break;
+				case '2':	dAngle = +45.0;		break;
+				case '8':	dAngle = -45.0;		break;
+				#endif	// MOD-BY-LEETEN 01/04/2010-END
 				}
 
 				glMatrixMode(GL_MODELVIEW);
@@ -553,7 +569,7 @@ CGlutWin::_KeyboardCB(unsigned char key, int x, int y)
 				glGetDoublev(GL_MODELVIEW_MATRIX, tModelMatrix);
 			}
 			break;
-#endif
+		// ADD-BY-LEETEN 01/02/2010-END
 
 		#if	0	// DEL-BY-LEETEN 2009/11/04-BEGIN
 			default:
@@ -575,17 +591,55 @@ CGlutWin::_SpecialCB(int skey, int x, int y)
 	// ADD-BY-LEETEN 08/13/2008-END
 
 	switch(skey) {
+		#if	0	// MOD-BY-LEETEN 01/04/2010-FROM:
+			case GLUT_KEY_LEFT:
+				break;
+
+			case GLUT_KEY_RIGHT:
+				break;
+
+			case GLUT_KEY_UP:
+				break;
+
+			case GLUT_KEY_DOWN:
+				break;
+		#else	// MOD-BY-LEETEN 01/04/2010-TO:
 		case GLUT_KEY_LEFT:
-			break;
-
 		case GLUT_KEY_RIGHT:
-			break;
-
 		case GLUT_KEY_UP:
-			break;
-
 		case GLUT_KEY_DOWN:
+			{
+			double pdAxis[3]; 
+			double dAngle;
+			switch(skey){
+			case GLUT_KEY_LEFT: case GLUT_KEY_RIGHT:
+				pdAxis[0] = 0.0;	pdAxis[1] = 1.0;	pdAxis[2] = 0.0;
+				break;
+
+			case GLUT_KEY_DOWN: case GLUT_KEY_UP:
+				pdAxis[0] = 1.0;	pdAxis[1] = 0.0;	pdAxis[2] = 0.0;
+				break;
+			}
+			switch(skey){
+			case GLUT_KEY_LEFT:		dAngle = -5.0;		break;
+			case GLUT_KEY_RIGHT:	dAngle = +5.0;		break;
+			case GLUT_KEY_UP:		dAngle = -5.0;		break;	
+			case GLUT_KEY_DOWN:		dAngle = +5.0;		break;
+			}
+
+			glMatrixMode(GL_MODELVIEW);
+			glLoadIdentity();
+
+			glTranslated(tModelMatrix[12], tModelMatrix[13], tModelMatrix[14]);
+			glRotated( dAngle, pdAxis[0], pdAxis[1], pdAxis[2]);
+			TMatrix tNormalMatrix;
+			memcpy(tNormalMatrix, tModelMatrix, sizeof(tNormalMatrix));
+			memset(&tNormalMatrix[12], 0, 3 * sizeof(tNormalMatrix[12]));
+			glMultMatrixd(tNormalMatrix);
+			glGetDoublev(GL_MODELVIEW_MATRIX, tModelMatrix);
+			}
 			break;
+		#endif	// MOD-BY-LEETEN 01/04/2010-END
 
 		default:
 			_SpecialFunc(skey, x, y);
@@ -1220,6 +1274,11 @@ CGlutWin::_DisableVerticalSync()
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.22  2010/01/01 18:40:06  leeten
+
+[01/01/2010]
+1. [ADD] Define new hotkeys to control the orientation of the object.
+
 Revision 1.21  2009/11/04 20:51:37  leeten
 
 [2009/11/04]
