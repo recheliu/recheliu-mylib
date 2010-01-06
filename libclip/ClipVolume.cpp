@@ -82,6 +82,16 @@ CClipVolume::_Create()
 
 CClipVolume::CClipVolume(void)
 {
+	// ADD-BY-LEETEN 01/05/2010-BEGIN
+	FILE *fpFragShader;
+	fpFragShader = fopen("clip_frag_func.frag.h", "wt");
+	assert(fpFragShader);
+	fputs(
+		#include "clip_frag_func.frag.h"
+		,
+		fpFragShader);
+	fclose(fpFragShader);
+	// ADD-BY-LEETEN 01/05/2010-END
 }
 
 CClipVolume::~CClipVolume(void)
@@ -91,5 +101,10 @@ CClipVolume::~CClipVolume(void)
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.1  2009/11/09 20:16:38  leeten
+
+[2009/11/09]
+1. [1ST] First time checkin.
+
 
 */
