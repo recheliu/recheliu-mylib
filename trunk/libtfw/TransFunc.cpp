@@ -1,3 +1,7 @@
+// ADD-BY-LEETEN 01/05/2010-BEGIN
+#include <assert.h>
+// ADD-BY-LEETEN 01/05/2010-END
+
 #include "TransFunc.h"
 
 void 
@@ -223,9 +227,40 @@ CTransFunc::_ExportColorMap(float pfColorMap[], int iNrOfEntries)
 	}
 }
 
+// ADD-BY-LEETEN 01/05/2010-BEGIN
+CTransFunc::CTransFunc()
+{
+	CKnot cBegin(0.0f, 0.0f), cEnd(1.0f, 0.0f);
+	for(int c = 0; c < NR_OF_COLORS; c++)	
+	{
+		plSplines[c].push_back(cBegin);
+		plSplines[c].push_back(cEnd);
+	}
+
+	FILE *fpFragShader;
+	fpFragShader = fopen("tf1d_frag_func.frag.h", "wt");
+	assert(fpFragShader);
+	fputs(
+		#include "tf1d_frag_func.frag.h"
+		,
+		fpFragShader);
+	fclose(fpFragShader);
+}
+
+CTransFunc::~CTransFunc()
+{
+}
+
+// ADD-BY-LEETEN 01/05/2010-END
+
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.7  2009/08/13 17:26:36  leeten
+
+[2009/08/13]
+1. [MOD] Output the range of the transfer function to significand and exponent.
+
 Revision 1.6  2009/08/12 22:11:48  leeten
 
 [2009/08/12]
