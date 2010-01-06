@@ -173,7 +173,7 @@
 					>
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="copy &quot;$(InputPath)&quot; &quot;$(ProjectDir)&quot;\..\include\$(ProjectName)\$(InputFileName)"
+						CommandLine="copy &quot;$(InputPath)&quot; &quot;$(ProjectDir)&quot;\..\include\$(ProjectName)\$(InputFileName)&#x0D;&#x0A;"
 						Outputs="&quot;$(ProjectDir)&quot;\..\include\$(ProjectName)\$(InputFileName)"
 					/>
 				</FileConfiguration>
@@ -276,6 +276,28 @@
 		<File
 			RelativePath=".\ReadMe.txt"
 			>
+		</File>
+		<File
+			RelativePath=".\tf1d_frag_func.frag"
+			>
+			<FileConfiguration
+				Name="Debug|Win32"
+				>
+				<Tool
+					Name="VCCustomBuildTool"
+					CommandLine="shader2string $(InputFileName) $(InputFileName).h"
+					Outputs="$(InputFileName).h"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release|Win32"
+				>
+				<Tool
+					Name="VCCustomBuildTool"
+					CommandLine="shader2string $(InputFileName) $(InputFileName).h"
+					Outputs="$(InputFileName).h"
+				/>
+			</FileConfiguration>
 		</File>
 	</Files>
 	<Globals>
