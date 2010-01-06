@@ -74,28 +74,34 @@ public:
 protected:
 	list<CKnot>	plSplines[NR_OF_COLORS];		// the L1 spline
 
-public:
-	CTransFunc()
-	{
-		CKnot cBegin(0.0f, 0.0f), cEnd(1.0f, 0.0f);
-		for(int c = 0; c < NR_OF_COLORS; c++)	
+#if	0	// MOD-By-LEETEN 01/05/2010-FROM:
+	public:
+		CTransFunc()
 		{
-			plSplines[c].push_back(cBegin);
-			plSplines[c].push_back(cEnd);
+			CKnot cBegin(0.0f, 0.0f), cEnd(1.0f, 0.0f);
+			for(int c = 0; c < NR_OF_COLORS; c++)	
+			{
+				plSplines[c].push_back(cBegin);
+				plSplines[c].push_back(cEnd);
+			}
+
+			#if	0	// DEL-BY-LEETEN 08/12/2009-BEGIN
+				// ADD-BY-TLEE 08/14/2008-BEGIN
+				fDomainMin = 0.0;
+				fDomainMax = 1.0;
+				// ADD-BY-TLEE 08/14/2008-END
+			#endif	// DEL-BY-LEETEN 08/12/2009-END
 		}
 
-		#if	0	// DEL-BY-LEETEN 08/12/2009-BEGIN
-			// ADD-BY-TLEE 08/14/2008-BEGIN
-			fDomainMin = 0.0;
-			fDomainMax = 1.0;
-			// ADD-BY-TLEE 08/14/2008-END
-		#endif	// DEL-BY-LEETEN 08/12/2009-END
-	}
-
+	public:
+		~CTransFunc()
+		{
+		}
+#else	// MOD-By-LEETEN 01/05/2010-TO:
 public:
-	~CTransFunc()
-	{
-	}
+	CTransFunc();
+	~CTransFunc();
+#endif	// MOD-By-LEETEN 01/05/2010-END
 
 public:
 	void _LoadRainBow();
@@ -147,6 +153,11 @@ public:
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.4  2009/08/12 22:11:48  leeten
+
+[2009/08/12]
+1. [MOD] Change the range of transfer function's domain and the data's domain from floating point numbers to the structure CFloatValue.
+
 Revision 1.3  2008/08/21 14:49:36  leeten
 
 [2008/08/21]
