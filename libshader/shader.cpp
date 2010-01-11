@@ -8,56 +8,112 @@
 // ADD-BY-LEETEN 08/14/2008-BEGIN
 #include "shader.h"
 
+// ADD-BY-LEETEN 01/10/2010-BEGIN
+GLhandleARB 
+HCreateProgramHandle
+(
+)
+{
+	GLhandleARB 
+		hProgramHandle = glCreateProgramObjectARB();
+	return hProgramHandle;
+}
+
+void
+_AddShaderProgram
+(
+	GLhandleARB hProgramHandle,
+	int iShader,
+	const char* szProgSrc
+)
+{
+	GLhandleARB hShader;
+	hShader = glCreateShaderObjectARB(iShader);
+	glShaderSourceARB(hShader, 1, &szProgSrc, NULL);
+	glCompileShaderARB(hShader);
+	assert( true == BCheckObject(hShader) );
+	glAttachObjectARB(hProgramHandle, hShader);
+}
+
+void
+_LinkPrograms
+(
+	GLhandleARB hProgramHandle
+)
+{
+	glLinkProgramARB(hProgramHandle);
+	assert( true == BCheckObject(hProgramHandle) );
+}
+// ADD-BY-LEETEN 01/10/2010-END
+
+#if	0	// MOD-BY-LEETEN 01/10/2010-FROM:
+	GLhandleARB 
+	CSetShadersByString(
+		const char* szVertexProg, 
+		const char* szFragmentProg)
+	{
+		GLhandleARB hFragmentShader, hVertexShader;
+
+		GLhandleARB 
+			hProgramHandle = glCreateProgramObjectARB();
+
+		if( szVertexProg ) 
+		{
+			hVertexShader = glCreateShaderObjectARB(GL_VERTEX_SHADER_ARB);
+			glShaderSourceARB(hVertexShader, 1, &szVertexProg, NULL);
+			glCompileShaderARB(hVertexShader);
+			if( !BCheckObject(hVertexShader) ) 
+			{
+				fprintf(stderr, "Error during parsing the vertex program.\n");
+				return false;
+			}
+		}
+
+		if( szFragmentProg ) 
+		{
+			hFragmentShader = glCreateShaderObjectARB(GL_FRAGMENT_SHADER_ARB);
+			glShaderSourceARB(hFragmentShader, 1, &szFragmentProg, NULL);
+			glCompileShaderARB(hFragmentShader);
+			if( !BCheckObject(hFragmentShader) ) 
+			{
+				fprintf(stderr, "Error during compiling the fragment program.\n");
+				return false;
+			}
+		}
+
+		if( szVertexProg )
+			glAttachObjectARB(hProgramHandle, hVertexShader);
+
+		if( szFragmentProg )
+			glAttachObjectARB(hProgramHandle, hFragmentShader);
+
+		glLinkProgramARB(hProgramHandle);
+
+		if( !BCheckObject(hProgramHandle) )
+		{
+			fprintf(stderr, "Error during linking shaders\n");
+			return false;
+		}
+
+		return hProgramHandle;
+	}
+
+#else	// MOD-BY-LEETEN 01/10/2010-TO:
+
 GLhandleARB 
 CSetShadersByString(
 	const char* szVertexProg, 
-	const char* szFragmentProg)
+	const char* szFragmentProg,
+	const char* szGeometryProg)
 {
-	GLhandleARB hFragmentShader, hVertexShader;
-
-	GLhandleARB 
-		hProgramHandle = glCreateProgramObjectARB();
-
-	if( szVertexProg ) 
-	{
-		hVertexShader = glCreateShaderObjectARB(GL_VERTEX_SHADER_ARB);
-		glShaderSourceARB(hVertexShader, 1, &szVertexProg, NULL);
-		glCompileShaderARB(hVertexShader);
-		if( !BCheckObject(hVertexShader) ) 
-		{
-			fprintf(stderr, "Error during parsing the vertex program.\n");
-			return false;
-		}
-	}
-
-	if( szFragmentProg ) 
-	{
-		hFragmentShader = glCreateShaderObjectARB(GL_FRAGMENT_SHADER_ARB);
-		glShaderSourceARB(hFragmentShader, 1, &szFragmentProg, NULL);
-		glCompileShaderARB(hFragmentShader);
-		if( !BCheckObject(hFragmentShader) ) 
-		{
-			fprintf(stderr, "Error during compiling the fragment program.\n");
-			return false;
-		}
-	}
-
-	if( szVertexProg )
-		glAttachObjectARB(hProgramHandle, hVertexShader);
-
-	if( szFragmentProg )
-		glAttachObjectARB(hProgramHandle, hFragmentShader);
-
-	glLinkProgramARB(hProgramHandle);
-
-	if( !BCheckObject(hProgramHandle) )
-	{
-		fprintf(stderr, "Error during linking shaders\n");
-		return false;
-	}
-
+	GLhandleARB hProgramHandle = HCreateProgramHandle();
+	if( szVertexProg )		_AddShaderProgram(hProgramHandle, GL_VERTEX_SHADER_ARB,		szVertexProg);
+	if( szFragmentProg )	_AddShaderProgram(hProgramHandle, GL_FRAGMENT_SHADER_ARB,	szFragmentProg);
+	if( szGeometryProg )	_AddShaderProgram(hProgramHandle, GL_GEOMETRY_SHADER_EXT,	szGeometryProg);
+	_LinkPrograms(hProgramHandle);
 	return hProgramHandle;
 }
+// MOD-BY-LEETEN 01/10/2010-END
 // ADD-BY-LEETEN 08/14/2008-END
 
 char *SzTextFileRead(char *fn) 
@@ -187,6 +243,11 @@ CSetShaders(const char* szVertex, const char* szFragment)
 /*
 
   $Log: not supported by cvs2svn $
+  Revision 1.5  2008/08/15 02:17:50  leeten
+
+  [2008/08/14]
+  1. [ADD] Define a new function CSetShadersByString to compile shader progoams as long strings.
+
   Revision 1.4  2007/09/18 16:17:38  leeten
 
   [09/18/2007]
