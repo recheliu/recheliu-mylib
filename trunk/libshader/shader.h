@@ -3,13 +3,32 @@
 
 #include <GL/glew.h>
 
+// ADD-BY-LEETEN 01/10/2010-BEGIN
+#include <stdlib.h>
+#include <assert.h>
+// ADD-BY-LEETEN 01/10/2010-END
+
 // ADD-BY-LEETEN 08/14/2008-BEGIN
 char *SzTextFileRead(char *fn);
+
+#if	0	// TEST-MOD
 GLhandleARB CSetShadersByString(const char* szVertexProg, const char* szFragmentProg);
+#else
+GLhandleARB CSetShadersByString(
+	const char* szVertexProg, 
+	const char* szFragmentProg, 
+	const char* szGeometryProg = NULL);
+#endif
 // ADD-BY-LEETEN 08/14/2008-END
 
 bool BCheckObject(GLhandleARB obj);
 GLhandleARB CSetShaders(const char* szVertex, const char* szFragment);
+
+// ADD-BY-LEETEN 01/10/2010-BEGIN
+GLhandleARB HCreateProgramHandle();
+void _AddShaderProgram(GLhandleARB hProgramHandle, int iShader, const char* szProgSrc);
+void _LinkPrograms(GLhandleARB hProgramHandle);
+// ADD-BY-LEETEN 01/10/2010-END
 
 // ADD-BY-LEETY 09/15/2006-BEGIN
 #define PRINT_WARNING_INVALID_LOC(loc)	\
@@ -115,6 +134,11 @@ GLhandleARB CSetShaders(const char* szVertex, const char* szFragment);
 /*
 
   $Log: not supported by cvs2svn $
+  Revision 1.5  2009/08/17 11:20:12  leeten
+
+  [2009/08/16]
+  1. [ADD] Define a new macro SET_4FV_VALUE_BY_NAME.
+
   Revision 1.4  2008/08/15 02:18:22  leeten
 
   [2008/08/14]
