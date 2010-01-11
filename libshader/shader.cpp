@@ -113,7 +113,7 @@ CSetShadersByString(
 	_LinkPrograms(hProgramHandle);
 	return hProgramHandle;
 }
-// MOD-BY-LEETEN 01/10/2010-END
+#endif	// MOD-BY-LEETEN 01/10/2010-END
 // ADD-BY-LEETEN 08/14/2008-END
 
 char *SzTextFileRead(char *fn) 
@@ -243,6 +243,14 @@ CSetShaders(const char* szVertex, const char* szFragment)
 /*
 
   $Log: not supported by cvs2svn $
+  Revision 1.6  2010/01/11 18:54:25  leeten
+
+  [01/10/2010]
+  1. [ADD] Define a new function HCreateProgramHandle to obtain the program handle.
+  2. [ADD] Defien a new function _AddShaderProgram to add a shader program to the program handle.
+  3. [ADD] Defien a new function _LinkPrograms to link and create the final program handle.
+  4. [MOD] Change the content of CSetShadersByString by using the new defined functions.
+
   Revision 1.5  2008/08/15 02:17:50  leeten
 
   [2008/08/14]
