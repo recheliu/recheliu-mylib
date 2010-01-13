@@ -14,10 +14,16 @@ char *SzTextFileRead(char *fn);
 // MOD-BY-LEETEN 01/10/2010-FROM:
 	// GLhandleARB CSetShadersByString(const char* szVertexProg, const char* szFragmentProg);
 // TO:
+#if	0	// MOD-BY-LEETEN 01/12/2010-FROM:
+	GLhandleARB CSetShadersByString(
+		const char* szVertexProg, 
+		const char* szFragmentProg, 
+		const char* szGeometryProg = NULL);
+#else	// MOD-BY-LEETEN 01/12/2010-TO:
 GLhandleARB CSetShadersByString(
 	const char* szVertexProg, 
-	const char* szFragmentProg, 
-	const char* szGeometryProg = NULL);
+	const char* szFragmentProg);
+#endif	// MOD-BY-LEETEN 01/12/2010-END
 // MOD-BY-LEETEN 01/10/2010-END
 // ADD-BY-LEETEN 08/14/2008-END
 
@@ -134,6 +140,13 @@ void _LinkPrograms(GLhandleARB hProgramHandle);
 /*
 
   $Log: not supported by cvs2svn $
+  Revision 1.7  2010/01/11 18:58:10  leeten
+
+  [01/10/2010]
+  1. [ADD] Declare a new function HCreateProgramHandle to obtain the program handle.
+  2. [ADD] Declare a new function _AddShaderProgram to add a shader program to the program handle.
+  3. [ADD] Declare a new function _LinkPrograms to link and create the final program handle.
+
   Revision 1.6  2010/01/11 18:55:36  leeten
 
   [01/10/2010]
