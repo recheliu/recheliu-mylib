@@ -100,19 +100,33 @@ _LinkPrograms
 
 #else	// MOD-BY-LEETEN 01/10/2010-TO:
 
+#if	0	// MOD-BY-LEETEN 01/12/2010-FROM:
+	GLhandleARB 
+	CSetShadersByString(
+		const char* szVertexProg, 
+		const char* szFragmentProg,
+		const char* szGeometryProg)
+	{
+		GLhandleARB hProgramHandle = HCreateProgramHandle();
+		if( szVertexProg )		_AddShaderProgram(hProgramHandle, GL_VERTEX_SHADER_ARB,		szVertexProg);
+		if( szFragmentProg )	_AddShaderProgram(hProgramHandle, GL_FRAGMENT_SHADER_ARB,	szFragmentProg);
+		if( szGeometryProg )	_AddShaderProgram(hProgramHandle, GL_GEOMETRY_SHADER_EXT,	szGeometryProg);
+		_LinkPrograms(hProgramHandle);
+		return hProgramHandle;
+	}
+#else	// MOD-BY-LEETEN 01/12/2010-TO:
 GLhandleARB 
 CSetShadersByString(
 	const char* szVertexProg, 
-	const char* szFragmentProg,
-	const char* szGeometryProg)
+	const char* szFragmentProg)
 {
 	GLhandleARB hProgramHandle = HCreateProgramHandle();
 	if( szVertexProg )		_AddShaderProgram(hProgramHandle, GL_VERTEX_SHADER_ARB,		szVertexProg);
 	if( szFragmentProg )	_AddShaderProgram(hProgramHandle, GL_FRAGMENT_SHADER_ARB,	szFragmentProg);
-	if( szGeometryProg )	_AddShaderProgram(hProgramHandle, GL_GEOMETRY_SHADER_EXT,	szGeometryProg);
 	_LinkPrograms(hProgramHandle);
 	return hProgramHandle;
-}
+}	
+#endif	// MOD-BY-LEETEN 01/12/2010-END
 #endif	// MOD-BY-LEETEN 01/10/2010-END
 // ADD-BY-LEETEN 08/14/2008-END
 
@@ -243,6 +257,14 @@ CSetShaders(const char* szVertex, const char* szFragment)
 /*
 
   $Log: not supported by cvs2svn $
+  Revision 1.7  2010/01/11 18:58:35  leeten
+
+  [01/10/2010]
+  1. [ADD] Define a new function HCreateProgramHandle to obtain the program handle.
+  2. [ADD] Defien a new function _AddShaderProgram to add a shader program to the program handle.
+  3. [ADD] Defien a new function _LinkPrograms to link and create the final program handle.
+  4. [MOD] Change the content of CSetShadersByString by using the new defined functions.
+
   Revision 1.6  2010/01/11 18:54:25  leeten
 
   [01/10/2010]
