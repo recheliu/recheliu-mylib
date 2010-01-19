@@ -540,10 +540,17 @@ CGlutWin::_KeyboardCB(unsigned char key, int x, int y)
 					break;
 				}
 				switch(key){
-				case '1':	dAngle = +45.0;		break;
-				case '7':	dAngle = +135.0;	break;
-				case '3':	dAngle = -45.0;		break;
-				case '9':	dAngle = -135.0;	break;
+				#if	0	// MOD-BY-LEETEN 01/19/2010-FROM:
+					case '1':	dAngle = +45.0;		break;
+					case '7':	dAngle = +135.0;	break;
+					case '3':	dAngle = -45.0;		break;
+					case '9':	dAngle = -135.0;	break;
+				#else	// MOD-BY-LEETEN 01/19/2010-TO:
+				case '1':	dAngle = +5.0;		break;
+				case '7':	dAngle = +45.0;		break;
+				case '3':	dAngle = -5.0;		break;
+				case '9':	dAngle = -45.0;		break;
+				#endif	// MOD-BY-LEETEN 01/19/2010-END
 				#if	0	// MOD-BY-LEETEN 01/04/2010-FROM:
 					case '4':	dAngle = +45.0;		break;
 					case '6':	dAngle = -45.0;		break;
@@ -1274,6 +1281,13 @@ CGlutWin::_DisableVerticalSync()
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.23  2010/01/04 18:47:55  leeten
+
+[01/04/2010]
+1. [MOD] Switch the behavior of the hotkeys '2' and '8'.
+2. [MOD] Switch the behavior of the hotkeys '4' and '6'.
+3. [ADD] Define the behavior for the arrow keys UP, DOWN, LEFT and RIGHT.
+
 Revision 1.22  2010/01/01 18:40:06  leeten
 
 [01/01/2010]
