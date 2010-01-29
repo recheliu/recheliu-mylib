@@ -31,6 +31,14 @@ struct TBuffer3D: public TBuffer<t>
 	{	
 	}
 
+	// ADD-BY-LEETEN 01/26/2010-BEGIN
+	t* alloc(int n)
+	{
+		TBuffer::alloc(n);
+		return data;
+	}
+	// ADD-BY-LEETEN 01/26/2010-END
+
 	t* alloc(int w, int h, int d)
 	{
 		assert(w > 0 && h > 0 && d > 0);
@@ -63,6 +71,11 @@ struct TBuffer3D: public TBuffer<t>
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.1  2009/11/04 20:42:13  leeten
+
+[2009/11/04]
+1. [1ST] First time checin. These header files define the template class for 2D/3D memory buffer.
+
 
 */
 
