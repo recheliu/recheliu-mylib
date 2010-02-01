@@ -516,12 +516,19 @@ CGlutWin::_KeyboardCB(unsigned char key, int x, int y)
 			glMatrixMode(GL_MODELVIEW);
 			glLoadIdentity();
 			glGetDoublev(GL_MODELVIEW_MATRIX, tModelMatrix);
+			// ADD-BY-LEETEN 01/31/2010-BEGIN
+			glutPostRedisplay();
+			// ADD-BY-LEETEN 01/31/2010-END
 			break;
 		// ADD-BY-LEETEN 01/04/2010-END
 
 		// ADD-BY-LEETEN 01/02/2010-BEGIN
 		case '1':	case '2':	case '3':
-		case '4':	case '5':	case '6':
+		// MOD-BY-LEETEN 01/31/2010-FROM:
+			// case '4':	case '5':	case '6':
+		// TO:
+		case '4':				case '6':
+		// MOD-BY-LEETEN 01/31/2010-END
 		case '7':	case '8':	case '9':
 			{
 				double pdAxis[3]; 
@@ -575,6 +582,9 @@ CGlutWin::_KeyboardCB(unsigned char key, int x, int y)
 				glMultMatrixd(tNormalMatrix);
 				glGetDoublev(GL_MODELVIEW_MATRIX, tModelMatrix);
 			}
+			// ADD-BY-LEETEN 01/31/2010-BEGIN
+			glutPostRedisplay();
+			// ADD-BY-LEETEN 01/31/2010-END
 			break;
 		// ADD-BY-LEETEN 01/02/2010-END
 
@@ -645,6 +655,9 @@ CGlutWin::_SpecialCB(int skey, int x, int y)
 			glMultMatrixd(tNormalMatrix);
 			glGetDoublev(GL_MODELVIEW_MATRIX, tModelMatrix);
 			}
+			// ADD-BY-LEETEN 01/31/2010-BEGIN
+			glutPostRedisplay();
+			// ADD-BY-LEETEN 01/31/2010-END
 			break;
 		#endif	// MOD-BY-LEETEN 01/04/2010-END
 
@@ -1281,6 +1294,12 @@ CGlutWin::_DisableVerticalSync()
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.24  2010/01/19 21:05:17  leeten
+
+[01/19/2010]
+1. [MOD] Change the rotation angle of hotkey '1' and '3'  from 45 degree to 5 degree.
+2. [MOD] Change the rotation angle of hotkey '7' and '9'  from 135 degree to 45 degree.
+
 Revision 1.23  2010/01/04 18:47:55  leeten
 
 [01/04/2010]
