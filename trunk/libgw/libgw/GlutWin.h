@@ -40,6 +40,9 @@ using namespace std;
 	#include <stdio.h>
 	#include <string.h>
 	#include <memory.h>
+	// ADD-BY-LEETEN 02/16/2010-BEGIN
+	#define _USE_MATH_DEFINES
+	// ADD-BY-LEETEN 02/16/2010-END
 	#include <math.h>
 
 	// ADD-BY-LEETEN 08/12/2008-BEGIN
@@ -62,21 +65,23 @@ using namespace std;
 	#include <assert.h>
 #endif
 
-// ADD-BY-LEETEN 2009/06/01-BEGIN
-#ifndef M_PI
-// ADD-BY-LEETEN 2009/06/01-END
-	#define M_PI		(3.14159)
-// ADD-BY-LEETEN 2009/06/01-BEGIN
-#endif
-// ADD-BY-LEETEN 2009/06/01-END
+#if	0	// DEL-BY-LEETEN 02/16/2010-BEGIN
+	// ADD-BY-LEETEN 2009/06/01-BEGIN
+	#ifndef M_PI
+	// ADD-BY-LEETEN 2009/06/01-END
+		#define M_PI		(3.14159)
+	// ADD-BY-LEETEN 2009/06/01-BEGIN
+	#endif
+	// ADD-BY-LEETEN 2009/06/01-END
 
-// ADD-BY-LEETEN 2009/06/01-BEGIN
-#ifndef M_PI_2
-// ADD-BY-LEETEN 2009/06/01-END
-	#define M_PI_2		(M_PI / 2.0)
-// ADD-BY-LEETEN 2009/06/01-BEGIN
-#endif
-// ADD-BY-LEETEN 2009/06/01-END
+	// ADD-BY-LEETEN 2009/06/01-BEGIN
+	#ifndef M_PI_2
+	// ADD-BY-LEETEN 2009/06/01-END
+		#define M_PI_2		(M_PI / 2.0)
+	// ADD-BY-LEETEN 2009/06/01-BEGIN
+	#endif
+	// ADD-BY-LEETEN 2009/06/01-END
+#endif	// ADD-BY-LEETEN 02/16/2010-END
 
 #include "libopengl.h"
 
@@ -496,6 +501,11 @@ public:
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.20  2009/06/01 21:35:55  leeten
+
+[2009/06/01]
+1. [MOD] Only define the preprocessor M_PI and M_PI_2 when they are not available.
+
 Revision 1.19  2009/03/04 22:21:04  leeten
 
 [2009/03/04]
