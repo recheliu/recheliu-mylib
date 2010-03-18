@@ -9,9 +9,26 @@ CTransFunc::_LoadRainBow()
 {
 
 			// setup the red channel
-	plSplines[COLOR_R].clear();
-	plSplines[COLOR_R].push_back(CKnot(0.0f, 1.0f));
-	plSplines[COLOR_R].push_back(CKnot(1.0f, 0.0f));
+	#if	0	// MOD-BY-LEETEN 03/18/2010-FROM:
+		plSplines[COLOR_R].clear();
+		plSplines[COLOR_R].push_back(CKnot(0.0f, 1.0f));
+		plSplines[COLOR_R].push_back(CKnot(1.0f, 0.0f));
+
+				// setup the green channel
+		plSplines[COLOR_G].clear();
+		plSplines[COLOR_G].push_back(CKnot(0.0f, 0.0f));
+		plSplines[COLOR_G].push_back(CKnot(0.5f, 1.0f));
+		plSplines[COLOR_G].push_back(CKnot(1.0f, 0.0f));
+
+				// setup the blue channel
+		plSplines[COLOR_B].clear();
+		plSplines[COLOR_B].push_back(CKnot(0.0f, 0.0f));
+		plSplines[COLOR_B].push_back(CKnot(1.0f, 1.0f));
+	#else	// DEL-BY-LEETEN 03/18/2010-TO:
+			// setup the blue channel
+	plSplines[COLOR_B].clear();
+	plSplines[COLOR_B].push_back(CKnot(0.0f, 1.0f));
+	plSplines[COLOR_B].push_back(CKnot(1.0f, 0.0f));
 
 			// setup the green channel
 	plSplines[COLOR_G].clear();
@@ -19,11 +36,11 @@ CTransFunc::_LoadRainBow()
 	plSplines[COLOR_G].push_back(CKnot(0.5f, 1.0f));
 	plSplines[COLOR_G].push_back(CKnot(1.0f, 0.0f));
 
-			// setup the blue channel
-	plSplines[COLOR_B].clear();
-	plSplines[COLOR_B].push_back(CKnot(0.0f, 0.0f));
-	plSplines[COLOR_B].push_back(CKnot(1.0f, 1.0f));
-
+			// setup the red channel
+	plSplines[COLOR_R].clear();
+	plSplines[COLOR_R].push_back(CKnot(0.0f, 0.0f));
+	plSplines[COLOR_R].push_back(CKnot(1.0f, 1.0f));
+	#endif	// MOD-BY-LEETEN 03/18/2010-END
 			// setup the alpha channel
 	plSplines[COLOR_A].clear();
 	#if	0	// MOD-BY-TLEE 2008/08/16-FROM:
@@ -256,6 +273,12 @@ CTransFunc::~CTransFunc()
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.8  2010/01/06 16:44:56  leeten
+
+[01/06/2010]
+1. [ADD] Add the constructor and destructor of the class CTransFunc.
+2. [ADD] Output the content of the fragment shader 'tf1d_frag_func.frag' to file 'tf1d_frag_func.frag.h' in the constructor.
+
 Revision 1.7  2009/08/13 17:26:36  leeten
 
 [2009/08/13]
