@@ -50,11 +50,35 @@ using namespace std;
 
 #endif	// MOD-BY-LEETEN 02/16/2010-END
 
+// ADD-BY-LEETEN 03/22/2010-BEGIN
+
+#define PRINT_ERROR_HEADER	cerr<<"["<<__FUNCTION__<<"() @ "<<strrchr(__FILE__, '\\') + 1<<"("<<__LINE__<<")]: ";
+
+#define LOG_ERROR(printf_stmt)	\
+	{						\
+		PRINT_ERROR_HEADER;		\
+		(printf_stmt);		\
+		cerr<<endl;			\
+	}						
+
+#define LOG_VAR_TO_ERROR(var)	\
+	{						\
+		PRINT_ERROR_HEADER;		\
+		cerr<<#var<<" = "<<(var)<<endl;	\
+	}						
+
+// ADD-BY-LEETEN 03/22/2010-END
+
 #endif	// __LIB_LOG_H__
 
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.3  2010/02/16 20:03:51  leeten
+
+[02/16/2010]
+1. [MOD] Use cout instead printf.
+
 Revision 1.2  2009/12/31 01:45:35  leeten
 
 [12/30/2009]
