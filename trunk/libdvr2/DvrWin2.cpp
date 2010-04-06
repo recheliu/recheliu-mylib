@@ -13,6 +13,64 @@ CDvrWin2::_EndDisplay()
 {
 }
 
+// ADD-BY-LEETEN 04/06/2010-BEGIN
+void 
+CDvrWin2::_SetVolume(
+	GLenum eInternalFormat,
+	const void *pVol, 
+	GLenum eType, 
+	GLenum eFormat, 
+	int iXDim, 
+	int iYDim, 
+	int iZDim)
+{
+_Begin();
+
+	this->iXDim = iXDim;
+	this->iYDim = iYDim;
+	this->iZDim = iZDim;
+
+	glActiveTexture(GL_TEXTURE0);
+
+	if( !t3dVol )
+		glGenTextures(1, &t3dVol);	
+
+	glBindTexture(GL_TEXTURE_3D, t3dVol);	
+	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);	
+	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);	
+	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);	
+	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);	
+	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);	
+	glTexImage3D(GL_TEXTURE_3D, 0, eInternalFormat,	
+		(GLsizei)iXDim, (GLsizei)iYDim, (GLsizei)iZDim, 0, eType, eFormat, pVol);
+
+_End();
+}
+
+void 
+CDvrWin2::_SetTransferFunc(
+	const void *pTf, 
+	GLenum eType, 
+	GLenum eFormat, 
+	int iNrOfTfEntries)
+{
+_Begin();
+
+	// upload the transfer func. as a 1D texture
+	glActiveTexture(GL_TEXTURE2);
+	if( !t1dTf )
+		glGenTextures(1, &t1dTf);	
+	glBindTexture(GL_TEXTURE_1D, t1dTf);	
+	glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);	
+	glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);	
+	glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);	
+	glTexImage1D(GL_TEXTURE_1D, 0, GL_RGBA16F_ARB,	
+		iNrOfTfEntries, 0, eType, eFormat, pTf);
+
+_End();
+}
+// ADD-BY-LEETEN 04/06/2010-END
+
 // ADD-BY-LEETEN 12/30/2009-BEGIN
 void 
 CDvrWin2::_RenderSlab(
@@ -338,6 +396,12 @@ CDvrWin2::_InitFunc()
 //////////////////////////////////////////////////////
 CDvrWin2::CDvrWin2(void)
 {
+	// ADD-BY-LEETEN 04/06/2010-BEGIN
+	t1dTf = 0;
+	t3dVol = 0;
+	iNrOfSlices = 128;
+	fThicknessGain = 1.0f;
+	// ADD-BY-LEETEN 04/06/2010-END
 }
 
 CDvrWin2::~CDvrWin2(void)
@@ -347,6 +411,12 @@ CDvrWin2::~CDvrWin2(void)
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.2  2009/12/31 01:43:14  leeten
+
+[12/30/2009]
+1. [ADD] Define a new method _RenderSlab() to render a slab. This method can be redfined by the inherited classes.
+2. [MOD] Change the space to do slicing from ndc to eye space.
+
 Revision 1.1  2009/10/27 14:04:07  leeten
 
 [2009/10/27]
