@@ -78,6 +78,12 @@ public:
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.3  2010/04/06 19:54:02  leeten
+
+[04/06/2010]
+1. [ADD] Define a new method _SetVolume to upload the specified volume as a 3D texture.
+2. [ADD] Define a new method _SetTransferFunc to specify the transfer function.
+
 Revision 1.2  2009/12/31 01:40:08  leeten
 
 [12/30/2009]
