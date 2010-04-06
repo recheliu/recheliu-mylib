@@ -21,6 +21,32 @@ protected:
 
 	CSlab pcSlabs[2];
 
+// ADD-BY-LEETEN 04/06/2010-BEGIN
+protected:
+	float	fThicknessGain;
+	GLuint t1dTf;
+	float fTfDomainMin, fTfDomainMax;
+	float fDataValueMin, fDataValueMax;
+public:
+	void _SetTfDomain(float fMin, float fMax)
+	{
+		fTfDomainMin = fMin;
+		fTfDomainMax = fMax;
+	}
+	void _SetDataValue(float fMin, float fMax)
+	{
+		fDataValueMin = fMin;
+		fDataValueMax = fMax;
+	}
+	void _SetTransferFunc(const void *pTf, GLenum eType, GLenum eFormat, int iNrOfTfEntries);
+
+protected:
+	GLuint t3dVol;
+	int iXDim, iYDim, iZDim;
+public:
+	void _SetVolume(GLenum eInternalFormat, const void *pVol, GLenum eType, GLenum eFormat, int iXDim, int iYDim, int iZDim);
+// ADD-BY-LEETEN 04/06/2010-END
+
 							// these 2 functions can be used by the inheriting classes 
 							// to set up the variables for customized volume rendering
 
@@ -52,6 +78,11 @@ public:
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.2  2009/12/31 01:40:08  leeten
+
+[12/30/2009]
+1. [ADD] Declare a new method _RenderSlab() to render a slab.
+
 Revision 1.1  2009/10/27 14:04:07  leeten
 
 [2009/10/27]
