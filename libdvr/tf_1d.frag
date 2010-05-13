@@ -60,7 +60,11 @@ main()
 
 	float fThickness_obj = distance(v4Coord_obj, v4PrevCoord_obj);
 
-	v4Color.a = 1.0 - pow(1.0 - v4Color.a, fThickness_obj);
+	// MOD-BY-LEETEN 2010/05/13-FROM:
+		// v4Color.a = 1.0 - pow(1.0 - v4Color.a, fThickness_obj);
+	// TO:
+	v4Color.a = 1.0 - exp(-v4Color.a * fThickness_obj);
+	// MOD-BY-LEETEN 2010/05/13-END
 
 	gl_FragColor = v4Color;
 }
@@ -68,6 +72,11 @@ main()
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.3  2008/08/21 14:57:28  leeten
+
+[2008/08/21]
+1. [ADD] Before applying transfer function, convert the range of the data by considering the TF domain and data range.
+
 Revision 1.2  2008/08/15 14:34:49  leeten
 
 [2008/08/15]
