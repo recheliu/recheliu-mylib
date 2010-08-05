@@ -14,7 +14,16 @@ existing projects.
 
 	#pragma once
 	#pragma comment (lib, "glew32.lib")      // link with my own library libfps
-	#pragma comment (lib, "libfbo.lib")      // link with my own library libfps
+	// MOD-BY-LEETEN 08/05/2010-FROM:
+		// #pragma comment (lib, "libfbo.lib")      // link with my own library libfps
+	// TO:
+	#ifdef _DEBUG
+		#pragma comment (lib, "libfbo_d.lib")      // link with my own library libfps
+	#else
+		#pragma comment (lib, "libfbo_r.lib")      // link with my own library libfps
+	#endif
+	// MOD-BY-LEETEN 08/05/2010-END
+
 
 	#include <GL/glew.h>
 
@@ -207,7 +216,13 @@ public:
 					cColor.eTarget, cDepth.t2d, 0);
 				#endif	// MOD-BY-LEETEN 2009/08/24-END
 
-				assert( GL_FRAMEBUFFER_COMPLETE_EXT == EGetFboStatus(true) );
+				// MOD-BY-LEETEN 08/05/2010-FROM:
+					// assert( GL_FRAMEBUFFER_COMPLETE_EXT == EGetFboStatus(true) );
+				// TO:
+				unsigned int iFboStatus = EGetFboStatus(true);
+				assert( GL_FRAMEBUFFER_COMPLETE_EXT == iFboStatus );
+				// MOD-BY-LEETEN 08/05/2010-END
+
 				glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
 			}
 		}
@@ -232,6 +247,12 @@ public:
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.3  2009/11/09 20:22:12  leeten
+
+[2009/11/09]
+1. [DEL] Move the structure CFrameBufferTexture to fbo.h.
+2. [ADD] Incldue the header fbo.h.
+
 Revision 1.2  2009/11/04 20:49:59  leeten
 
 [2009/11/04]

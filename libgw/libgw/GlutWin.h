@@ -18,7 +18,15 @@ using namespace std;
 	// ADD-BY-LEETEN 08/25/2008-END
 
 	#pragma comment (lib, "winmm.lib")      /* link with Windows MultiMedia lib */
-	#pragma comment (lib, "libfps.lib")      // link with my own library libfps
+	// MOD-BY-LEETEN 08/05/2010-FROM:
+		// #pragma comment (lib, "libfps.lib")      // link with my own library libfps
+	// TO:
+	#ifdef _DEBUG
+		#pragma comment (lib, "libfps_d.lib")      // link with my own library libfps
+	#else
+		#pragma comment (lib, "libfps_r.lib")      // link with my own library libfps
+	#endif
+	// MOD-BY-LEETEN 08/05/2010-END
 
 
 	// ADD-BY-LEETEN 11/17/2008-BEGIN
@@ -501,6 +509,12 @@ public:
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.21  2010/02/16 20:03:16  leeten
+
+[02/16/2010]
+1. [ADD] Define the preprocessor _USE_MATH_DEFINES in order to use the constants in math.h
+2. [DEL] Remove manually defined M_PI and M_PI_2.
+
 Revision 1.20  2009/06/01 21:35:55  leeten
 
 [2009/06/01]
