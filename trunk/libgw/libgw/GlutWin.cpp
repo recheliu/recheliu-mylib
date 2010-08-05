@@ -510,6 +510,29 @@ CGlutWin::_KeyboardCB(unsigned char key, int x, int y)
 			glutPostRedisplay();
 			break;
 
+		// ADD-BY-LEETEN 08/05/2010-BEGIN
+		case 'F': case 'f':
+			{
+				static int piPrevViewport[4]; // the viewport beforethe 
+				static bool bIsFullScreened = false;
+				bIsFullScreened = !bIsFullScreened;
+				if(bIsFullScreened)
+				{
+					memcpy(piPrevViewport, this->piViewport, sizeof(piPrevViewport));
+					piPrevViewport[0] = glutGet(GLUT_WINDOW_X);
+					piPrevViewport[1] = glutGet(GLUT_WINDOW_Y);
+					glutFullScreen();
+				}
+				else
+				{
+					this->_Reshape(piPrevViewport[2], piPrevViewport[3]);
+					this->_Set();
+					glutPositionWindow(piPrevViewport[0], piPrevViewport[1]);
+				}
+			}
+			break;
+		// ADD-BY-LEETEN 08/05/2010-END
+
 		// ADD-BY-LEETEN 01/04/2010-BEGIN
 		case '0':
 			// reset the model matrix
@@ -1294,6 +1317,12 @@ CGlutWin::_DisableVerticalSync()
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.25  2010/02/01 05:54:30  leeten
+
+[01/30/2010]
+1. [ADD] Add glutPostRedisplay() after the hot keys are pressed.
+2. [DEL] Remove the undefined hotkey '5.'
+
 Revision 1.24  2010/01/19 21:05:17  leeten
 
 [01/19/2010]
