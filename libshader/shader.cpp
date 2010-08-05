@@ -31,7 +31,13 @@ _AddShaderProgram
 	hShader = glCreateShaderObjectARB(iShader);
 	glShaderSourceARB(hShader, 1, &szProgSrc, NULL);
 	glCompileShaderARB(hShader);
-	assert( true == BCheckObject(hShader) );
+	// MOD-BY-LEETEN 08/05/2010-FROM:
+		// assert( true == BCheckObject(hShader) );
+	// TO:
+	bool bIsObjectChecked = BCheckObject(hShader);
+	assert( true == bIsObjectChecked );
+	// MOD-BY-LEETEN 08/05/2010-END
+
 	glAttachObjectARB(hProgramHandle, hShader);
 }
 
@@ -42,7 +48,12 @@ _LinkPrograms
 )
 {
 	glLinkProgramARB(hProgramHandle);
-	assert( true == BCheckObject(hProgramHandle) );
+	// MOD-BY-LEETEN 08/05/2010-FROM:
+		// assert( true == BCheckObject(hProgramHandle) );
+	// TO:
+	bool bIsObjectChecked = BCheckObject(hProgramHandle);
+	assert( true == bIsObjectChecked );
+	// MOD-BY-LEETEN 08/05/2010-END
 }
 // ADD-BY-LEETEN 01/10/2010-END
 
@@ -257,6 +268,11 @@ CSetShaders(const char* szVertex, const char* szFragment)
 /*
 
   $Log: not supported by cvs2svn $
+  Revision 1.8  2010/01/13 00:03:01  leeten
+
+  [01/12/2010]
+  1. [MOD] Change the definition of CSetShadersByString so it only accepts 2 inputs, which are strings of the vertex shader program and the fragment shader program.
+
   Revision 1.7  2010/01/11 18:58:35  leeten
 
   [01/10/2010]
