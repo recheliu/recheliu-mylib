@@ -24,8 +24,14 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "example_multi_wins_glui", "
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "example_multi_wins_global", "examples\example_multi_wins_global\example_multi_wins_global.vcproj", "{18A307E5-F58E-4FFB-BBD5-1FF59D28C396}"
+	ProjectSection(ProjectDependencies) = postProject
+		{E4AF0299-6BF4-468F-82DA-68BE4D3B4621} = {E4AF0299-6BF4-468F-82DA-68BE4D3B4621}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "example_single_win_global", "examples\example_single_win_global\example_single_win_glui.vcproj", "{4863FDCD-BB09-45AA-93AC-A94AADFFD624}"
+	ProjectSection(ProjectDependencies) = postProject
+		{E4AF0299-6BF4-468F-82DA-68BE4D3B4621} = {E4AF0299-6BF4-468F-82DA-68BE4D3B4621}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
