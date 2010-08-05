@@ -19,8 +19,19 @@ The proecduer to use this class is as below:
 										// remove the libraries
 // ADD-BY-LEETEN 2008/08/16-BEGIN
 	#pragma comment (lib, "glew32.lib")      
-	#pragma comment (lib, "libfbo.lib")      
-	#pragma comment (lib, "libshader.lib")      
+	#if	0	// MOD-BY-LEETEN 08/05/2010-FROM:
+		#pragma comment (lib, "libfbo.lib")      
+		#pragma comment (lib, "libshader.lib")      
+	#else	// MOD-BY-LEETEN 08/05/2010-TO:
+	#ifdef _DEBUG
+		#pragma comment (lib, "libfbo_d.lib")
+		#pragma comment (lib, "libshader_d.lib")
+	#else
+		#pragma comment (lib, "libfbo_r.lib")
+		#pragma comment (lib, "libshader_r.lib")
+	#endif
+	#endif	// MOD-BY-LEETEN 08/05/2010-END
+
 // ADD-BY-LEETEN 2008/08/16-END
 
 #pragma once
@@ -124,6 +135,12 @@ public:
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.6  2008/08/21 14:56:06  leeten
+
+[2008/08/21]
+1. [ADD] Declare the variables for TF domain and data range, and add methods to specify them.
+2. [ADD] Declare all private members as protected members.
+
 Revision 1.5  2008/08/20 19:53:24  leeten
 
 [2008/08/20]
