@@ -7,7 +7,9 @@ to create an application with three GLUT windows.
 
 **************************************************/
 
-#pragma comment (lib, "libgw.lib")      // link with the library libgw
+	// DEL-BY-LEETEN 08/05/2010-BEGIN
+		// #pragma comment (lib, "libgw.lib")      // link with the library libgw
+	// DEL-BY-LEETEN 08/05/2010-END
 
 #include "../include/TestWin.h"
 
@@ -34,6 +36,11 @@ main(int argn, char *argv[])
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.2  2009/06/01 21:38:45  leeten
+
+[2009/06/01]
+1. [MOD] Change the path of TestWin.h to ../include/TestWin.h.
+
 Revision 1.1.1.1  2008/08/16 16:25:22  leeten
 
 [2008/08/16]
