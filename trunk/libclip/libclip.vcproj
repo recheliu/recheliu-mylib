@@ -60,7 +60,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="&quot;$(ProjectDir)&quot;\..\lib\Debug\$(ProjectName).lib"
+				OutputFile="&quot;$(ProjectDir)&quot;\..\lib\$(ConfigurationName)\$(ProjectName)_d.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -121,7 +121,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="&quot;$(ProjectDir)&quot;\..\lib\Debug\$(ProjectName).lib"
+				OutputFile="&quot;$(ProjectDir)&quot;\..\lib\$(ConfigurationName)\$(ProjectName)_r.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -251,7 +251,7 @@
 				>
 				<Tool
 					Name="VCCustomBuildTool"
-					CommandLine="shader2string $(InputFileName) $(InputFileName).h"
+					CommandLine="shader2string $(InputFileName) $(InputFileName).h&#x0D;&#x0A;"
 					Outputs="$(InputFileName).h"
 				/>
 			</FileConfiguration>
@@ -260,7 +260,7 @@
 				>
 				<Tool
 					Name="VCCustomBuildTool"
-					CommandLine="shader2string $(InputFileName) $(InputFileName).h"
+					CommandLine="shader2string $(InputFileName) $(InputFileName).h&#x0D;&#x0A;"
 					Outputs="$(InputFileName).h"
 				/>
 			</FileConfiguration>
@@ -282,7 +282,7 @@
 				>
 				<Tool
 					Name="VCCustomBuildTool"
-					CommandLine="shader2string $(InputFileName) $(InputFileName).hshader2string $(InputFileName) $(InputFileName).h&#x0D;&#x0A;"
+					CommandLine="shader2string $(InputFileName) $(InputFileName).h"
 					Outputs="$(InputFileName).h"
 				/>
 			</FileConfiguration>

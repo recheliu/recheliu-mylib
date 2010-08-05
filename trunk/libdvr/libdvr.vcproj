@@ -60,7 +60,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="&quot;$(ProjectDir)&quot;\..\lib\Debug\$(ProjectName).lib"
+				OutputFile="&quot;$(ProjectDir)&quot;\..\lib\$(ConfigurationName)\$(ProjectName)_d.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -103,7 +103,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;_CRT_SECURE_NO_DEPRECATE"
+				PreprocessorDefinitions="WIN32;NDEBUG;_LIB"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
@@ -121,6 +121,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
+				OutputFile="&quot;$(ProjectDir)&quot;\..\lib\$(ConfigurationName)\$(ProjectName)_r.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"

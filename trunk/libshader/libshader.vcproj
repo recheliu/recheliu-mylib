@@ -66,7 +66,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile=".\..\lib\Debug\libshader.lib"
+				OutputFile="&quot;$(ProjectDir)&quot;\..\lib\$(ConfigurationName)\$(ProjectName)_d.lib"
 				SuppressStartupBanner="true"
 			/>
 			<Tool
@@ -116,7 +116,7 @@
 				InlineFunctionExpansion="1"
 				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;_CRT_SECURE_NO_DEPRECATE"
 				StringPooling="true"
-				RuntimeLibrary="0"
+				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
 				PrecompiledHeaderFile=".\Release/libshader.pch"
@@ -139,7 +139,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile=".\Release\libshader.lib"
+				OutputFile="&quot;$(ProjectDir)&quot;\..\lib\$(ConfigurationName)\$(ProjectName)_r.lib"
 				SuppressStartupBanner="true"
 			/>
 			<Tool

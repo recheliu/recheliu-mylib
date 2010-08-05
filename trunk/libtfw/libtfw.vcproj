@@ -60,7 +60,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="&quot;$(ProjectDir)&quot;\..\lib\Debug\$(ProjectName).lib"
+				OutputFile="&quot;$(ProjectDir)&quot;\..\lib\$(ConfigurationName)\$(ProjectName)_d.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -103,7 +103,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;_CRT_SECURE_NO_DEPRECATE"
+				PreprocessorDefinitions="WIN32;NDEBUG;_LIB"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
@@ -121,6 +121,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
+				OutputFile="&quot;$(ProjectDir)&quot;\..\lib\$(ConfigurationName)\$(ProjectName)_r.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -174,6 +175,15 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						CommandLine="copy &quot;$(InputPath)&quot; &quot;$(ProjectDir)&quot;\..\include\$(ProjectName)\$(InputFileName)&#x0D;&#x0A;"
+						Outputs="&quot;$(ProjectDir)&quot;\..\include\$(ProjectName)\$(InputFileName)"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="copy &quot;$(InputPath)&quot; &quot;$(ProjectDir)&quot;\..\include\$(ProjectName)\$(InputFileName)"
 						Outputs="&quot;$(ProjectDir)&quot;\..\include\$(ProjectName)\$(InputFileName)"
 					/>
 				</FileConfiguration>
@@ -285,7 +295,7 @@
 				>
 				<Tool
 					Name="VCCustomBuildTool"
-					CommandLine="shader2string $(InputFileName) $(InputFileName).h"
+					CommandLine="shader2string $(InputFileName) $(InputFileName).h&#x0D;&#x0A;"
 					Outputs="$(InputFileName).h"
 				/>
 			</FileConfiguration>
@@ -294,7 +304,7 @@
 				>
 				<Tool
 					Name="VCCustomBuildTool"
-					CommandLine="shader2string $(InputFileName) $(InputFileName).h"
+					CommandLine="shader2string $(InputFileName) $(InputFileName).h&#x0D;&#x0A;"
 					Outputs="$(InputFileName).h"
 				/>
 			</FileConfiguration>

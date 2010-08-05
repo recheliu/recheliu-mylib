@@ -7,7 +7,6 @@
 void 
 CTransFunc::_LoadRainBow()
 {
-
 			// setup the red channel
 	#if	0	// MOD-BY-LEETEN 03/18/2010-FROM:
 		plSplines[COLOR_R].clear();
@@ -273,6 +272,11 @@ CTransFunc::~CTransFunc()
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.9  2010/03/18 16:04:33  leeten
+
+[03/18/2010]
+1. [MOD] Change the rainbow color mapping such that the value from low to high is mapped from blue to red.
+
 Revision 1.8  2010/01/06 16:44:56  leeten
 
 [01/06/2010]
