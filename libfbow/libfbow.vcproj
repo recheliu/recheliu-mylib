@@ -120,6 +120,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
+				OutputFile="&quot;$(ProjectDir)&quot;\..\lib\$(ConfigurationName)\$(ProjectName)_r.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -157,6 +158,15 @@
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="copy &quot;$(InputPath)&quot; &quot;$(ProjectDir)&quot;\..\include\&quot;$(InputFileName)&quot;&#x0D;&#x0A;"
+						Outputs="&quot;$(ProjectDir)&quot;\..\include\&quot;$(InputFileName)&quot;"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
 					>
 					<Tool
 						Name="VCCustomBuildTool"
