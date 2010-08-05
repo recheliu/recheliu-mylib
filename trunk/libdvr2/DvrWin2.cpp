@@ -366,7 +366,12 @@ CDvrWin2::_ReshapeFunc(int w, int h)
 				GL_FRAMEBUFFER_EXT, GL_DEPTH_ATTACHMENT_EXT,
 				cDepth.eTarget, cDepth.t2d, 0);
 
-			assert( GL_FRAMEBUFFER_COMPLETE_EXT == EGetFboStatus(true) );
+			// MOD-BY-LEETEN 08/05/2010-FROM:
+				// assert( GL_FRAMEBUFFER_COMPLETE_EXT == EGetFboStatus(true) );
+			// TO:
+			unsigned int iFboStatus = EGetFboStatus(true);
+			assert( GL_FRAMEBUFFER_COMPLETE_EXT == iFboStatus );
+			// MOD-BY-LEETEN 08/05/2010-END
 		}
 
 		// reset the FBO
@@ -411,6 +416,12 @@ CDvrWin2::~CDvrWin2(void)
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.3  2010/04/06 19:55:23  leeten
+
+[04/06/2010]
+1. [ADD] Define a new method _SetVolume to upload the specified volume as a 3D texture.
+2. [ADD] Define a new method _SetTransferFunc to specify the transfer function.
+
 Revision 1.2  2009/12/31 01:43:14  leeten
 
 [12/30/2009]

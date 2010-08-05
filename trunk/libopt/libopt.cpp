@@ -27,11 +27,35 @@
 		vcOptTable.push_back(cEntry);	\
 	}
 
-#define ADD_VECTOR_PARAMETERS(arg_name, addr_type, value_type, nr_of_parameters, add_entry_func)	\
+#if	0	// MOD-BY-LEETEN 08/05/2010-FROM:
+	#define ADD_VECTOR_PARAMETERS(arg_name, addr_type, value_type, nr_of_parameters, add_entry_func)	\
+		{\
+			addr_type **parameter_list;	\
+			if( nr_of_parameters )	\
+				assert( parameter_list = (addr_type**)calloc(sizeof(addr_type*), nr_of_parameters) );	\
+			va_list ap; \
+			va_start(ap, nr_of_parameters);	\
+			for(int p=0; p<nr_of_parameters; p++) \
+			{	\
+				addr_type *parameter_addr = va_arg(ap, addr_type*);	\
+				value_type default_value = va_arg(ap, value_type);	\
+				*parameter_addr = (addr_type)default_value;	\
+				parameter_list[p] = parameter_addr;	\
+			}	\
+			va_end(ap);	\
+			add_entry_func(arg_name, nr_of_parameters, parameter_list);	\
+		}
+
+#else	// MOD-BY-LEETEN 08/05/2010-TO:
+
+	#define ADD_VECTOR_PARAMETERS(arg_name, addr_type, value_type, nr_of_parameters, add_entry_func)	\
 	{\
 		addr_type **parameter_list;	\
 		if( nr_of_parameters )	\
-			assert( parameter_list = (addr_type**)calloc(sizeof(addr_type*), nr_of_parameters) );	\
+		{	\
+			parameter_list = (addr_type**)calloc(sizeof(addr_type*), nr_of_parameters);	\
+			assert( parameter_list );	\
+		}	\
 		va_list ap; \
 		va_start(ap, nr_of_parameters);	\
 		for(int p=0; p<nr_of_parameters; p++) \
@@ -44,6 +68,8 @@
 		va_end(ap);	\
 		add_entry_func(arg_name, nr_of_parameters, parameter_list);	\
 	}
+
+#endif	// MOD-BY-LEETEN 08/05/2010-END
 
 //////////////////////////////////////////////////////////////////////////
 // MOD-BY-LEETEN 07/02/2008-FROM:
@@ -513,6 +539,11 @@ bool BOPTParse(char* argv[], int argc, int iBegin, int *piEnd)
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.8  2008/11/03 15:29:58  leeten
+
+[2008/11/03]
+1. [ADD] Print the argument for parameters as flags.
+
 Revision 1.7  2008/07/08 18:36:03  leeten
 
 [2008/07/07]

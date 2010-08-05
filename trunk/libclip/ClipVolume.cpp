@@ -33,7 +33,12 @@ CClipVolume::_ReshapeFunc(int w, int h)
 		glFramebufferTexture2DEXT(
 			GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT,
 			cTexture.eTarget, cTexture.t2d, 0);
-		assert( GL_FRAMEBUFFER_COMPLETE_EXT == EGetFboStatus(true) );
+		// MOD-BY-LEETEN 08/05/2010-FROM:
+			// assert( GL_FRAMEBUFFER_COMPLETE_EXT == EGetFboStatus(true) );
+		// TO:
+		unsigned int iFboStatus = EGetFboStatus(true);
+		assert( GL_FRAMEBUFFER_COMPLETE_EXT == iFboStatus );
+		// MOD-BY-LEETEN 08/05/2010-END
 
 		glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
 	}
@@ -101,6 +106,11 @@ CClipVolume::~CClipVolume(void)
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.2  2010/01/06 16:39:57  leeten
+
+[01/06/2010]
+1. [ADD] Output the content of the fragment shader 'clip_frag_func.frag' to file 'clip_frag_func.frag.h' in the constructor.
+
 Revision 1.1  2009/11/09 20:16:38  leeten
 
 [2009/11/09]
