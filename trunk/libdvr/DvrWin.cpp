@@ -410,12 +410,16 @@ void
 CDvrWin::_InitFunc()
 {
 	// initialize GLEW and check required OpenGL extension
-	assert( GLEW_OK == glewInit() );
-	assert( GLEW_ARB_vertex_shader && GLEW_ARB_fragment_shader );
-	assert( GLEW_ARB_texture_non_power_of_two );
-	assert( GL_EXT_texture3D );
-	assert( GL_EXT_framebuffer_object );
-
+	#if	0	// MOD-BY-LEETEN 08/06/2010-FROM:
+		assert( GLEW_OK == glewInit() );
+		assert( GLEW_ARB_vertex_shader && GLEW_ARB_fragment_shader );
+		assert( GLEW_ARB_texture_non_power_of_two );
+		assert( GL_EXT_texture3D );
+		assert( GL_EXT_framebuffer_object );
+	#else	// MOD-BY-LEETEN 08/06/2010-TO:
+	int iGlewInit = glewInit();
+	assert(GLEW_OK == iGlewInit);
+	#endif	// MOD-BY-LEETEN 08/06/2010-END
 
 	// load the shader
 	// MOD-BY-LEETEN 08/14/2008-FROM:
@@ -569,6 +573,11 @@ _End();
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.8  2009/11/09 20:20:26  leeten
+
+[2009/11/09]
+1. [ADD] Include the header fbo.h.
+
 Revision 1.7  2008/11/30 04:21:14  leeten
 
 [2008/11/29]
