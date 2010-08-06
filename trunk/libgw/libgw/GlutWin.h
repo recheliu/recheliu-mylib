@@ -35,9 +35,13 @@ using namespace std;
 	#pragma comment (lib, "glut32.lib")      /* link with Windows MultiMedia lib */
 	// ADD-BY-LEETEN 11/17/2008-END
 
-#if		defined(_WIN32)
-	#define GLUT_BUILDING_LIB	
-#endif
+	#if	0	// MOD-BY-LEETEN 08/06/2010-FROM:
+		#if		defined(_WIN32)
+			#define GLUT_BUILDING_LIB	
+		#endif
+	#else	// MOD-BY-LEETEN 08/06/2010-TO:
+	#define GLUIDLL 
+	#endif	// MOD-BY-LEETEN 08/06/2010-END
 
 	// ADD-BY-LEETEN 08/11/2008-BEGIN
 	// combine w/ GLUI
@@ -509,6 +513,11 @@ public:
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.22  2010/08/05 19:17:32  leeten
+
+[08/05/2010]
+1. [MOD] Change the linkage of library.
+
 Revision 1.21  2010/02/16 20:03:16  leeten
 
 [02/16/2010]
