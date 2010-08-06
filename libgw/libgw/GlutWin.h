@@ -11,10 +11,17 @@ using namespace std;
 	#include "cxcore.h"
 	#include "highgui.h"
 
-	#pragma comment (lib, "cv.lib")      // link with my own library libfps
-	#pragma comment (lib, "cxcore.lib")      // link with my own library libfps
-	#pragma comment (lib, "highgui.lib")      // link with my own library libfps
-	#pragma comment (lib, "cvaux.lib")      // link with my own library libfps
+	#if	0	// MOD-BY-LEETEN 08/06/2010-FROM:
+		#pragma comment (lib, "cv.lib")      // link with my own library libfps
+		#pragma comment (lib, "cxcore.lib")      // link with my own library libfps
+		#pragma comment (lib, "highgui.lib")      // link with my own library libfps
+		#pragma comment (lib, "cvaux.lib")      // link with my own library libfps
+	#else	// MOD-BY-LEETEN 08/06/2010-TO:
+	#pragma comment (lib, "cv210.lib")      // link with my own library libfps
+	#pragma comment (lib, "cxcore210.lib")      // link with my own library libfps
+	#pragma comment (lib, "highgui210.lib")      // link with my own library libfps
+	#pragma comment (lib, "cvaux210.lib")      // link with my own library libfps
+	#endif	// MOD-BY-LEETEN 08/06/2010-END
 	// ADD-BY-LEETEN 08/25/2008-END
 
 	#pragma comment (lib, "winmm.lib")      /* link with Windows MultiMedia lib */
@@ -32,7 +39,16 @@ using namespace std;
 	// ADD-BY-LEETEN 11/17/2008-BEGIN
 	#pragma comment (lib, "opengl32.lib")      /* link with Windows MultiMedia lib */
 	#pragma comment (lib, "glu32.lib")      /* link with Windows MultiMedia lib */
-	#pragma comment (lib, "glut32.lib")      /* link with Windows MultiMedia lib */
+	// MOD-BY-LEETEN 08/06/2010-FROM:
+		// #pragma comment (lib, "glut32.lib")      /* link with Windows MultiMedia lib */
+	// TO:
+	#ifdef USE_FREEGLUT
+		#define GLUI_FREEGLUT
+		#pragma comment (lib, "freeglut.lib")      /* link with Windows MultiMedia lib */
+	#else
+		#pragma comment (lib, "glut32.lib")      /* link with Windows MultiMedia lib */
+	#endif
+	// MOD-BY-LEETEN 08/06/2010-END
 	// ADD-BY-LEETEN 11/17/2008-END
 
 	#if	0	// MOD-BY-LEETEN 08/06/2010-FROM:
@@ -513,6 +529,11 @@ public:
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.23  2010/08/06 15:33:33  leeten
+
+[08/06/2010]
+1. [MOD] Remvoe the preprocessor GLUT_BUILDING_LIB and define a preprocessor GLUIDLL.
+
 Revision 1.22  2010/08/05 19:17:32  leeten
 
 [08/05/2010]
