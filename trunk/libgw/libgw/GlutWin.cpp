@@ -518,7 +518,12 @@ CGlutWin::_KeyboardCB(unsigned char key, int x, int y)
 				bIsFullScreened = !bIsFullScreened;
 				if(bIsFullScreened)
 				{
-					memcpy(piPrevViewport, this->piViewport, sizeof(piPrevViewport));
+					// MOD-BY-LEETEN 08/07/2010-FROM:
+						// memcpy(piPrevViewport, this->piViewport, sizeof(piPrevViewport));
+					// TO:
+					piPrevViewport[2] = glutGet(GLUT_WINDOW_WIDTH);
+					piPrevViewport[3] = glutGet(GLUT_WINDOW_HEIGHT);
+					// MOD-BY-LEETEN 08/07/2010-END
 					piPrevViewport[0] = glutGet(GLUT_WINDOW_X);
 					piPrevViewport[1] = glutGet(GLUT_WINDOW_Y);
 					glutFullScreen();
@@ -1317,6 +1322,11 @@ CGlutWin::_DisableVerticalSync()
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.26  2010/08/05 19:25:01  leeten
+
+[08/05/2010]
+1. [ADD] Add the hotkey' f' to toggle full screen mode.
+
 Revision 1.25  2010/02/01 05:54:30  leeten
 
 [01/30/2010]
