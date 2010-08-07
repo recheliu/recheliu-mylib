@@ -61,6 +61,17 @@ using namespace std;
 
 	// ADD-BY-LEETEN 08/11/2008-BEGIN
 	// combine w/ GLUI
+	// ADD-BY-LEETEN 08/07/2010-BEGIN
+	#ifdef USE_FREEGLUT
+		#pragma message( "Use GLUI w/ FREEGLUT" )
+		#pragma comment (lib, "glui32dll_freeglut.lib")
+	#else
+		#pragma message( "Use GLUI w/o FREEGLUT" )
+		#pragma comment (lib, "glui32dll.lib")
+	#endif
+	#define GLUI_NO_LIB_PRAGMA
+	// ADD-BY-LEETEN 08/07/2010-EBD
+
 	#include <GL/glui.h>
 	// ADD-BY-LEETEN 08/11/2008-END
 
@@ -529,6 +540,12 @@ public:
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.24  2010/08/06 20:22:13  leeten
+
+[08/06/2010]
+1. [ADD] Use freeglut when USE_FREEGLUT is defined.
+2. [ADD] Link the libraries from OpenCV 2.1.
+
 Revision 1.23  2010/08/06 15:33:33  leeten
 
 [08/06/2010]
