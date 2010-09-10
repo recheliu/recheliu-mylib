@@ -125,8 +125,10 @@ CDvrWin2::_DisplayFunc()
 	_BeginDisplay();
 
 	glPushAttrib(GL_ENABLE_BIT);
-	glEnable( GL_DEPTH_TEST);
-	glEnable( GL_BLEND);
+	#if	0	// DEL-BY-LEETEN 09/10/2010-BEGIN
+		glEnable( GL_DEPTH_TEST);
+		glEnable( GL_BLEND);
+	#endif	// DEL-BY-LEETEN 09/10/2010-END
 	glEnable( GL_TEXTURE_GEN_S );
 	glEnable( GL_TEXTURE_GEN_T );
 	glEnable( GL_TEXTURE_GEN_R );
@@ -253,6 +255,7 @@ CDvrWin2::_DisplayFunc()
 		};
 		glDrawBuffers(sizeof(puRids)/sizeof(puRids[0]), puRids);
 		glClear(GL_COLOR_BUFFER_BIT);
+
 	}
 	glPopAttrib();	// glPushAttrib(GL_COLOR_BUFFER_BIT);
 
@@ -385,7 +388,9 @@ CDvrWin2::_InitFunc()
 	glewInit();
 
 						// setup the blending equation for back-to-front composition
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	// DEL-BY-LEETEN 09/10/2010-BEGIN
+		// glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	// DEL-BY-LEETEN 09/10/2010-END
 
 						// initialize the default FBO
 	_InitFbo();
@@ -416,6 +421,11 @@ CDvrWin2::~CDvrWin2(void)
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.4  2010/08/05 19:15:59  leeten
+
+[08/05/2010]
+1. [MOD] Change the usage of assert.
+
 Revision 1.3  2010/04/06 19:55:23  leeten
 
 [04/06/2010]
