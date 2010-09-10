@@ -55,6 +55,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libclip", "..\libclip\libcl
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libdvr2", "..\libdvr2\libdvr2.vcproj", "{7A92125A-751F-4193-A827-9A1E9175DC0F}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libtf2", "..\libtf2\libtf2.vcproj", "{42875E7B-6817-40DA-A5AF-C588D48EB025}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -125,6 +127,10 @@ Global
 		{7A92125A-751F-4193-A827-9A1E9175DC0F}.Debug|Win32.Build.0 = Debug|Win32
 		{7A92125A-751F-4193-A827-9A1E9175DC0F}.Release|Win32.ActiveCfg = Release|Win32
 		{7A92125A-751F-4193-A827-9A1E9175DC0F}.Release|Win32.Build.0 = Release|Win32
+		{42875E7B-6817-40DA-A5AF-C588D48EB025}.Debug|Win32.ActiveCfg = Debug|Win32
+		{42875E7B-6817-40DA-A5AF-C588D48EB025}.Debug|Win32.Build.0 = Debug|Win32
+		{42875E7B-6817-40DA-A5AF-C588D48EB025}.Release|Win32.ActiveCfg = Release|Win32
+		{42875E7B-6817-40DA-A5AF-C588D48EB025}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
