@@ -64,6 +64,35 @@ struct TBuffer3D: public TBuffer<t>
 		assert( 0 <= z && z < iDepth);
 		return data[x + y * iWidth + z * iWidth * iHeight];
 	}
+
+	// ADD-BY-LEETEN 09/19/2010-BEGIN
+	void _Save(char *szFilenamePrefix)
+	{
+		if( !BIsAllocated() )
+		{
+			LOG("Non-initialized buffer");
+			return;
+		}
+
+		char szFilename[1024];
+		sprintf(szFilename, "%s.%s.b3d", szFilenamePrefix, typeid(t).name());
+
+		FILE *fp;
+		fp = fopen(szFilename, "wb");
+		if( !fp )
+		{
+			perror(szFilename);
+			return;
+		}
+
+		fwrite(&iWidth, sizeof(iWidth), 1, fp);
+		fwrite(&iHeight, sizeof(iHeight), 1, fp);
+		fwrite(&iDepth, sizeof(iDepth), 1, fp);
+		fwrite(data, sizeof(t), num, fp);
+
+		fclose(fp);
+	}
+	// ADD-BY-LEETEN 09/19/2010-END
 };
 
 #endif	// __LIB_BUFFER_3D_H__
@@ -71,6 +100,11 @@ struct TBuffer3D: public TBuffer<t>
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.2  2010/01/29 19:57:00  leeten
+
+[01/29/2010]
+1. [ADD] Overload the method alloc(int num).
+
 Revision 1.1  2009/11/04 20:42:13  leeten
 
 [2009/11/04]

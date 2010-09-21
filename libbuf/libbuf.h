@@ -14,6 +14,8 @@ This file defines several important macros for CUDA.
 #include <memory.h>
 #include <assert.h>
 
+#include "liblog.h"
+
 // a template for buffer
 template <typename t> struct TBuffer 
 {
@@ -39,6 +41,34 @@ template <typename t> struct TBuffer
 		data = NULL;
 	}
 	// ADD-BY-TLEE 2008/08/14-END
+
+	// ADD-BY-LEETEN 09/19/2010-BEGIN
+	void _Save(char *szFilenamePrefix)
+	{
+		if( !BIsAllocated() )
+		{
+			LOG("Non-initialized buffer");
+			return;
+		}
+
+		char szFilename[1024];
+		sprintf(szFilename, "%s.%s.buf", szFilenamePrefix, typeid(t).name());
+
+		FILE *fp;
+		fp = fopen(szFilename, "wb");
+		if( !fp )
+		{
+			perror(szFilename);
+			return;
+		}
+
+		fwrite(&num, sizeof(num), 1, fp);
+		fwrite(data, sizeof(t), num, fp);
+
+		fclose(fp);
+
+	}
+	// ADD-BY-LEETEN 09/19/2010-END
 
 	~TBuffer()	
 	{	
@@ -83,11 +113,48 @@ template <typename t> struct TBuffer
 	}
 };
 
+// ADD-BY-LEETEN 09/19/2010-BEGIN
+#ifdef WIN32
+	#define SAVE_BUF(buf_name)	\
+		{	\
+			char szFilename[1024];	\
+			strcpy(szFilename, strrchr(__FILE__, '\\') + 1);	\
+			strcat(szFilename,  "." __FUNCTION__ "." #buf_name);	\
+			for(char *	\
+				szChar = strchr(szFilename, ':'); \
+				szChar;	\
+				szChar = strchr(szChar, ':')	) \
+				*szChar = '_';	\
+			buf_name._Save(szFilename); \
+		}	\
+
+#else
+	#define SAVE_BUF(buf_name)	\
+		{	\
+			char szFilename[1024];	\
+			strcpy(szFilename, __FILE__);	\
+			strcat(szFilename,  "." __FUNCTION__ "." #buf_name);	\
+			for(char *	\
+				szChar = strchr(szFilename, ':'); \
+				szChar;	\
+				szChar = strchr(szChar, ':')	) \
+				*szChar = '_';	\
+			buf_name._Save(szFilename); \
+		}	\
+
+#endif
+// ADD-BY-LEETEN 09/19/2010-END
+
 #endif	// __LIB_BUFFER_H__
 
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.4  2009/11/04 20:43:31  leeten
+
+[2009/11/04]
+1. [ADD] Include the header stdlib.h.
+
 Revision 1.3  2009/02/22 22:04:50  leeten
 
 [2009/02/22]
