@@ -46,28 +46,40 @@ all: $(TARGET)
 
 ifeq "$(CFG)"  "libbuf - Win32 Release"
 
-BuildCmds= \
+../include/libbuf.h: libbuf.h
 	cp libbuf.h ../include/libbuf.h
 
-../include/libbuf.h: libbuf.h
-	$(BuildCmds)
+../include/libbuf2d.h: libbuf2d.h
+	cp libbuf2d.h ../include/libbuf2d.h
+	
+../include/libbuf3d.h: libbuf3d.h
+	cp libbuf2d.h ../include/libbuf3d.h
+	
 else
 ifeq "$(CFG)"  "libbuf - Win32 Debug"
 
-BuildCmds= \
+../include/libbuf.h: libbuf.h
 	cp libbuf.h ../include/libbuf.h
 
-../include/libbuf.h: libbuf.h
-	$(BuildCmds)
+../include/libbuf2d.h: libbuf2d.h
+	cp libbuf2d.h ../include/libbuf2d.h
+	
+../include/libbuf3d.h: libbuf3d.h
+	cp libbuf2d.h ../include/libbuf3d.h
+	
 endif
 endif
 HEADER_FILES= \
 	libbuf.h \
+	libbuf2d.h \
+	libbuf3d.h \
 	$(InputPath) \
 	$(InputPath)
 
 CUSTOM_OUTPUTS= \
-	../include/libbuf.h
+	../include/libbuf.h	\
+	../include/libbuf2d.h	\
+	../include/libbuf3d.h
 
 SOURCE_FILES=
 
