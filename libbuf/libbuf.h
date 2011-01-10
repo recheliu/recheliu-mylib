@@ -7,6 +7,11 @@ This file defines several important macros for CUDA.
 #ifndef __LIB_BUFFER_H__
 #define __LIB_BUFFER_H__
 
+// ADD-BY-LEETEN 2011/01/10-BEGIN
+#include <typeinfo>
+using namespace std;
+// ADD-BY-LEETEN 2011/01/10-END
+
 // ADD-BY-LEETEN 2009/11/04-BEGIN
 #include <stdlib.h>
 // ADD-BY-LEETEN 2009/11/04-END
@@ -150,6 +155,12 @@ template <typename t> struct TBuffer
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.5  2010/09/21 13:29:15  leeten
+
+[09/21/2010]
+1. [ADD] Define a new method _Save() to dump the data in the buffer.
+2. [ADD] Define a new macro SAVE_BUF to dump the data into a file which is automatically named according to the variable's name and scope.
+
 Revision 1.4  2009/11/04 20:43:31  leeten
 
 [2009/11/04]
