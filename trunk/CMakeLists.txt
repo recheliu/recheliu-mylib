@@ -44,6 +44,10 @@ set(MYLIB_INC_DIR "${PROJECT_BINARY_DIR}/include")
 set(MYLIB_LIB_DIR_DEBUG "${PROJECT_BINARY_DIR}/lib/debug")
 set(MYLIB_LIB_DIR_RELEASE "${PROJECT_BINARY_DIR}/lib/release")
 
+# ADD-BY-LEETEN 01/23/2011-BEGIN
+set(LIBRARY_OUTPUT_PATH "${PROJECT_BINARY_DIR}/lib")	
+# ADD-BY-LEETEN 01/23/2011-END
+
 # add the binary tree to the search path for include files
 include_directories (
 	"${CUDA_INC_DIR}"
@@ -207,7 +211,11 @@ add_dependencies(libdvr2 libfbow)
 # 
 foreach(LIBGW_TESTER_NAME example_single_win example_single_win_global example_multi_wins example_multi_wins_global example_multi_wins_glui)
 	add_executable (${LIBGW_TESTER_NAME} ${PROJECT_SOURCE_DIR}/libgw/examples/${LIBGW_TESTER_NAME}/${LIBGW_TESTER_NAME}.cpp)
-	add_dependencies(${LIBGW_TESTER_NAME} libgw liblog libbuf libfbow)
+	# MOD-BY-LEETEN 01/23/2011-FROM:
+		# add_dependencies(${LIBGW_TESTER_NAME} libgw liblog libbuf libfbow)
+	# TO
+	add_dependencies(${LIBGW_TESTER_NAME} libgw liblog libbuf libfbow libfps)
+	# MOD-BY-LEETEN 01/23/2011-END
 	target_link_libraries (${LIBGW_TESTER_NAME} libgw)
 	add_test (${LIBGW_TESTER_NAME} ${LIBGW_TESTER_NAME})
 endforeach(LIBGW_TESTER_NAME)
@@ -219,3 +227,6 @@ configure_file (
 	"${PROJECT_BINARY_DIR}/mylib.mak"
 )
 
+#
+# $Log: not supported by cvs2svn $ 
+#
