@@ -17,10 +17,30 @@ using namespace std;
 		#pragma comment (lib, "highgui.lib")      // link with my own library libfps
 		#pragma comment (lib, "cvaux.lib")      // link with my own library libfps
 	#else	// MOD-BY-LEETEN 08/06/2010-TO:
-	#pragma comment (lib, "cv210.lib")      // link with my own library libfps
-	#pragma comment (lib, "cxcore210.lib")      // link with my own library libfps
-	#pragma comment (lib, "highgui210.lib")      // link with my own library libfps
-	#pragma comment (lib, "cvaux210.lib")      // link with my own library libfps
+	#if	0	// MOD-BY-LEETEN 01/20/2011-FROM:
+		#pragma comment (lib, "cv210.lib")      // link with my own library libfps
+		#pragma comment (lib, "cxcore210.lib")      // link with my own library libfps
+		#pragma comment (lib, "highgui210.lib")      // link with my own library libfps
+		#pragma comment (lib, "cvaux210.lib")      // link with my own library libfps
+	#else	// MOD-BY-LEETEN 01/20/2011-TO:
+	#ifndef OPENCV_VER
+	#pragma message( "Warning: Remember to specify the preprocessor OPENCV before linking LIBGW!"  )
+	#else
+		#if	OPENCV_VER == 210	
+			#pragma message( "OPENCV 2.10 will be used."  )
+			#pragma comment (lib, "cv210.lib")      // link with my own library libfps
+			#pragma comment (lib, "cxcore210.lib")      // link with my own library libfps
+			#pragma comment (lib, "highgui210.lib")      // link with my own library libfps
+			#pragma comment (lib, "cvaux210.lib")      // link with my own library libfps
+		#elif	OPENCV_VER == 220
+			#pragma message( "OPENCV 2.20 will be used."  )
+			#pragma comment (lib, "opencv_core220.lib")      // link with my own library libfps
+			#pragma comment (lib, "opencv_highgui220.lib")      // link with my own library libfps
+		#else
+			#pragma error( "Unsupported OpenCV version" )
+		#endif
+	#endif
+	#endif	// MOD-BY-LEETEN 01/20/2011-END
 	#endif	// MOD-BY-LEETEN 08/06/2010-END
 	// ADD-BY-LEETEN 08/25/2008-END
 
@@ -540,6 +560,11 @@ public:
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.25  2010/08/07 12:06:02  leeten
+
+[08/07/2010]
+1. [MOD] When preprocessor USE_FREEGLUT is defined,  use the glui that supports freeglut.
+
 Revision 1.24  2010/08/06 20:22:13  leeten
 
 [08/06/2010]
