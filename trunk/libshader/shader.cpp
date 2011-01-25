@@ -1,4 +1,8 @@
-#include <gl/glew.h>
+// MOD-BY-LEETEN 01/24/2011-FROM:
+	// #include <gl/glew.h>
+// TO:
+	#include <GL/glew.h>
+// MOD-BY-LEETEN 01/24/2011-END
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -268,6 +272,11 @@ CSetShaders(const char* szVertex, const char* szFragment)
 /*
 
   $Log: not supported by cvs2svn $
+  Revision 1.9  2010/08/05 19:19:54  leeten
+
+  [08/05/2010]
+  1. [MOD] Change the usage of assert.
+
   Revision 1.8  2010/01/13 00:03:01  leeten
 
   [01/12/2010]
