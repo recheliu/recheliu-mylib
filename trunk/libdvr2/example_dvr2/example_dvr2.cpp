@@ -41,11 +41,19 @@
 	TBuffer<float> pfTransFunc;
 
 void
-_ReadVolume()
+// MOD-BY-LEETEN 01/25/2011-FROM:
+	// _ReadVolume()
+// TO:
+_ReadVolume(char* szPathFilename)
+// MOD-BY-LEETEN 01/25/2011-END
 {
 	// read the volume from file
 	FILE *fpData;
-	fpData = fopen("../data/hipip", "rb");		// load the hipip dataset for test
+	// MOD-BY-LEETEN 01/25/2011-FROM:
+		// fpData = fopen("../data/hipip", "rb");		// load the hipip dataset for test
+	// TO:
+	fpData = fopen(szPathFilename, "rb");		// load the hipip dataset for test
+	// MOD-BY-LEETEN 01/25/2011-END
 	assert(fpData);
 
 	fscanf(fpData, "%d %d %d\n", &iXDim, &iYDim, &iZDim);
@@ -144,7 +152,12 @@ main(int argn, char *argv[])
 
 	#else	// MOD-BY-LEETEN 09/10/2010-FROM:
 		// load the data set
-		_ReadVolume();
+		// MOD-BY-LEETEN 01/25/2011-FROM:
+			// _ReadVolume();
+		// TO:
+		assert(iNextArg < argn);
+		_ReadVolume(argv[iNextArg]);
+		// MOD-BY-LEETEN 01/25/2011-END
 
 		// use the rainbow transfer func. for testing
 		pfTransFunc.alloc(CTransFunc::NR_OF_COLORS * iNrOfTfEntries);
@@ -200,6 +213,11 @@ main(int argn, char *argv[])
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.1  2011/01/24 19:42:37  leeten
+
+[01/24/2011]
+1. [1ST] First time checkin.
+
 Revision 1.3  2010/09/10 14:07:50  leeten
 
 [09/10/2010]
