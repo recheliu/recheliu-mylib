@@ -46,7 +46,7 @@
 
 void
 // MOD-BY-LEETEN 01/25/2011-FROM:
-	_ReadVolume()
+	// _ReadVolume()
 // TO:
 _ReadVolume(char *szPathFilename)
 // MOD-BY-LEETEN 01/25/2011-END
@@ -246,6 +246,11 @@ main(int argn, char *argv[])
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.2  2011/01/25 06:20:27  leeten
+
+[01/25/2011]
+1. [ADD] Specify the path of the dataset HIPIP via the argument.
+
 Revision 1.1  2011/01/24 19:41:46  leeten
 
 [01/24/2011]
