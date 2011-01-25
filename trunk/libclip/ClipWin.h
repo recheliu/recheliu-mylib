@@ -75,7 +75,11 @@ public:
 		void _InitFunc();
 		void _IdleFunc();
 
-		void _SetClipPlanes(CClipWin::CClipPlanes *pcClipPlanes)
+		// MOD-BY-LEETEN 01/24/2011-FROM:
+			// void _SetClipPlanes(CClipWin::CClipPlanes *pcClipPlanes)
+		// TO:
+		void _SetClipPlanes(CClipPlanes *pcClipPlanes)
+		// MOD-BY-LEETEN 01/24/2011-END
 		{
 			this->pcClipPlanes = pcClipPlanes;
 		}
@@ -104,5 +108,10 @@ public:
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.1  2009/08/26 16:01:12  leeten
+
+[2009/08/26]
+1. [1ST] First time checkin.
+
 
 */

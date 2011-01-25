@@ -56,7 +56,11 @@ public:
 	virtual void _EndDisplay();		
 	// ADD-BY-LEETEN 12/30/2009-BEGIN
 	virtual void 
-		CDvrWin2::_RenderSlab(
+		// MOD-BY-LEETEN 01/24/2011-FROM:
+			// CDvrWin2::_RenderSlab(
+		// TO:
+		_RenderSlab(
+		// MOD-BY-LEETEN 01/24/2011-END
 			int iSlab, int iNrOfSlabs,
 			double pdModelviewMatrix[], double pdProjectionMatrix[], int piViewport[],
 			double dMinX, double dMaxX, 
@@ -78,6 +82,11 @@ public:
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.4  2010/04/06 19:56:56  leeten
+
+[04/06/2010]
+1. [ADD] Defien new methods _SetTfDomain and _SetDataValue to specify the domain of the transfer function.
+
 Revision 1.3  2010/04/06 19:54:02  leeten
 
 [04/06/2010]
