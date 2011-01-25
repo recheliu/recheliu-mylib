@@ -422,7 +422,7 @@ if(NOT DEFINED WIN32)
 	target_link_libraries (example_dvr libfbo libshader libfps opencv_core opencv_highgui "GL" "glut" "glui" "GLEW" ) 
 endif()	
 # ADD-BY-LEETEN 01/24/2011-END
-add_test (example_dvr example_dvr)
+add_test (example_dvr example_dvr "${PROJECT_SOURCE_DIR}/data/hipip")
 
 # build_executable(example_dvr2 ${PROJECT_SOURCE_DIR}/libdvr2/example_dvr2)
 # add_dependencies(example_dvr2 libgw libdvr2)
@@ -435,6 +435,16 @@ add_test (example_dvr example_dvr)
 # # ADD-BY-LEETEN 01/24/2011-END
 # add_test (example_dvr2 example_dvr2)
 # ADD-BY-LEETEN 01/23/2011-END
+
+# ADD-BY-LEETEN 01/25/2011-BEGIN
+build_executable(example_dvr2 ${PROJECT_SOURCE_DIR}/libdvr2/example_dvr2)
+add_dependencies(example_dvr2 libgw libdvr2)
+target_link_libraries (example_dvr2 libgw libdvr2 libtfw libopt libclip libshader libfbo libfps)
+if(NOT DEFINED WIN32)
+	target_link_libraries (example_dvr2 opencv_core opencv_highgui "GL" "glut" "glui" "GLEW" ) 
+endif()	
+add_test (example_dvr2 example_dvr2 "${PROJECT_SOURCE_DIR}/data/hipip")
+# ADD-BY-LEETEN 01/25/2011-END
   
 ##############################################################
 # create the header for the makefile
@@ -458,6 +468,16 @@ install(
 
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.4  2011/01/25 02:39:19  leeten
+#
+# [01/24/2011]
+# 1. [MOD] Set the default value of FREEGLU to OFF.
+# 2. [DEL] Remove the paramter with_shader in the function build_library.
+# 3. [MOD] For the libraries with headers, create a new project to copy these headers to include/. The original project will depend on this project so thiss project will be built before the original project.
+# 4. [MOD] For the libraries with shaders, create a new project to convert these shaders to .h. The original project will depend on this project so thiss project will be built before the original project.
+# 5. [DEL] Remove the shaders and headers from the library projects.
+# 6. [ADD] Add extra dependencies.
+#
 # Revision 1.3  2011/01/24 19:50:51  leeten
 #
 # [01/24/2011]
