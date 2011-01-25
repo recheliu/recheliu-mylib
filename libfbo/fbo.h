@@ -1,6 +1,10 @@
 #ifndef __FBO__H__
 #define __FBO__H__
 
+// ADD-BY-LEETEN 01/24/2011-BEGIN
+#include "libopengl.h"
+// ADD-BY-LEETEN 01/24/2011-END
+
 // ADD-BY-LEETEN 2009/11/05-BEGIN
 
 template<GLenum eDefaultInternalFormat, GLenum eDefaultFormat, GLenum eTexTarget = GL_TEXTURE_2D>
@@ -50,6 +54,11 @@ GLenum EGetFboStatus(bool bPrint=false);
 /*
 
   $Log: not supported by cvs2svn $
+  Revision 1.2  2009/11/09 20:21:14  leeten
+
+  [2009/11/09]
+  1. [ADD] Add the new structure CFrameBufferTexture.
+
   Revision 1.1.1.1  2006/11/09 19:22:31  leeten
 
   [11/09/2006]
