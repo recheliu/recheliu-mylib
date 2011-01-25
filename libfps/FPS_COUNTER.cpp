@@ -52,10 +52,25 @@ void FPS_COUNTER::Update(void)
 	time = timeGetTime()/1000.0;
 	#else
 	struct timespec cTime;
-	clock_gettime(CLOCK_REALTIME, &cTime)
+	// MOD-BY-LEETEN 01/24/2011-FROM:
+		// clock_gettime(CLOCK_REALTIME, &cTime)
+	// TO:
+		clock_gettime(CLOCK_REALTIME, &cTime);
+	// MOD-BY-LEETEN 01/24/2011-END
 	time = (double)cTime.tv_sec + (double)cTime.tv_nsec/1.0e+9;
 	#endif
-	fps = (float)(1.0 / (time-lastTime));
-	lastTime=time;				//set time for the start of the next count
+	#if	0	// MOD-BY-LEETEN 01/24/2011-FROM:
+		fps = (float)(1.0 / (time-lastTime));
+		lastTime=time;				//set time for the start of the next count
+	#else	// MOD-BY-LEETEN 01/24/2011-TO:
+	//If a second has passed
+	if(time-lastTime>1.0)
+	{
+		fps=frames/(time-lastTime);	//update the number of frames per second
+		lastTime=time;				//set time for the start of the next count
+		frames=0;					//reset fps for this second
+	}
+	frames++;
+	#endif	// MOD-BY-LEETEN 01/24/2011-END
 	#endif		// MOD-BY-LEETEN 01/23/2011-END
 }
