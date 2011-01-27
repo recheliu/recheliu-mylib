@@ -173,14 +173,17 @@ main(int argn, char *argv[])
 	_BuildHistogram();
 	// ADD-BY-TLEE 08/13/2008-END
 
-										// create the DVR window
-	cDvrWin.ICreate("Direct Volume Rendering",	false, 100, 328, 256, 256);
-		cDvrWin._SetVolume(GL_LUMINANCE, &p3DubVol[0], GL_LUMINANCE, GL_UNSIGNED_BYTE, iXDim, iYDim, iZDim);
-		cDvrWin._SetTransferFunc(&pfTransFunc[0], GL_RGBA, GL_FLOAT, iNrOfTfEntries);
+	#if	0		// DEL-BY-LEETEN 01/26/2011-BEGIN
+											// create the DVR window
+		cDvrWin.ICreate("Direct Volume Rendering",	false, 100, 328, 256, 256);
+			cDvrWin._SetVolume(GL_LUMINANCE, &p3DubVol[0], GL_LUMINANCE, GL_UNSIGNED_BYTE, iXDim, iYDim, iZDim);
+			cDvrWin._SetTransferFunc(&pfTransFunc[0], GL_RGBA, GL_FLOAT, iNrOfTfEntries);
 
-		cDvrWin._LoadSavedMatrix();	
-		cDvrWin._SetDataValue((float)dValueMin, (float)dValueMax);
-		cDvrWin._SetTfDomain((float)dValueMin, (float)dValueMax);
+			cDvrWin._LoadSavedMatrix();	
+			cDvrWin._SetDataValue((float)dValueMin, (float)dValueMax);
+			cDvrWin._SetTfDomain((float)dValueMin, (float)dValueMax);
+	#endif	// DEL-BY-LEETEN 01/26/2011-END
+
 										// create the Transfer Func. window
 	// ADD-BY-TLEE 08/14/2008-BEGIN
 	cTfWin._SetTransFunc(&cTransFunc);
@@ -205,6 +208,16 @@ main(int argn, char *argv[])
 		cTfUi._SetUpdateFunc(_UpdateTf);
 	// ADD-BY-TLEE 08/13/2008-END
 
+	// ADD-BY-LEETEN 01/26/2011-BEGIN
+										// create the DVR window
+	cDvrWin.ICreate("Direct Volume Rendering",	false, 100, 328, 256, 256);
+		cDvrWin._SetVolume(GL_LUMINANCE, &p3DubVol[0], GL_LUMINANCE, GL_UNSIGNED_BYTE, iXDim, iYDim, iZDim);
+		cDvrWin._SetTransferFunc(&pfTransFunc[0], GL_RGBA, GL_FLOAT, iNrOfTfEntries);
+		cDvrWin._LoadSavedMatrix();	
+		cDvrWin._SetDataValue((float)dValueMin, (float)dValueMax);
+		cDvrWin._SetTfDomain((float)dValueMin, (float)dValueMax);
+	// ADD-BY-LEETEN 01/26/2011-END
+
 	glutMainLoop();
 
 	return 0;
@@ -213,6 +226,11 @@ main(int argn, char *argv[])
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.2  2011/01/25 06:21:00  leeten
+
+[01/25/2011]
+1. [ADD] Specify the path of the dataset HIPIP via the argument.
+
 Revision 1.1  2011/01/24 19:42:37  leeten
 
 [01/24/2011]
