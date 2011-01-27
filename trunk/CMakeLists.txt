@@ -13,12 +13,6 @@ find_package(OpenGL)
 find_package(GLUT)
 
 # The required variables
-# MOD-BY-LEETEN 01/23/2011-FROM:
-	# set(THIRDPARTY_DIR "D:/lib" CACHE PATH "The path to the 3rd party libraries" FORCE)
-	# set(OPENCV_DIR "C:/OpenCV2.1" CACHE PATH "The installed path of OpenCV" FORCE)
-	# set(OPENCV_VER "210" CACHE STRING "The Version of OpenCV" FORCE)
-	# set(FREEGLUT ON CACHE BOOL "Flag to decide whether FREEGLUT is used" FORCE)
-# MOD-BY-LEETEN 01/23/2011-TO:
 set(THIRDPARTY_DIR "D:/lib" CACHE PATH "The path to the 3rd party libraries")
 set(OPENCV_DIR "C:/OpenCV2.1" CACHE PATH "The installed path of OpenCV")
 set(OPENCV_VER "210" CACHE STRING "The Version of OpenCV")
@@ -27,12 +21,7 @@ set(OPENCV_VER "210" CACHE STRING "The Version of OpenCV")
 # TO:
 set(FREEGLUT OFF CACHE BOOL "Flag to decide whether FREEGLUT is used")
 # MOD-BY-LEETEN 01/24/2011-END
-# MOD-BY-LEETEN 01/23/2011-END
-# MOD-BY-LEETEN 01/23/2011-FROM:
-	# set(CMAKE_INSTALL_PREFIX ${PROJECT_BINARY_DIR})
-# TO:
 set(CMAKE_INSTALL_PREFIX ${PROJECT_SOURCE_DIR})
-# MOD-BY-LEETEN 01/23/2011-END
 
 # CUDA
 set(CUDA_DIR "${CUDA_TOOLKIT_ROOT_DIR}")
@@ -55,18 +44,11 @@ set(OPENCV_LIB_DIR "${OPENCV_DIR}/lib")
 # mylib
 set(MYLIB_BIN_DIR "${PROJECT_BINARY_DIR}/bin")
 set(MYLIB_INC_DIR "${PROJECT_BINARY_DIR}/include")
-# MOD-BY-LEETEN 01/23/2011-FROM:
-	# set(MYLIB_LIB_DIR_DEBUG "${PROJECT_BINARY_DIR}/lib/debug")
-	# set(MYLIB_LIB_DIR_RELEASE "${PROJECT_BINARY_DIR}/lib/release")
-# MOD-BY-LEETEN 01/23/2011-TO:
 set(MYLIB_LIB_DIR "${PROJECT_BINARY_DIR}/lib")
 set(MYLIB_LIB_DIR_DEBUG "${MYLIB_LIB_DIR}/debug")
 set(MYLIB_LIB_DIR_RELEASE "${MYLIB_LIB_DIR}/release")
-# MOD-BY-LEETEN 01/23/2011-END
 
-# ADD-BY-LEETEN 01/23/2011-BEGIN
 set(LIBRARY_OUTPUT_PATH "${PROJECT_BINARY_DIR}/lib")	
-# ADD-BY-LEETEN 01/23/2011-END
 
 # add the binary tree to the search path for include files
 include_directories (
@@ -143,15 +125,11 @@ function(build_library libname src_subdir dst_subdir)
 		# MOD-BY-LEETEN 01/24/2011-END
 	else()
 		add_library ( ${libname} 
-			# MOD-BY-LEETEN 01/23/2011-FROM:
-				# ${SRC_FILES} ${HEADER_FILES} ${FRAG_FILES} ${VERT_FILES}
-			# TO:
 			# MOD-BY-LEETEN 01/24/2011-FROM:
 				# ${SRC_FILES} ${HEADER_FILES} ${FRAG_FILES} ${VERT_FILES} ${GEOM_FILES}
 			# TO:
 			${SRC_FILES}
 			# MOD-BY-LEETEN 01/24/2011-END
-			# MOD-BY-LEETEN 01/23/2011-END
 			 )
 		set_target_properties(${libname} PROPERTIES 
 			DEBUG_OUTPUT_NAME "${libname}_d"
@@ -304,11 +282,7 @@ endfunction (build_executable)
  
 ##############################################################
 # shader2string
-# MOD-BY-LEETEN 01/23/2011-FROM:
-	# add_executable (shader2string ${PROJECT_SOURCE_DIR}/libshader/shader2string/shader2string.cpp)
-# TO:
 build_executable(shader2string ${PROJECT_SOURCE_DIR}/libshader/shader2string)
-# MOD-BY-LEETEN 01/23/2011-END
 add_dependencies(shader2string libshader)
 target_link_libraries (shader2string libshader)
 # ADD-BY-LEETEN 01/24/2011-BEGIN
@@ -320,12 +294,6 @@ else()
 	target_link_libraries (shader2string "GLEW")
 endif()
 # ADD-BY-LEETEN 01/24/2011-END
-
-# DEL-BY-LEETEN 01/23/2011-FROM:
-	# install(
-		# TARGETS shader2string 
-		# DESTINATION ${MYLIB_BIN_DIR})
-# DEL-BY-LEETEN 01/23/2011-END
 
 ##############################################################
 foreach(LIB_NAME 
@@ -375,12 +343,8 @@ foreach(LIB_NAME
 	build_library(${LIB_NAME} "/" "${LIB_NAME}/")
 endforeach(LIB_NAME)
 
-# MOD-BY-LEETEN 01/23/2011-FROM:
-	# add_dependencies(libclip libfbow shader2string)
-# TO:
 add_dependencies(libclip libgw libfbow shader2string)
 add_dependencies(libtfw libgw)
-# MOD-BY-LEETEN 01/23/2011-END
 
 # ADD-BY-LEETEN 01/24/2011-BEGIN
 add_dependencies(libfbo libopengl)
@@ -394,16 +358,8 @@ add_dependencies(libdvr2 libfbow)
 # LIBGW testing program
 # 
 foreach(LIBGW_TESTER_NAME example_single_win example_single_win_global example_multi_wins example_multi_wins_global example_multi_wins_glui)
-	# MOD-BY-LEETEN 01/23/2011-FROM:
-		# add_executable (${LIBGW_TESTER_NAME} ${PROJECT_SOURCE_DIR}/libgw/examples/${LIBGW_TESTER_NAME}/${LIBGW_TESTER_NAME}.cpp)
-	# TO:
 	build_executable(${LIBGW_TESTER_NAME} ${PROJECT_SOURCE_DIR}/libgw/examples/${LIBGW_TESTER_NAME})
-	# MOD-BY-LEETEN 01/23/2011-END
-	# MOD-BY-LEETEN 01/23/2011-FROM:
-		# add_dependencies(${LIBGW_TESTER_NAME} libgw liblog libbuf libfbow)
-	# TO
 	add_dependencies(${LIBGW_TESTER_NAME} libgw liblog libbuf libfbow libfps)
-	# MOD-BY-LEETEN 01/23/2011-END
 	target_link_libraries (${LIBGW_TESTER_NAME} libgw)
 	# ADD-BY-LEETEN 01/24/2011-BEGIN
 	if(NOT DEFINED WIN32)
@@ -468,6 +424,12 @@ install(
 
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.5  2011/01/25 06:18:09  leeten
+#
+# [01/25/2011]
+# 1. [ADD] Add the path of the dataset HIPIP to the tests example_dvr and example_dvr2.
+# 2. [ADD] Add the executable example_dvr2.
+#
 # Revision 1.4  2011/01/25 02:39:19  leeten
 #
 # [01/24/2011]
