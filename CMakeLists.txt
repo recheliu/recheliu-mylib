@@ -16,11 +16,7 @@ find_package(GLUT)
 set(THIRDPARTY_DIR "D:/lib" CACHE PATH "The path to the 3rd party libraries")
 set(OPENCV_DIR "C:/OpenCV2.1" CACHE PATH "The installed path of OpenCV")
 set(OPENCV_VER "210" CACHE STRING "The Version of OpenCV")
-# MOD-BY-LEETEN 01/24/2011-FROM:
-	# set(FREEGLUT ON CACHE BOOL "Flag to decide whether FREEGLUT is used")
-# TO:
 set(FREEGLUT OFF CACHE BOOL "Flag to decide whether FREEGLUT is used")
-# MOD-BY-LEETEN 01/24/2011-END
 set(CMAKE_INSTALL_PREFIX ${PROJECT_SOURCE_DIR})
 
 # CUDA
@@ -55,6 +51,9 @@ include_directories (
 	"${CUDA_INC_DIR}"
 	"${CUDASDK_INC_DIR}"
 	"${OPENCV_INC_DIR}"
+	# ADD-BY-LEETEN 01/28/2011-BEGIN
+	"${OPENCV_INC_DIR}/opencv"	
+	# ADD-BY-LEETEN 01/28/2011-END
 	"${THIRDPARTY_INC_DIR}"
 	"${MYLIB_INC_DIR}"
 	)
@@ -93,11 +92,7 @@ else()
 	set(COPY "cp")
 endif()
 
-# MOD-BY-LEETEN 01/24/2011-FROM:
-	# function(build_library libname src_subdir dst_subdir with_shaders)
-# TO:
 function(build_library libname src_subdir dst_subdir)
-# MOD-BY-LEETEN 01/24/2011-END
 	set(SRC_DIR "${PROJECT_SOURCE_DIR}/${libname}/${src_subdir}/")
 	
 	AUX_SOURCE_DIRECTORY ("${SRC_DIR}" 	SRC_FILES)
@@ -108,28 +103,10 @@ function(build_library libname src_subdir dst_subdir)
 
 	list(LENGTH SRC_FILES N_SRC_FILES)
 	if( N_SRC_FILES EQUAL 0 )
-		# MOD-BY-LEETEN 01/24/2011-FROM:
-			# add_custom_target (${libname} 
-				# # MOD-BY-LEETEN 01/23/2011-FROM:
-					# # SOURCES ${HEADER_FILES} ${FRAG_FILES} ${VERT_FILES})
-				# # TO:
-				# # TEST-MOD-FROM:
-					# # SOURCES ${HEADER_FILES} ${FRAG_FILES} ${VERT_FILES} ${GEOM_FILES}
-				# # TO:
-				# SOURCES ${HEADER_FILES}
-				# # TEST-MOD-END
-				# )
-				# # MOD-BY-LEETEN 01/23/2011-END
-		# MOD-BY-LEETEN 01/24/2011-TO:
 		set(HEADER_PROJ_NAME ${libname})
-		# MOD-BY-LEETEN 01/24/2011-END
 	else()
 		add_library ( ${libname} 
-			# MOD-BY-LEETEN 01/24/2011-FROM:
-				# ${SRC_FILES} ${HEADER_FILES} ${FRAG_FILES} ${VERT_FILES} ${GEOM_FILES}
-			# TO:
 			${SRC_FILES}
-			# MOD-BY-LEETEN 01/24/2011-END
 			 )
 		set_target_properties(${libname} PROPERTIES 
 			DEBUG_OUTPUT_NAME "${libname}_d"
@@ -138,30 +115,6 @@ function(build_library libname src_subdir dst_subdir)
 		set(HEADER_PROJ_NAME ${libname}_h)
 	endif()
 
-	# MOD-BY-LEETEN 01/24/2011-FROM:
-		# # create the dst. folder
-		# set(DST_INC_DIR "${MYLIB_INC_DIR}/${dst_subdir}")
-		# add_custom_command (
-			# TARGET ${libname}
-			# PRE_BUILD
-			# COMMAND cmake -E make_directory ${DST_INC_DIR}
-		# )
-
-		# # copy all headers to the dst. file
-		# file(TO_NATIVE_PATH ${DST_INC_DIR} DST_INC_NATIVE_DIR)
-		# foreach(HEADER ${HEADER_FILES})
-			# file(TO_NATIVE_PATH ${HEADER} HEADER_NATIVE_PATH)
-			
-			# add_custom_command (
-				# TARGET ${libname}
-				# PRE_BUILD
-				# COMMAND ${COPY} ${HEADER_NATIVE_PATH} ${DST_INC_NATIVE_DIR} )
-
-			# set_target_properties(${libname} PROPERTIES 
-				# PUBLIC_HEADER ${HEADER}
-			# )
-		# endforeach(HEADER)
-	# MOD-BY-LEETEN 01/24/2011-TO:
 	add_custom_target (${HEADER_PROJ_NAME} 
 		SOURCES ${HEADER_FILES}
 		)
@@ -182,23 +135,7 @@ function(build_library libname src_subdir dst_subdir)
 		  COMMAND ${COPY} ${HEADER_NATIVE_PATH} ${DST_INC_NATIVE_DIR} )
 	endforeach(HEADER)
 	add_dependencies(${libname} ${HEADER_PROJ_NAME})
-	# MOD-BY-LEETEN 01/24/2011-END
 	
-	# MOD-BY-LEETEN 01/24/2011-FROM:
-		# if( with_shaders )
-			# # convert all GLSL shaders to .h
-			# set(SHADER_FILES "")
-			# list(APPEND SHADER_FILES ${FRAG_FILES} ${VERT_FILES} ${GEOM_FILES} )
-			# foreach(SHADER ${SHADER_FILES})
-				# file(TO_NATIVE_PATH ${SHADER} SHADER_NATIVE_PATH)
-				# add_custom_command (
-				  # TARGET ${libname}
-				  # PRE_BUILD
-				  # COMMAND shader2string ${SHADER_NATIVE_PATH} ${SHADER_NATIVE_PATH}.h
-				# )
-			# endforeach(SHADER)
-		# endif()
-	# MOD-BY-LEETEN 01/24/2011-TO:
 	set(SHADER_FILES "")
 	list(APPEND SHADER_FILES ${FRAG_FILES} ${VERT_FILES} ${GEOM_FILES} )
 	list(LENGTH SHADER_FILES N_SHADER_FILES)
@@ -221,9 +158,6 @@ function(build_library libname src_subdir dst_subdir)
 			add_dependencies(${libname} ${SHADER_PROJ_NAME})
 		endif()
 	endif()
-	# MOD-BY-LEETEN 01/24/2011-END
-
-	# copy_headers (${libname} ${src_subdir} ${dst_subdir})
 endfunction (build_library)
 
 # ADD-BY-LEETEN 01/23/2011-BEGIN
@@ -234,25 +168,7 @@ function(build_executable exename src_dir)
 	file(GLOB FRAG_FILES "${src_dir}/*.frag" )
 	file(GLOB GEOM_FILES "${src_dir}/*.geom" )
 	
-	# MOD-BY-LEETEN 01/24/2011-FROM:
-		# add_executable ( ${exename} ${SRC_FILES} ${HEADER_FILES} ${VERT_FILES} ${FRAG_FILES} ${GEOM_FILES})
-	# TO:
 	add_executable ( ${exename} ${SRC_FILES} ${HEADER_FILES} )
-	# MOD-BY-LEETEN 01/24/2011-END
-
-	# MOD-BY-LEETEN 01/24/2011-FROM:
-		# # convert all GLSL shaders to .h
-		# set(SHADER_FILES "")
-		# list(APPEND SHADER_FILES ${FRAG_FILES} ${VERT_FILES} ${GEOM_FILES} )
-		# foreach(SHADER ${SHADER_FILES})
-			# file(TO_NATIVE_PATH ${SHADER} SHADER_NATIVE_PATH)
-			# add_custom_command (
-			  # TARGET ${exename}
-			  # PRE_BUILD
-			  # COMMAND shader2string ${SHADER_NATIVE_PATH} ${SHADER_NATIVE_PATH}.h
-			# )
-		# endforeach(SHADER)
-	# MOD-BY-LEETEN 01/24/2011-TO:
 	set(SHADER_FILES "")
 	list(APPEND SHADER_FILES ${FRAG_FILES} ${VERT_FILES} ${GEOM_FILES} )
 	list(LENGTH SHADER_FILES N_SHADER_FILES)
@@ -273,7 +189,6 @@ function(build_executable exename src_dir)
 		endforeach(SHADER)
 		add_dependencies(${exename} ${SHADER_PROJ_NAME})
 	endif()
-	# MOD-BY-LEETEN 01/24/2011-END
 
 	# copy_headers (${libname} ${src_subdir} ${dst_subdir})
 endfunction (build_executable)
@@ -285,15 +200,14 @@ endfunction (build_executable)
 build_executable(shader2string ${PROJECT_SOURCE_DIR}/libshader/shader2string)
 add_dependencies(shader2string libshader)
 target_link_libraries (shader2string libshader)
-# ADD-BY-LEETEN 01/24/2011-BEGIN
 if(DEFINED WIN32) 
-# ADD-BY-LEETEN 01/24/2011-END
 target_link_libraries (shader2string "${THIRDPARTY_LIB_DIR}/glew32.lib")
-# ADD-BY-LEETEN 01/24/2011-BEGIN
 else()
 	target_link_libraries (shader2string "GLEW")
+	# ADD-BY-LEETEN 01/28/2011-BEGIN
+	target_link_libraries (shader2string "glut")
+	# ADD-BY-LEETEN 01/28/2011-END
 endif()
-# ADD-BY-LEETEN 01/24/2011-END
 
 ##############################################################
 foreach(LIB_NAME 
@@ -306,9 +220,6 @@ foreach(LIB_NAME
 			libopt 
 			libopengl 
 			libfps 
-			# DEL-BY-LEETEN 01/24/2011-BEGIN
-				# libtf2 
-			# DEL-BY-LEETEN 01/24/2011-END
 			libfbo
 	)
 	build_library(${LIB_NAME} "/" "/" false)
@@ -319,23 +230,11 @@ endforeach(LIB_NAME)
 build_library(libgw "libgw/" "/")
 add_dependencies(libgw libbuf libopengl liblog libfps)
 
-# DEL-BY-LEETEN 01/24/2011-BEGIN
-	# ##############################################################
-	# # libraries w/ their own subfolder under the folder include/
-	# foreach(LIB_NAME 
-				# libdvr2 
-		# )
-		# build_library(${LIB_NAME} "/" "${LIB_NAME}/")
-	# endforeach(LIB_NAME)
-# DEL-BY-LEETEN 01/24/2011-BEGIN
-
 ##############################################################
 # libraries w/ their own subfolder under the folder include/
 # and source codes in GLSL (.frag, .vert, and .geom)
 foreach(LIB_NAME 
-			# ADD-BY-LEETEN 01/24/2011-BEGIN
 			libdvr2 
-			# ADD-BY-LEETEN 01/24/2011-END
 			libclip
 			libdvr
 			libtfw
@@ -346,10 +245,8 @@ endforeach(LIB_NAME)
 add_dependencies(libclip libgw libfbow shader2string)
 add_dependencies(libtfw libgw)
 
-# ADD-BY-LEETEN 01/24/2011-BEGIN
 add_dependencies(libfbo libopengl)
 add_dependencies(libopengl libbuf)
-# ADD-BY-LEETEN 01/24/2011-END
 
 add_dependencies(libdvr libfbo)
 add_dependencies(libdvr2 libfbow)
@@ -361,44 +258,108 @@ foreach(LIBGW_TESTER_NAME example_single_win example_single_win_global example_m
 	build_executable(${LIBGW_TESTER_NAME} ${PROJECT_SOURCE_DIR}/libgw/examples/${LIBGW_TESTER_NAME})
 	add_dependencies(${LIBGW_TESTER_NAME} libgw liblog libbuf libfbow libfps)
 	target_link_libraries (${LIBGW_TESTER_NAME} libgw)
-	# ADD-BY-LEETEN 01/24/2011-BEGIN
 	if(NOT DEFINED WIN32)
-		target_link_libraries (${LIBGW_TESTER_NAME} libfps opencv_core opencv_highgui "GLEW" "GL" "glut" "glui" ) 
+		# MOD-BY-LEETEN 01/28/2011-FROM:
+			# target_link_libraries (${LIBGW_TESTER_NAME} libfps opencv_core opencv_highgui "GLEW" "GL" "glut" "glui" ) 
+		# TO:
+			target_link_libraries (${LIBGW_TESTER_NAME} 
+				libfps 
+				opencv_core 
+				opencv_highgui 
+				"GLEW" 
+				"GL" 
+				"GLU" 
+				"glut" 
+				"glui" ) 
+		# MOD-BY-LEETEN 01/28/2011-END
 	endif()
-	# ADD-BY-LEETEN 01/24/2011-END
 	add_test (${LIBGW_TESTER_NAME} ${LIBGW_TESTER_NAME})
 endforeach(LIBGW_TESTER_NAME)
 
 # ADD-BY-LEETEN 01/23/2011-BEGIN
 build_executable(example_dvr ${PROJECT_SOURCE_DIR}/libdvr/example_dvr)
 add_dependencies(example_dvr libgw libdvr)
-target_link_libraries (example_dvr libgw libdvr libtfw libopt)
-# ADD-BY-LEETEN 01/24/2011-BEGIN
-if(NOT DEFINED WIN32)
-	target_link_libraries (example_dvr libfbo libshader libfps opencv_core opencv_highgui "GL" "glut" "glui" "GLEW" ) 
-endif()	
-# ADD-BY-LEETEN 01/24/2011-END
-add_test (example_dvr example_dvr "${PROJECT_SOURCE_DIR}/data/hipip")
 
-# build_executable(example_dvr2 ${PROJECT_SOURCE_DIR}/libdvr2/example_dvr2)
-# add_dependencies(example_dvr2 libgw libdvr2)
-# target_link_libraries (example_dvr2 libgw libdvr2 libtfw libopt libclip libshader)
-# # ADD-BY-LEETEN 01/24/2011-BEGIN
-# target_link_libraries (example_dvr libfbo libshader libfps opencv_core opencv_highgui "GLEW" "GL" "glut" "glui" ) 
+# MOD-BY-LEETEN 01/28/2011-FROM:
 # if(NOT DEFINED WIN32)
-	# target_link_libraries (example_dvr opencv_core opencv_highgui ) 
-# endif()	
-# # ADD-BY-LEETEN 01/24/2011-END
-# add_test (example_dvr2 example_dvr2)
-# ADD-BY-LEETEN 01/23/2011-END
+	# target_link_libraries (example_dvr libgw libdvr libtfw libopt)
+	# target_link_libraries (example_dvr libfbo libshader libfps opencv_core opencv_highgui "GL" "glut" "glui" "GLEW" ) 
+# endif
+# MOD-BY-LEETEN 01/28/2011-TO:
+target_link_libraries (example_dvr 
+	libtfw
+	libdvr
+	libopt
+	libshader
+	libfbo	
+	libfps 
+	libgw 
+	libfps 
+	) 
+if(NOT DEFINED WIN32)	
+	target_link_libraries (example_dvr
+		opencv_core 
+		opencv_highgui 
+		GLEW 
+		GL 
+		GLU 
+		glut 
+		glui 
+	) 
+	target_link_libraries (example_dvr 
+		opencv_core 
+		opencv_highgui 
+		GLEW 
+		GL 
+		GLU 
+		glut 
+		glui
+	)
+endif()
+# MOD-BY-LEETEN 01/28/2011-END
+add_test (example_dvr example_dvr "${PROJECT_SOURCE_DIR}/data/hipip")
 
 # ADD-BY-LEETEN 01/25/2011-BEGIN
 build_executable(example_dvr2 ${PROJECT_SOURCE_DIR}/libdvr2/example_dvr2)
 add_dependencies(example_dvr2 libgw libdvr2)
-target_link_libraries (example_dvr2 libgw libdvr2 libtfw libopt libclip libshader libfbo libfps)
-if(NOT DEFINED WIN32)
-	target_link_libraries (example_dvr2 opencv_core opencv_highgui "GL" "glut" "glui" "GLEW" ) 
-endif()	
+# MOD-BY-LEETEN 01/28/2011-FROM:
+	# target_link_libraries (example_dvr2 libgw libdvr2 libtfw libopt libclip libshader libfbo libfps)
+	# if(NOT DEFINED WIN32)
+	#	target_link_libraries (example_dvr2 opencv_core opencv_highgui "GL" "glut" "glui" "GLEW" ) 
+	# endif()	
+# MOD-BY-LEETEN 01/28/2011-TO:
+target_link_libraries (example_dvr2
+	libtfw
+	libdvr2
+	libopt
+	libshader
+	libfbo
+	libclip
+	libfps 
+	libgw 
+	) 
+if(NOT DEFINED WIN32)	
+	target_link_libraries (example_dvr2
+		opencv_core 
+		opencv_highgui 
+		GLEW 
+		GL 
+		GLU 
+		glut 
+		glui 
+		)
+	target_link_libraries (example_dvr2
+		opencv_core 
+		opencv_highgui 
+		GLEW 
+		GL 
+		GLU 
+		glut 
+		glui 
+		)
+endif()
+# MOD-BY-LEETEN 01/28/2011-END
+
 add_test (example_dvr2 example_dvr2 "${PROJECT_SOURCE_DIR}/data/hipip")
 # ADD-BY-LEETEN 01/25/2011-END
   
@@ -409,7 +370,6 @@ configure_file (
 	"${PROJECT_BINARY_DIR}/mylib.mak"
 )
 
-# ADD-BY-LEETEN 01/24/2011-BEGIN
 ##############################################################
 install(
 	TARGETS shader2string 
@@ -420,10 +380,14 @@ install(
 install(
 	DIRECTORY ${MYLIB_LIB_DIR}
 	DESTINATION "${CMAKE_INSTALL_PREFIX}")
-# ADD-BY-LEETEN 01/24/2011-END
 
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.6  2011/01/27 02:45:37  leeten
+#
+# [01/26/2011]
+# 1. [DEL] Remove old deleted code segments.
+#
 # Revision 1.5  2011/01/25 06:18:09  leeten
 #
 # [01/25/2011]
