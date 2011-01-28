@@ -21,6 +21,11 @@ frend class called CTfUi.
 #include <list>
 using namespace std;
 
+// ADD-BY-LEETEN 01/28/2011-BEGIN
+#include <stdio.h>
+#include <string.h>
+// ADD-BY-LEETEN 01/28/2011-END
+
 #pragma once
 
 	#include "knot.h"
@@ -153,6 +158,11 @@ public:
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.5  2010/01/06 16:43:58  leeten
+
+[01/06/2010]
+1. [DEL] Move the constructor and destructor to the file TransFunc.cpp.
+
 Revision 1.4  2009/08/12 22:11:48  leeten
 
 [2009/08/12]
