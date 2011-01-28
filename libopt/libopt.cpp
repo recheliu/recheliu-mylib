@@ -9,6 +9,13 @@
 	#include <assert.h>
 	#include <stdarg.h>
 
+	// ADD-BY-LEETEN 01/28/2011-BEGIN
+	#include <stdio.h>
+	#include <stdlib.h>
+	#include <memory.h>
+	#include <string.h>
+	// ADD-BY-LEETEN 01/28/2011-END
+
 	#include "libopt.h"
 
 #endif	// MOD-BY-LEETEN 07/08/2008-END
@@ -539,6 +546,11 @@ bool BOPTParse(char* argv[], int argc, int iBegin, int *piEnd)
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.9  2010/08/05 19:19:25  leeten
+
+[08/05/2010]
+1. [MOD] Change the usage of assert.
+
 Revision 1.8  2008/11/03 15:29:58  leeten
 
 [2008/11/03]
