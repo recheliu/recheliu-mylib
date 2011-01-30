@@ -245,6 +245,9 @@ endforeach(LIB_NAME)
 add_dependencies(libclip libgw libfbow shader2string)
 add_dependencies(libtfw libgw)
 
+# ADD-BY-LEETEN 01/28/2011-BEGIN
+add_dependencies(libfbow libfbo)
+# ADD-BY-LEETEN 01/28/2011-END
 add_dependencies(libfbo libopengl)
 add_dependencies(libopengl libbuf)
 
@@ -292,7 +295,9 @@ target_link_libraries (example_dvr
 	libopt
 	libshader
 	libfbo	
-	libfps 
+	# DEL-BY-LEETEN 01/28/2011-BEGIN
+		# libfps	
+	# DEL-BY-LEETEN 01/28/2011-END
 	libgw 
 	libfps 
 	) 
@@ -306,15 +311,17 @@ if(NOT DEFINED WIN32)
 		glut 
 		glui 
 	) 
-	target_link_libraries (example_dvr 
-		opencv_core 
-		opencv_highgui 
-		GLEW 
-		GL 
-		GLU 
-		glut 
-		glui
-	)
+	# DEL-BY-LEETEN 01/28/2011-BEGIN
+		#	target_link_libraries (example_dvr 
+		#		opencv_core 
+		#		opencv_highgui 
+		#		GLEW 
+		#		GL 
+		#		GLU 
+		#		glut 
+		#		glui
+		#	)
+	# DEL-BY-LEETEN 01/28/2011-END
 endif()
 # MOD-BY-LEETEN 01/28/2011-END
 add_test (example_dvr example_dvr "${PROJECT_SOURCE_DIR}/data/hipip")
@@ -335,8 +342,13 @@ target_link_libraries (example_dvr2
 	libshader
 	libfbo
 	libclip
-	libfps 
+	# DEL-BY-LEETEN 01/28/2011-BEGIN
+		# libfps 
+	# DEL-BY-LEETEN 01/28/2011-END
 	libgw 
+	# ADD-BY-LEETEN 01/28/2011-BEGIN
+	libfps 
+	# ADD-BY-LEETEN 01/28/2011-END
 	) 
 if(NOT DEFINED WIN32)	
 	target_link_libraries (example_dvr2
@@ -348,15 +360,17 @@ if(NOT DEFINED WIN32)
 		glut 
 		glui 
 		)
-	target_link_libraries (example_dvr2
-		opencv_core 
-		opencv_highgui 
-		GLEW 
-		GL 
-		GLU 
-		glut 
-		glui 
-		)
+	# DEL-BY-LEETEN 01/28/2011-BEGIN
+		#	target_link_libraries (example_dvr2
+		#		opencv_core 
+		#		opencv_highgui 
+		#		GLEW 
+		#		GL 
+		#		GLU 
+		#		glut 
+		#		glui 
+		#		)
+	# DEL-BY-LEETEN 01/28/2011-BEGIN
 endif()
 # MOD-BY-LEETEN 01/28/2011-END
 
@@ -383,6 +397,14 @@ install(
 
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.7  2011/01/28 16:01:06  leeten
+#
+# [01/28/2011]
+# 1. [ADD] Link the OpenGL and OpenCV libraries twice in order to build example_dvr and example_dvr2 on Linux.
+# 2. [DEL] Remove the code deleted before 01/24/2011.
+# 3. [ADD] Add the subfolder opencv to the include path.
+# 4. [ADD] Link the library glut when build shader2string.
+#
 # Revision 1.6  2011/01/27 02:45:37  leeten
 #
 # [01/26/2011]
