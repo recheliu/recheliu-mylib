@@ -134,6 +134,7 @@ template <typename t> struct TBuffer
 		}	\
 
 #else
+	#if	0	// MOD-BY-LEETEN 01/30/2011-FROM:
 	#define SAVE_BUF(buf_name)	\
 		{	\
 			char szFilename[1024];	\
@@ -147,6 +148,23 @@ template <typename t> struct TBuffer
 			buf_name._Save(szFilename); \
 		}	\
 
+	#else	// MOD-BY-LEETEN 01/30/2011-TO:
+
+	#define SAVE_BUF(buf_name)	\
+		{	\
+			char szFilename[1024];	\
+			strcpy(szFilename, __FILE__);	\
+			strcat(szFilename,  #buf_name);	\
+			for(char *	\
+				szChar = strchr(szFilename, ':'); \
+				szChar;	\
+				szChar = strchr(szChar, ':')	) \
+				*szChar = '_';	\
+			buf_name._Save(szFilename); \
+		}	\
+
+	#endif	// MOD-BY-LEETEN 01/30/2011-END
+
 #endif
 // ADD-BY-LEETEN 09/19/2010-END
 
@@ -155,6 +173,11 @@ template <typename t> struct TBuffer
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.6  2011/01/10 19:47:53  leeten
+
+[01/09/2010]
+1. [ADD] Include the header typeinfo.
+
 Revision 1.5  2010/09/21 13:29:15  leeten
 
 [09/21/2010]
