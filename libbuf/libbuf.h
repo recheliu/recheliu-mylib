@@ -52,7 +52,11 @@ template <typename t> struct TBuffer
 	{
 		if( !BIsAllocated() )
 		{
-			LOG("Non-initialized buffer");
+			// MOD-BY-LEETEN 02/24/2011-FROM:
+				// LOG("Non-initialized buffer");
+			// TO:
+			LOG(printf("Non-initialized buffer"));
+			// MOD-BY-LEETEN 02/24/2011-END
 			return;
 		}
 
@@ -173,6 +177,11 @@ template <typename t> struct TBuffer
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.7  2011/01/31 03:18:57  leeten
+
+[01/30/2011]
+1. [DEL] Remove the macro __FUNCTION__ in the macro SAVE_BUF.
+
 Revision 1.6  2011/01/10 19:47:53  leeten
 
 [01/09/2010]

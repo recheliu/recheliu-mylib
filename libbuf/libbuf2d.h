@@ -49,7 +49,7 @@ struct TBuffer2D: public TBuffer<t>
 	}
 	// ADD-BY-LEETEN 01/26/2010-END
 
-	t* alloc(int w, int h)
+	t * alloc(int w, int h)
 	{
 		assert(w > 0 && h > 0);
 		iWidth = w;
@@ -94,7 +94,11 @@ struct TBuffer2D: public TBuffer<t>
 		if( !TBuffer<t>::BIsAllocated() )
 		// MOD-BY-LEETEN 01/25/2011-END
 		{
-			LOG("Non-initialized buffer");
+			// MOD-BY-LEETEN 02/24/2011-FROM:
+				// LOG("Non-initialized buffer");
+			// TO:
+			LOG(printf("Non-initialized buffer"));
+			// MOD-BY-LEETEN 02/24/2011-END
 			return;
 		}
 
@@ -127,6 +131,11 @@ struct TBuffer2D: public TBuffer<t>
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.5  2011/01/31 03:18:08  leeten
+
+[01/30/2011]
+1. [MOD] Add the prefix TBuffer<t>:: when return the data pointer.
+
 Revision 1.4  2011/01/25 06:19:17  leeten
 
 [01/25/2011]
