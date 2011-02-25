@@ -96,7 +96,11 @@ struct TBuffer3D: public TBuffer<t>
 		if( !TBuffer<t>::BIsAllocated() )
 		// MOD-BY-LEETEN 01/25/2011-END
 		{
-			LOG("Non-initialized buffer");
+			// MOD-BY-LEETEN 02/24/2011-FROM:
+				// LOG("Non-initialized buffer");
+			// TO:
+			LOG(printf("Non-initialized buffer"));
+			// MOD-BY-LEETEN 02/24/2011-END
 			return;
 		}
 
@@ -130,6 +134,11 @@ struct TBuffer3D: public TBuffer<t>
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.4  2011/01/25 06:19:17  leeten
+
+[01/25/2011]
+1. [MOD] Add the type declarere <t> when call the class TBuffer or access its member,
+
 Revision 1.3  2010/09/21 13:29:15  leeten
 
 [09/21/2010]
