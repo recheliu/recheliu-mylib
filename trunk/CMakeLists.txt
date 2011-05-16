@@ -101,63 +101,141 @@ function(build_library libname src_subdir dst_subdir)
 	file(GLOB VERT_FILES "${SRC_DIR}/*.vert" )
 	file(GLOB GEOM_FILES "${SRC_DIR}/*.geom" )
 
+	# ADD-BY-LEETEN 05/15/2011-BEGIN
+	# remove the headers convertted from the shaders
+	set(TMP_HEADER_FILES "")
+	foreach(HEADER ${HEADER_FILES})
+		string(
+			REGEX MATCH "frag.h|vert.h|geom.h"
+			MATCHED_PREFIX ${HEADER}
+		)
+		if( NOT MATCHED_PREFIX )
+			list(APPEND TMP_HEADER_FILES ${HEADER})
+		endif()
+	endforeach(HEADER)
+	set(HEADER_FILES ${TMP_HEADER_FILES})
+	
+	# merge all shader files into a single list 
+	set(SHADER_FILES "")
+	list(APPEND SHADER_FILES ${FRAG_FILES} ${VERT_FILES} ${GEOM_FILES} )
+	
+	set(DST_INC_DIR "${MYLIB_INC_DIR}/${dst_subdir}")
+	file(TO_NATIVE_PATH ${DST_INC_DIR} DST_INC_NATIVE_DIR)
+	# ADD-BY-LEETEN 05/15/2011-END
+	
 	list(LENGTH SRC_FILES N_SRC_FILES)
 	if( N_SRC_FILES EQUAL 0 )
-		set(HEADER_PROJ_NAME ${libname})
+		# MOD-BY-LEETEN 05/15/2011-FROM:
+			# set(HEADER_PROJ_NAME ${libname})
+		# TO:
+		add_custom_target (
+			${libname}
+			# MOD-BY-LEETEN 05/15/2011-FROM:
+				# SOURCES ${SRC_FILES}
+			# TO:
+			SOURCES 
+				${SHADER_FILES}
+				${HEADER_FILES}
+				${SRC_FILES}
+			# MOD-BY-LEETEN 05/15/2011-END
+		)
+		# MOD-BY-LEETEN 05/15/2011-END
 	else()
 		add_library ( ${libname} 
+			# ADD-BY-LEETEN 05/15/2011-BEGIN
+			${SHADER_FILES}
+			${HEADER_FILES}
+			# ADD-BY-LEETEN 05/15/2011-END
 			${SRC_FILES}
 			 )
 		set_target_properties(${libname} PROPERTIES 
 			DEBUG_OUTPUT_NAME "${libname}_d"
 			RELEASE_OUTPUT_NAME "${libname}_r"
 		)
-		set(HEADER_PROJ_NAME ${libname}_h)
+		# DEL-BY-LEETEN 05/15/2011-BEGIN
+			# set(HEADER_PROJ_NAME ${libname}_h)
+		# DEL-BY-LEETEN 05/15/2011-END
 	endif()
 
-	add_custom_target (${HEADER_PROJ_NAME} 
-		SOURCES ${HEADER_FILES}
-		)
-		
-	set(DST_INC_DIR "${MYLIB_INC_DIR}/${dst_subdir}")
-	file(TO_NATIVE_PATH ${DST_INC_DIR} DST_INC_NATIVE_DIR)
+	# MOD-BY-LEETEN 05/15/2011-FROM:
+		# add_custom_target (${HEADER_PROJ_NAME} 
+			# SOURCES ${HEADER_FILES}
+			# )
+			
+		# set(DST_INC_DIR "${MYLIB_INC_DIR}/${dst_subdir}")
+		# file(TO_NATIVE_PATH ${DST_INC_DIR} DST_INC_NATIVE_DIR)
 
+		# add_custom_command (
+			# TARGET ${HEADER_PROJ_NAME}
+			# POST_BUILD
+			# COMMAND cmake -E make_directory ${DST_INC_DIR} )
+			
+		# foreach(HEADER ${HEADER_FILES})
+			# file(TO_NATIVE_PATH ${HEADER} HEADER_NATIVE_PATH)
+			# add_custom_command (
+			  # TARGET ${HEADER_PROJ_NAME}
+			  # POST_BUILD
+			  # COMMAND ${COPY} ${HEADER_NATIVE_PATH} ${DST_INC_NATIVE_DIR} )
+		# endforeach(HEADER)
+		# add_dependencies(${libname} ${HEADER_PROJ_NAME})
+		
+		# set(SHADER_FILES "")
+		# list(APPEND SHADER_FILES ${FRAG_FILES} ${VERT_FILES} ${GEOM_FILES} )
+		# list(LENGTH SHADER_FILES N_SHADER_FILES)
+		# if( N_SHADER_FILES GREATER 0 )
+			# set(SHADER_PROJ_NAME ${libname}_glsl)
+			# add_custom_target (${SHADER_PROJ_NAME} 
+				# SOURCES ${SHADER_FILES}
+				# )
+				
+			# # convert all GLSL shaders to .h
+			# foreach(SHADER ${SHADER_FILES})
+				# file(TO_NATIVE_PATH ${SHADER} SHADER_NATIVE_PATH)
+				# add_custom_command (
+				  # TARGET ${SHADER_PROJ_NAME}
+				  # POST_BUILD
+				  # COMMAND shader2string ${SHADER_NATIVE_PATH} ${SHADER_NATIVE_PATH}.h
+				# )
+			# endforeach(SHADER)
+			# if( N_SRC_FILES GREATER 0 )
+				# add_dependencies(${libname} ${SHADER_PROJ_NAME})
+			# endif()
+		# endif()
+		
+	# MOD-BY-LEETEN 05/15/2011-TO:
+	
+	# convert all GLSL shaders to .h
+	foreach(SHADER ${SHADER_FILES})
+		file(TO_NATIVE_PATH ${SHADER} SHADER_NATIVE_PATH)
+		file(TO_NATIVE_PATH ${SHADER}.h SHADER_OUTPUT_NATIVE_PATH)
+		add_custom_command (
+			OUTPUT 	${SHADER}.h
+			MAIN_DEPENDENCY ${SHADER}
+			DEPENDS ${SHADER}
+			COMMAND shader2string ${SHADER_NATIVE_PATH} ${SHADER_OUTPUT_NATIVE_PATH}
+		)
+
+
+
+	endforeach(SHADER)
+
+	# create the folder for the headers
 	add_custom_command (
-		TARGET ${HEADER_PROJ_NAME}
-		POST_BUILD
+
+		TARGET ${libname}
+		PRE_BUILD
 		COMMAND cmake -E make_directory ${DST_INC_DIR} )
 		
 	foreach(HEADER ${HEADER_FILES})
 		file(TO_NATIVE_PATH ${HEADER} HEADER_NATIVE_PATH)
 		add_custom_command (
-		  TARGET ${HEADER_PROJ_NAME}
-		  POST_BUILD
-		  COMMAND ${COPY} ${HEADER_NATIVE_PATH} ${DST_INC_NATIVE_DIR} )
+
+			TARGET	${libname}
+			PRE_BUILD
+			COMMAND ${COPY} ${HEADER_NATIVE_PATH} ${DST_INC_NATIVE_DIR} 
+		)
 	endforeach(HEADER)
-	add_dependencies(${libname} ${HEADER_PROJ_NAME})
-	
-	set(SHADER_FILES "")
-	list(APPEND SHADER_FILES ${FRAG_FILES} ${VERT_FILES} ${GEOM_FILES} )
-	list(LENGTH SHADER_FILES N_SHADER_FILES)
-	if( N_SHADER_FILES GREATER 0 )
-		set(SHADER_PROJ_NAME ${libname}_glsl)
-		add_custom_target (${SHADER_PROJ_NAME} 
-			SOURCES ${SHADER_FILES}
-			)
-			
-		# convert all GLSL shaders to .h
-		foreach(SHADER ${SHADER_FILES})
-			file(TO_NATIVE_PATH ${SHADER} SHADER_NATIVE_PATH)
-			add_custom_command (
-			  TARGET ${SHADER_PROJ_NAME}
-			  POST_BUILD
-			  COMMAND shader2string ${SHADER_NATIVE_PATH} ${SHADER_NATIVE_PATH}.h
-			)
-		endforeach(SHADER)
-		if( N_SRC_FILES GREATER 0 )
-			add_dependencies(${libname} ${SHADER_PROJ_NAME})
-		endif()
-	endif()
+	# MOD-BY-LEETEN 05/15/2011-END
 endfunction (build_library)
 
 # ADD-BY-LEETEN 01/23/2011-BEGIN
@@ -168,27 +246,66 @@ function(build_executable exename src_dir)
 	file(GLOB FRAG_FILES "${src_dir}/*.frag" )
 	file(GLOB GEOM_FILES "${src_dir}/*.geom" )
 	
-	add_executable ( ${exename} ${SRC_FILES} ${HEADER_FILES} )
+	# MOD-BY-LEETEN 05/15/2011-FROM:
+		# add_executable ( ${exename} ${SRC_FILES} ${HEADER_FILES} )
+		# set(SHADER_FILES "")
+		# list(APPEND SHADER_FILES ${FRAG_FILES} ${VERT_FILES} ${GEOM_FILES} )
+		# list(LENGTH SHADER_FILES N_SHADER_FILES)
+		# if( N_SHADER_FILES GREATER 0 )
+			# set(SHADER_PROJ_NAME ${exename}_glsl)
+			# add_custom_target (${SHADER_PROJ_NAME} 
+				# SOURCES ${SHADER_FILES}
+				# )
+				
+			# # convert all GLSL shaders to .h
+			# foreach(SHADER ${SHADER_FILES})
+				# file(TO_NATIVE_PATH ${SHADER} SHADER_NATIVE_PATH)
+				# add_custom_command (
+				  # TARGET ${SHADER_PROJ_NAME}
+				  # POST_BUILD
+				  # COMMAND shader2string ${SHADER_NATIVE_PATH} ${SHADER_NATIVE_PATH}.h
+				# )
+			# endforeach(SHADER)
+			# add_dependencies(${exename} ${SHADER_PROJ_NAME})
+		# endif()
+		
+	# MOD-BY-LEETEN 05/15/2011-TO:
+	# remove the headers convertted from the shaders
+	set(TMP_HEADER_FILES "")
+	foreach(HEADER ${HEADER_FILES})
+		string(
+			REGEX MATCH "frag.h|vert.h|geom.h"
+			MATCHED_PREFIX ${HEADER}
+		)
+		if( NOT MATCHED_PREFIX )
+			list(APPEND TMP_HEADER_FILES ${HEADER})
+		endif()
+	endforeach(HEADER)
+	set(HEADER_FILES ${TMP_HEADER_FILES})
+
+	# merge all shader files into a single list
 	set(SHADER_FILES "")
 	list(APPEND SHADER_FILES ${FRAG_FILES} ${VERT_FILES} ${GEOM_FILES} )
-	list(LENGTH SHADER_FILES N_SHADER_FILES)
-	if( N_SHADER_FILES GREATER 0 )
-		set(SHADER_PROJ_NAME ${exename}_glsl)
-		add_custom_target (${SHADER_PROJ_NAME} 
-			SOURCES ${SHADER_FILES}
-			)
-			
-		# convert all GLSL shaders to .h
-		foreach(SHADER ${SHADER_FILES})
-			file(TO_NATIVE_PATH ${SHADER} SHADER_NATIVE_PATH)
-			add_custom_command (
-			  TARGET ${SHADER_PROJ_NAME}
-			  POST_BUILD
-			  COMMAND shader2string ${SHADER_NATIVE_PATH} ${SHADER_NATIVE_PATH}.h
-			)
-		endforeach(SHADER)
-		add_dependencies(${exename} ${SHADER_PROJ_NAME})
-	endif()
+	
+	add_executable ( 
+		${exename} 
+		${SRC_FILES} 
+		${HEADER_FILES} 
+		${SHADER_FILES}
+		)
+
+	# convert all GLSL shaders to .h
+	foreach(SHADER ${SHADER_FILES})
+		file(TO_NATIVE_PATH ${SHADER} SHADER_NATIVE_PATH)
+		file(TO_NATIVE_PATH ${SHADER}.h SHADER_OUTPUT_NATIVE_PATH)
+		add_custom_command(
+			OUTPUT ${SHADER}.h
+			MAIN_DEPENDENCY ${SHADER}
+			DEPENDS ${SHADER}
+			COMMAND shader2string ${SHADER_NATIVE_PATH} ${SHADER_OUTPUT_NATIVE_PATH}
+		)
+	endforeach(SHADER)
+	# MOD-BY-LEETEN 05/15/2011-END
 
 	# copy_headers (${libname} ${src_subdir} ${dst_subdir})
 endfunction (build_executable)
@@ -397,6 +514,12 @@ install(
 
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.8  2011/01/30 21:34:26  leeten
+#
+# [01/30/2011]
+# 1. [DEL] Remove the redundant link to libfps.
+# 2. [DEL] Remove the redundant links to the OpenGL/OpenCV libraries.
+#
 # Revision 1.7  2011/01/28 16:01:06  leeten
 #
 # [01/28/2011]
