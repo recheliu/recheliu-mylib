@@ -158,50 +158,6 @@ function(build_library libname src_subdir dst_subdir)
 	endif()
 
 	# MOD-BY-LEETEN 05/15/2011-FROM:
-		# add_custom_target (${HEADER_PROJ_NAME} 
-			# SOURCES ${HEADER_FILES}
-			# )
-			
-		# set(DST_INC_DIR "${MYLIB_INC_DIR}/${dst_subdir}")
-		# file(TO_NATIVE_PATH ${DST_INC_DIR} DST_INC_NATIVE_DIR)
-
-		# add_custom_command (
-			# TARGET ${HEADER_PROJ_NAME}
-			# POST_BUILD
-			# COMMAND cmake -E make_directory ${DST_INC_DIR} )
-			
-		# foreach(HEADER ${HEADER_FILES})
-			# file(TO_NATIVE_PATH ${HEADER} HEADER_NATIVE_PATH)
-			# add_custom_command (
-			  # TARGET ${HEADER_PROJ_NAME}
-			  # POST_BUILD
-			  # COMMAND ${COPY} ${HEADER_NATIVE_PATH} ${DST_INC_NATIVE_DIR} )
-		# endforeach(HEADER)
-		# add_dependencies(${libname} ${HEADER_PROJ_NAME})
-		
-		# set(SHADER_FILES "")
-		# list(APPEND SHADER_FILES ${FRAG_FILES} ${VERT_FILES} ${GEOM_FILES} )
-		# list(LENGTH SHADER_FILES N_SHADER_FILES)
-		# if( N_SHADER_FILES GREATER 0 )
-			# set(SHADER_PROJ_NAME ${libname}_glsl)
-			# add_custom_target (${SHADER_PROJ_NAME} 
-				# SOURCES ${SHADER_FILES}
-				# )
-				
-			# # convert all GLSL shaders to .h
-			# foreach(SHADER ${SHADER_FILES})
-				# file(TO_NATIVE_PATH ${SHADER} SHADER_NATIVE_PATH)
-				# add_custom_command (
-				  # TARGET ${SHADER_PROJ_NAME}
-				  # POST_BUILD
-				  # COMMAND shader2string ${SHADER_NATIVE_PATH} ${SHADER_NATIVE_PATH}.h
-				# )
-			# endforeach(SHADER)
-			# if( N_SRC_FILES GREATER 0 )
-				# add_dependencies(${libname} ${SHADER_PROJ_NAME})
-			# endif()
-		# endif()
-		
 	# MOD-BY-LEETEN 05/15/2011-TO:
 	
 	# convert all GLSL shaders to .h
@@ -247,28 +203,6 @@ function(build_executable exename src_dir)
 	file(GLOB GEOM_FILES "${src_dir}/*.geom" )
 	
 	# MOD-BY-LEETEN 05/15/2011-FROM:
-		# add_executable ( ${exename} ${SRC_FILES} ${HEADER_FILES} )
-		# set(SHADER_FILES "")
-		# list(APPEND SHADER_FILES ${FRAG_FILES} ${VERT_FILES} ${GEOM_FILES} )
-		# list(LENGTH SHADER_FILES N_SHADER_FILES)
-		# if( N_SHADER_FILES GREATER 0 )
-			# set(SHADER_PROJ_NAME ${exename}_glsl)
-			# add_custom_target (${SHADER_PROJ_NAME} 
-				# SOURCES ${SHADER_FILES}
-				# )
-				
-			# # convert all GLSL shaders to .h
-			# foreach(SHADER ${SHADER_FILES})
-				# file(TO_NATIVE_PATH ${SHADER} SHADER_NATIVE_PATH)
-				# add_custom_command (
-				  # TARGET ${SHADER_PROJ_NAME}
-				  # POST_BUILD
-				  # COMMAND shader2string ${SHADER_NATIVE_PATH} ${SHADER_NATIVE_PATH}.h
-				# )
-			# endforeach(SHADER)
-			# add_dependencies(${exename} ${SHADER_PROJ_NAME})
-		# endif()
-		
 	# MOD-BY-LEETEN 05/15/2011-TO:
 	# remove the headers convertted from the shaders
 	set(TMP_HEADER_FILES "")
@@ -401,10 +335,6 @@ build_executable(example_dvr ${PROJECT_SOURCE_DIR}/libdvr/example_dvr)
 add_dependencies(example_dvr libgw libdvr)
 
 # MOD-BY-LEETEN 01/28/2011-FROM:
-# if(NOT DEFINED WIN32)
-	# target_link_libraries (example_dvr libgw libdvr libtfw libopt)
-	# target_link_libraries (example_dvr libfbo libshader libfps opencv_core opencv_highgui "GL" "glut" "glui" "GLEW" ) 
-# endif
 # MOD-BY-LEETEN 01/28/2011-TO:
 target_link_libraries (example_dvr 
 	libtfw
@@ -413,7 +343,6 @@ target_link_libraries (example_dvr
 	libshader
 	libfbo	
 	# DEL-BY-LEETEN 01/28/2011-BEGIN
-		# libfps	
 	# DEL-BY-LEETEN 01/28/2011-END
 	libgw 
 	libfps 
@@ -429,15 +358,6 @@ if(NOT DEFINED WIN32)
 		glui 
 	) 
 	# DEL-BY-LEETEN 01/28/2011-BEGIN
-		#	target_link_libraries (example_dvr 
-		#		opencv_core 
-		#		opencv_highgui 
-		#		GLEW 
-		#		GL 
-		#		GLU 
-		#		glut 
-		#		glui
-		#	)
 	# DEL-BY-LEETEN 01/28/2011-END
 endif()
 # MOD-BY-LEETEN 01/28/2011-END
@@ -447,10 +367,6 @@ add_test (example_dvr example_dvr "${PROJECT_SOURCE_DIR}/data/hipip")
 build_executable(example_dvr2 ${PROJECT_SOURCE_DIR}/libdvr2/example_dvr2)
 add_dependencies(example_dvr2 libgw libdvr2)
 # MOD-BY-LEETEN 01/28/2011-FROM:
-	# target_link_libraries (example_dvr2 libgw libdvr2 libtfw libopt libclip libshader libfbo libfps)
-	# if(NOT DEFINED WIN32)
-	#	target_link_libraries (example_dvr2 opencv_core opencv_highgui "GL" "glut" "glui" "GLEW" ) 
-	# endif()	
 # MOD-BY-LEETEN 01/28/2011-TO:
 target_link_libraries (example_dvr2
 	libtfw
@@ -460,7 +376,6 @@ target_link_libraries (example_dvr2
 	libfbo
 	libclip
 	# DEL-BY-LEETEN 01/28/2011-BEGIN
-		# libfps 
 	# DEL-BY-LEETEN 01/28/2011-END
 	libgw 
 	# ADD-BY-LEETEN 01/28/2011-BEGIN
@@ -478,15 +393,6 @@ if(NOT DEFINED WIN32)
 		glui 
 		)
 	# DEL-BY-LEETEN 01/28/2011-BEGIN
-		#	target_link_libraries (example_dvr2
-		#		opencv_core 
-		#		opencv_highgui 
-		#		GLEW 
-		#		GL 
-		#		GLU 
-		#		glut 
-		#		glui 
-		#		)
 	# DEL-BY-LEETEN 01/28/2011-BEGIN
 endif()
 # MOD-BY-LEETEN 01/28/2011-END
@@ -514,6 +420,13 @@ install(
 
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.9  2011-05-16 00:05:44  leeten
+#
+# [05/15/2011]
+# 1. [DEL] Remove the project w/ postfixes _glsh and _h.
+# 2. [ADD] Use add_custom_command w/ MIN_DEPENDENCY and DEPENDS to force the compilation when a shader file is modified.
+# 3. [DEL] Remove the headers generated by the programs from the project.
+#
 # Revision 1.8  2011/01/30 21:34:26  leeten
 #
 # [01/30/2011]
