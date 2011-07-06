@@ -31,11 +31,18 @@
 
 					// buffer for the 3D volume
 	int iXDim, iYDim, iZDim;
-	TBuffer3D<unsigned char> p3DubVol;
+	// MOD-BY-LEETEN 07/05/2011-FROM:
+		// TBuffer3D<unsigned char> p3DubVol;
+	// TO:
+	TBuffer3D<float> p3DfVol;
+	// MOD-BY-LEETEN 07/05/2011-END
 	double dValueMin, dValueMax;
 
 					// histogram of the buffer
 	TBuffer<float> pfHist;
+	// ADD-BY-LEETEN 07/05/2011-BEGIN
+	static 	float fMaxCount;		// max. count in the histogram
+	// ADD-BY-LEETEN 07/05/2011-END
 
 					// buffer of the histogram
 	TBuffer<float> pfTransFunc;
@@ -54,21 +61,54 @@ _ReadVolume(char* szPathFilename)
 	// TO:
 	fpData = fopen(szPathFilename, "rb");		// load the hipip dataset for test
 	// MOD-BY-LEETEN 01/25/2011-END
-	assert(fpData);
 
-	fscanf(fpData, "%d %d %d\n", &iXDim, &iYDim, &iZDim);
-	fseek(fpData, 9, SEEK_SET);
+	#if 0	// MOD-BY-LEETEN 07/05/2011-FROM:
+		assert(fpData);
+		fscanf(fpData, "%d %d %d\n", &iXDim, &iYDim, &iZDim);
+		fseek(fpData, 9, SEEK_SET);
 
-	p3DubVol.alloc(iXDim, iYDim, iZDim);
+		p3DubVol.alloc(iXDim, iYDim, iZDim);
 
-	fread(&p3DubVol[0], sizeof(p3DubVol[0]), iXDim * iYDim * iZDim, fpData);
-
+		fread(&p3DubVol[0], sizeof(p3DubVol[0]), iXDim * iYDim * iZDim, fpData);
+	#else	// MOD-BY-LEETEN 07/05/2011-TO:
+	ASSERT_OR_LOG(fpData, perror(szPathFilename));
+	fread(&iXDim, sizeof(iXDim), 1, fpData);
+	fread(&iYDim, sizeof(iYDim), 1, fpData);
+	fread(&iZDim, sizeof(iZDim), 1, fpData);
+	LOG_VAR(iXDim);
+	LOG_VAR(iYDim);
+	LOG_VAR(iZDim);
+	p3DfVol.alloc(iXDim, iYDim, iZDim);
+	fread(&p3DfVol[0], sizeof(p3DfVol[0]), iXDim * iYDim * iZDim, fpData);
+	#endif	// MOD-BY-LEETEN 07/05/2011-END
 	fclose(fpData);
 
 	// ADD-BY-TLEE 2008/08/17-BEGIN
 									// this value is for hipip only!
-	dValueMin = 0.0;
-	dValueMax = 255.0;
+	#if 0	// MOD-BY-LEETEN 07/05/2011-FROM:
+		dValueMin = 0.0;
+		dValueMax = 255.0;
+	#else	// MOD-BY-LEETEN 07/05/2011-TO:
+	dValueMin = +HUGE_VAL;
+	dValueMax = -HUGE_VAL;
+	for(int i = 0, 	z = 0; z < iZDim; z++)
+		for(int 	y = 0; y < iYDim; y++)
+			for(int x = 0; x < iXDim; x++, i++)
+			{
+				double dValue = (double)p3DfVol[i];
+				dValueMin = min(dValueMin, dValue);
+				dValueMax = max(dValueMax, dValue);
+			}
+
+	// normalize the value range
+	for(int i = 0, 	z = 0; z < iZDim; z++)
+		for(int 	y = 0; y < iYDim; y++)
+			for(int x = 0; x < iXDim; x++, i++)
+			{
+				double dValue = (double)p3DfVol[i];
+				p3DfVol[i] = (dValue - dValueMin)/(dValueMax - dValueMin);
+			}
+	#endif	// MOD-BY-LEETEN 07/05/2011-END
 	// ADD-BY-TLEE 2008/08/17-END
 }
 
@@ -79,10 +119,23 @@ _BuildHistogram()
 	for(int i = 0,	z = 0; z < iZDim; z++)
 		for(int		y = 0; y < iYDim; y++)
 			for(int x = 0; x < iXDim; x++, i++)
-				pfHist[p3DubVol[i]] += 1.0f;
+			// MOD-BY-LEETEN 07/05/2011-FROM:
+				// pfHist[p3DubVol[i]] += 1.0f;
+			// TO:
+			{
+				float fV = p3DfVol[i];
+				int iEntry = (int)((float)iNrOfTfEntries * fV);
+				iEntry = min(max(iEntry, 0), iNrOfTfEntries - 1);
+				pfHist[iEntry] += 1.0f;
+			}
+			// MOD-BY-LEETEN 07/05/2011-END
 
 	// normalize the histogram
-	float fMaxCount = -HUGE_VAL;
+	// MOD-BY-LEETEN 07/05/2011-FROM:
+		// float fMaxCount = -HUGE_VAL;
+	// TO:
+	::fMaxCount = -HUGE_VAL;
+	// MOD-BY-LEETEN 07/05/2011-END
 	for(int b = 0; b < iNrOfTfEntries; b++) 
 		fMaxCount = max(fMaxCount, pfHist[b]);
 
@@ -192,6 +245,9 @@ main(int argn, char *argv[])
 
 	cTfWin.ICreate("Transfer Function",		false, 100, 100, 256, 128);
 	cTfWin._Set();
+		// ADD-BY-LEETEN 07/05/2011-BEGIN
+		cTfWin._SetHistogram(&pfHist[0], iNrOfTfEntries, ::fMaxCount, dValueMin, dValueMax);
+		// ADD-BY-LEETEN 07/05/2011-END
 		cTfWin._KeepUpdateOn();
 
 										// upload the transfer function to the TF window
@@ -210,8 +266,13 @@ main(int argn, char *argv[])
 
 	// ADD-BY-LEETEN 01/26/2011-BEGIN
 										// create the DVR window
-	cDvrWin.ICreate("Direct Volume Rendering",	false, 100, 328, 256, 256);
-		cDvrWin._SetVolume(GL_LUMINANCE, &p3DubVol[0], GL_LUMINANCE, GL_UNSIGNED_BYTE, iXDim, iYDim, iZDim);
+	#if 0	// MOD-BY-LEETEN 07/05/2011-FROM:
+		cDvrWin.ICreate("Direct Volume Rendering",	false, 100, 328, 256, 256);
+			cDvrWin._SetVolume(GL_LUMINANCE, &p3DubVol[0], GL_LUMINANCE, GL_UNSIGNED_BYTE, iXDim, iYDim, iZDim);
+	#else	// MOD-BY-LEETEN 07/05/2011-TO:
+	cDvrWin.ICreate("Direct Volume Rendering"); 
+		cDvrWin._SetVolume(GL_LUMINANCE, &p3DfVol[0], GL_LUMINANCE, GL_FLOAT, iXDim, iYDim, iZDim);
+	#endif	// MOD-BY-LEETEN 07/05/2011-END
 		cDvrWin._SetTransferFunc(&pfTransFunc[0], GL_RGBA, GL_FLOAT, iNrOfTfEntries);
 		cDvrWin._LoadSavedMatrix();	
 		cDvrWin._SetDataValue((float)dValueMin, (float)dValueMax);
@@ -226,6 +287,11 @@ main(int argn, char *argv[])
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.3  2011-01-27 02:43:33  leeten
+
+[01/26/2011]
+1. [MOD] Move the creation of the DVR windows after the creation of transfer func. windows.
+
 Revision 1.2  2011/01/25 06:21:00  leeten
 
 [01/25/2011]
