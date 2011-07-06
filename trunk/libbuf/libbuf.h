@@ -65,11 +65,15 @@ template <typename t> struct TBuffer
 
 		FILE *fp;
 		fp = fopen(szFilename, "wb");
-		if( !fp )
-		{
-			perror(szFilename);
-			return;
-		}
+		#if 0	// MOD-BY-LEETEN 07/05/2011-FROM:
+			if( !fp )
+			{
+				perror(szFilename);
+				return;
+			}
+		#else	// MOD-BY-LEETEN 07/05/2011-TO:
+		ASSERT_OR_LOG(fp, perror(szFilename));
+		#endif	// MOD-BY-LEETEN 07/05/2011-END
 
 		fwrite(&num, sizeof(num), 1, fp);
 		fwrite(data, sizeof(t), num, fp);
@@ -177,6 +181,11 @@ template <typename t> struct TBuffer
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.8  2011-02-25 02:27:29  leeten
+
+[02/20/2011]
+1. [MOD] Print the error message when saving the buffer but the buffer has been not initialized yet.
+
 Revision 1.7  2011/01/31 03:18:57  leeten
 
 [01/30/2011]

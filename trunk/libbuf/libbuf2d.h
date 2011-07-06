@@ -107,11 +107,15 @@ struct TBuffer2D: public TBuffer<t>
 
 		FILE *fp;
 		fp = fopen(szFilename, "wb");
-		if( !fp )
-		{
-			perror(szFilename);
-			return;
-		}
+		#if 0	// MOD-BY-LEETEN 07/05/2011-FROM:
+			if( !fp )
+			{
+				perror(szFilename);
+				return;
+			}
+		#else	// MOD-BY-LEETEN 07/05/2011-TO:
+		ASSERT_OR_LOG(fp, perror(szFilename)); 
+		#endif	// MOD-BY-LEETEN 07/05/2011-END
 
 		fwrite(&iWidth, sizeof(iWidth), 1, fp);
 		fwrite(&iHeight, sizeof(iHeight), 1, fp);
@@ -131,6 +135,11 @@ struct TBuffer2D: public TBuffer<t>
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.6  2011-02-25 02:27:29  leeten
+
+[02/20/2011]
+1. [MOD] Print the error message when saving the buffer but the buffer has been not initialized yet.
+
 Revision 1.5  2011/01/31 03:18:08  leeten
 
 [01/30/2011]
