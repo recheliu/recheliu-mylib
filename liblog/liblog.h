@@ -52,7 +52,15 @@ using namespace std;
 
 // ADD-BY-LEETEN 03/22/2010-BEGIN
 
+// ADD-BY-LEETEN 06/28/2010-BEGIN
+#ifdef WIN32	
+// ADD-BY-LEETEN 06/28/2010-END
 #define PRINT_ERROR_HEADER	cerr<<"["<<__FUNCTION__<<"() @ "<<strrchr(__FILE__, '\\') + 1<<"("<<__LINE__<<")]: ";
+// ADD-BY-LEETEN 06/28/2010-BEGIN
+#else
+	#define PRINT_ERROR_HEADER	cerr<<"["<<__FUNCTION__<<"() @ "<<__FILE__<<"("<<__LINE__<<")]: ";
+#endif
+// ADD-BY-LEETEN 06/28/2010-END
 
 #define LOG_ERROR(printf_stmt)	\
 	{						\
@@ -69,11 +77,30 @@ using namespace std;
 
 // ADD-BY-LEETEN 03/22/2010-END
 
+// ADD-BY-LEETEN 06/28/2010-BEGIN
+#define ASSERT_OR_LOG(condition, printf_stmt)		\
+	{						\
+		if( ! (condition) )			\
+		{					\
+			char *ASSERT = #condition;	\
+			LOG_VAR_TO_ERROR(ASSERT);	\
+			LOG_ERROR(printf_stmt);		\
+			exit(EXIT_FAILURE);		\
+		}					\
+	}						\
+
+// ADD-BY-LEETEN 06/28/2010-END
+
 #endif	// __LIB_LOG_H__
 
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.4  2010-03-25 15:43:03  leeten
+
+[03/23/2010]
+1. [ADD] Define new macro LOG_ERROR and LOG_VAR_TO_ERROR to output the log to standard error.
+
 Revision 1.3  2010/02/16 20:03:51  leeten
 
 [02/16/2010]
