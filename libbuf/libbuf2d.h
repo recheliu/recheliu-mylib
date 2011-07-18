@@ -33,6 +33,24 @@ struct TBuffer2D: public TBuffer<t>
 	{	
 	}
 
+	// ADD-BY-LEETEN 07/18/2011-BEGIN
+	t * New(int n)
+	{
+		assert(n > 0);
+		iWidth = n;
+		iHeight = 1;
+		return TBuffer<t>::New(iWidth * iHeight);
+	}
+
+	t * New(int w, int h)
+	{
+		assert(w > 0 && h > 0);
+		iWidth = w;
+		iHeight = h;
+		return TBuffer<t>::New(iWidth * iHeight);
+	}
+	// ADD-BY-LEETEN 07/18/2011-END
+
 	// ADD-BY-LEETEN 01/26/2010-BEGIN
 	t* alloc(int n)
 	{
@@ -58,8 +76,12 @@ struct TBuffer2D: public TBuffer<t>
 			TBuffer::alloc(iWidth * iHeight);
 			return data;
 		#else	// MOD-BY-LEETEN 01/25/2011-TO:
-		TBuffer<t>::alloc(iWidth * iHeight);
-		return TBuffer<t>::data;
+		#if	0	// MOD-BY-LEETEN 07/18/2011-FROM:
+			TBuffer<t>::alloc(iWidth * iHeight);
+			return TBuffer<t>::data;
+		#else		// MOD-BY-LEETEN 07/18/2011-TO:
+		return TBuffer<t>::alloc(iWidth * iHeight);
+		#endif		// MOD-BY-LEETEN 07/18/2011-END
 		#endif	// MOD-BY-LEETEN 01/25/2011-END
 	}
 
@@ -139,6 +161,11 @@ struct TBuffer2D: public TBuffer<t>
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.8  2011-07-18 21:55:53  leeten
+
+[07/18/2011]
+1. [MOD] Change the type of the filename for method _Save to const char*.
+
 Revision 1.7  2011-07-06 03:24:45  leeten
 
 [07/05/2011]
