@@ -1,0 +1,480 @@
+#	Required cache entries:
+# 		FREEGLUT
+#		THIRDPARTY_DIR
+#		OPENCV_DIR
+#		OPENCV_VER
+
+cmake_minimum_required (VERSION 2.8)
+project (mylib)
+
+# The required packages
+find_package(CUDA)
+find_package(OpenGL)
+find_package(GLUT)
+
+# The required variables
+set(THIRDPARTY_DIR "D:/lib" CACHE PATH "The path to the 3rd party libraries")
+set(OPENCV_DIR "C:/OpenCV2.1" CACHE PATH "The installed path of OpenCV")
+set(OPENCV_VER "210" CACHE STRING "The Version of OpenCV")
+set(FREEGLUT OFF CACHE BOOL "Flag to decide whether FREEGLUT is used")
+set(CMAKE_INSTALL_PREFIX ${PROJECT_SOURCE_DIR})
+
+# CUDA
+set(CUDA_DIR "${CUDA_TOOLKIT_ROOT_DIR}")
+set(CUDA_INC_DIR "${CUDA_DIR}/include")
+set(CUDA_LIB_DIR "${CUDA_DIR}/lib")
+
+# CUDA SDK
+set(CUDASDK_DIR "${CUDA_SDK_ROOT_DIR}")
+set(CUDASDK_INC_DIR "${CUDASDK_DIR}/inc")
+set(CUDASDK_LIB_DIR "${CUDASDK_DIR}/lib")
+
+# 3rd party lib
+set(THIRDPARTY_INC_DIR "${THIRDPARTY_DIR}/include")
+set(THIRDPARTY_LIB_DIR "${THIRDPARTY_DIR}/lib")
+
+# OpenCV
+set(OPENCV_INC_DIR "${OPENCV_DIR}/include")
+set(OPENCV_LIB_DIR "${OPENCV_DIR}/lib")
+
+# mylib
+set(MYLIB_BIN_DIR "${PROJECT_BINARY_DIR}/bin")
+set(MYLIB_INC_DIR "${PROJECT_BINARY_DIR}/include")
+set(MYLIB_LIB_DIR "${PROJECT_BINARY_DIR}/lib")
+set(MYLIB_LIB_DIR_DEBUG "${MYLIB_LIB_DIR}/debug")
+set(MYLIB_LIB_DIR_RELEASE "${MYLIB_LIB_DIR}/release")
+
+set(LIBRARY_OUTPUT_PATH "${PROJECT_BINARY_DIR}/lib")	
+
+# add the binary tree to the search path for include files
+include_directories (
+	"${CUDA_INC_DIR}"
+	"${CUDASDK_INC_DIR}"
+	"${OPENCV_INC_DIR}"
+	# ADD-BY-LEETEN 01/28/2011-BEGIN
+	"${OPENCV_INC_DIR}/opencv"	
+	# ADD-BY-LEETEN 01/28/2011-END
+	"${THIRDPARTY_INC_DIR}"
+	"${MYLIB_INC_DIR}"
+	)
+
+# add the binary tree to the search path for libraries
+list(APPEND LIB_DIRS
+	"${CUDA_LIB_DIR}"
+	"${CUDASDK_LIB_DIR}"
+	"${OPENCV_LIB_DIR}"
+	"${THIRDPARTY_LIB_DIR}"
+	"${MYLIB_LIB_DIR_DEBUG}"
+	"${MYLIB_LIB_DIR_RELEASE}"
+	)
+
+link_directories(
+	${LIB_DIRS}
+)
+
+set(CMAKE_LIBRARY_PATH ${LIB_DIRS})
+find_library(FREEGLUT_LIB freeglut.lib)
+if( FREEGLUT_LIB AND FREEGLUT )
+	add_definitions(
+		-DUSE_FREEGLUT
+	)
+endif()
+
+add_definitions(
+	-DOPENCV_VER=${OPENCV_VER}
+	-DGLUT_BUILDING_LIB
+)
+
+##############################################################
+if(DEFINED WIN32)
+	set(COPY "copy")
+else()
+	set(COPY "cp")
+endif()
+
+function(build_library libname src_subdir dst_subdir)
+	set(SRC_DIR "${PROJECT_SOURCE_DIR}/${libname}/${src_subdir}/")
+	
+	AUX_SOURCE_DIRECTORY ("${SRC_DIR}" 	SRC_FILES)
+	file(GLOB HEADER_FILES "${SRC_DIR}/*.h" )
+	file(GLOB FRAG_FILES "${SRC_DIR}/*.frag" )
+	file(GLOB VERT_FILES "${SRC_DIR}/*.vert" )
+	file(GLOB GEOM_FILES "${SRC_DIR}/*.geom" )
+
+	# ADD-BY-LEETEN 05/15/2011-BEGIN
+	# remove the headers convertted from the shaders
+	set(TMP_HEADER_FILES "")
+	foreach(HEADER ${HEADER_FILES})
+		string(
+			REGEX MATCH "frag.h|vert.h|geom.h"
+			MATCHED_PREFIX ${HEADER}
+		)
+		if( NOT MATCHED_PREFIX )
+			list(APPEND TMP_HEADER_FILES ${HEADER})
+		endif()
+	endforeach(HEADER)
+	set(HEADER_FILES ${TMP_HEADER_FILES})
+	
+	# merge all shader files into a single list 
+	set(SHADER_FILES "")
+	list(APPEND SHADER_FILES ${FRAG_FILES} ${VERT_FILES} ${GEOM_FILES} )
+	
+	set(DST_INC_DIR "${MYLIB_INC_DIR}/${dst_subdir}")
+	file(TO_NATIVE_PATH ${DST_INC_DIR} DST_INC_NATIVE_DIR)
+	# ADD-BY-LEETEN 05/15/2011-END
+	
+	list(LENGTH SRC_FILES N_SRC_FILES)
+	if( N_SRC_FILES EQUAL 0 )
+		# MOD-BY-LEETEN 05/15/2011-FROM:
+			# set(HEADER_PROJ_NAME ${libname})
+		# TO:
+		add_custom_target (
+			${libname}
+			# MOD-BY-LEETEN 05/15/2011-FROM:
+				# SOURCES ${SRC_FILES}
+			# TO:
+			SOURCES 
+				${SHADER_FILES}
+				${HEADER_FILES}
+				${SRC_FILES}
+			# MOD-BY-LEETEN 05/15/2011-END
+		)
+		# MOD-BY-LEETEN 05/15/2011-END
+	else()
+		add_library ( ${libname} 
+			# ADD-BY-LEETEN 05/15/2011-BEGIN
+			${SHADER_FILES}
+			${HEADER_FILES}
+			# ADD-BY-LEETEN 05/15/2011-END
+			${SRC_FILES}
+			 )
+		set_target_properties(${libname} PROPERTIES 
+			DEBUG_OUTPUT_NAME "${libname}_d"
+			RELEASE_OUTPUT_NAME "${libname}_r"
+		)
+		# DEL-BY-LEETEN 05/15/2011-BEGIN
+			# set(HEADER_PROJ_NAME ${libname}_h)
+		# DEL-BY-LEETEN 05/15/2011-END
+	endif()
+
+	# MOD-BY-LEETEN 05/15/2011-FROM:
+	# MOD-BY-LEETEN 05/15/2011-TO:
+	
+	# convert all GLSL shaders to .h
+	foreach(SHADER ${SHADER_FILES})
+		file(TO_NATIVE_PATH ${SHADER} SHADER_NATIVE_PATH)
+		file(TO_NATIVE_PATH ${SHADER}.h SHADER_OUTPUT_NATIVE_PATH)
+		add_custom_command (
+			OUTPUT 	${SHADER}.h
+			MAIN_DEPENDENCY ${SHADER}
+			DEPENDS ${SHADER}
+			COMMAND shader2string ${SHADER_NATIVE_PATH} ${SHADER_OUTPUT_NATIVE_PATH}
+		)
+
+
+
+	endforeach(SHADER)
+
+	# create the folder for the headers
+	add_custom_command (
+
+		TARGET ${libname}
+		PRE_BUILD
+		COMMAND cmake -E make_directory ${DST_INC_DIR} )
+		
+	foreach(HEADER ${HEADER_FILES})
+		file(TO_NATIVE_PATH ${HEADER} HEADER_NATIVE_PATH)
+		add_custom_command (
+
+			TARGET	${libname}
+			PRE_BUILD
+			COMMAND ${COPY} ${HEADER_NATIVE_PATH} ${DST_INC_NATIVE_DIR} 
+		)
+	endforeach(HEADER)
+	# MOD-BY-LEETEN 05/15/2011-END
+endfunction (build_library)
+
+# ADD-BY-LEETEN 01/23/2011-BEGIN
+function(build_executable exename src_dir)
+	AUX_SOURCE_DIRECTORY ("${src_dir}" 	SRC_FILES)
+	file(GLOB HEADER_FILES "${src_dir}/*.h" )
+	file(GLOB VERT_FILES "${src_dir}/*.vert" )
+	file(GLOB FRAG_FILES "${src_dir}/*.frag" )
+	file(GLOB GEOM_FILES "${src_dir}/*.geom" )
+	
+	# MOD-BY-LEETEN 05/15/2011-FROM:
+	# MOD-BY-LEETEN 05/15/2011-TO:
+	# remove the headers convertted from the shaders
+	set(TMP_HEADER_FILES "")
+	foreach(HEADER ${HEADER_FILES})
+		string(
+			REGEX MATCH "frag.h|vert.h|geom.h"
+			MATCHED_PREFIX ${HEADER}
+		)
+		if( NOT MATCHED_PREFIX )
+			list(APPEND TMP_HEADER_FILES ${HEADER})
+		endif()
+	endforeach(HEADER)
+	set(HEADER_FILES ${TMP_HEADER_FILES})
+
+	# merge all shader files into a single list
+	set(SHADER_FILES "")
+	list(APPEND SHADER_FILES ${FRAG_FILES} ${VERT_FILES} ${GEOM_FILES} )
+	
+	add_executable ( 
+		${exename} 
+		${SRC_FILES} 
+		${HEADER_FILES} 
+		${SHADER_FILES}
+		)
+
+	# convert all GLSL shaders to .h
+	foreach(SHADER ${SHADER_FILES})
+		file(TO_NATIVE_PATH ${SHADER} SHADER_NATIVE_PATH)
+		file(TO_NATIVE_PATH ${SHADER}.h SHADER_OUTPUT_NATIVE_PATH)
+		add_custom_command(
+			OUTPUT ${SHADER}.h
+			MAIN_DEPENDENCY ${SHADER}
+			DEPENDS ${SHADER}
+			COMMAND shader2string ${SHADER_NATIVE_PATH} ${SHADER_OUTPUT_NATIVE_PATH}
+		)
+	endforeach(SHADER)
+	# MOD-BY-LEETEN 05/15/2011-END
+
+	# copy_headers (${libname} ${src_subdir} ${dst_subdir})
+endfunction (build_executable)
+
+# ADD-BY-LEETEN 01/23/2011-END
+ 
+##############################################################
+# shader2string
+build_executable(shader2string ${PROJECT_SOURCE_DIR}/libshader/shader2string)
+add_dependencies(shader2string libshader)
+target_link_libraries (shader2string libshader)
+if(DEFINED WIN32) 
+target_link_libraries (shader2string "${THIRDPARTY_LIB_DIR}/glew32.lib")
+else()
+	target_link_libraries (shader2string "GLEW")
+	# ADD-BY-LEETEN 01/28/2011-BEGIN
+	target_link_libraries (shader2string "glut")
+	# ADD-BY-LEETEN 01/28/2011-END
+endif()
+
+##############################################################
+foreach(LIB_NAME 
+			libbuf 
+			libclock 
+			libcuda 
+			liblog 
+			libfbow
+			libshader 
+			libopt 
+			libopengl 
+			libfps 
+			libfbo
+	)
+	build_library(${LIB_NAME} "/" "/" false)
+endforeach(LIB_NAME)
+
+##############################################################
+# libgw
+build_library(libgw "libgw/" "/")
+add_dependencies(libgw libbuf libopengl liblog libfps)
+
+##############################################################
+# libraries w/ their own subfolder under the folder include/
+# and source codes in GLSL (.frag, .vert, and .geom)
+foreach(LIB_NAME 
+			libdvr2 
+			libclip
+			libdvr
+			libtfw
+	)
+	build_library(${LIB_NAME} "/" "${LIB_NAME}/")
+endforeach(LIB_NAME)
+
+add_dependencies(libclip libgw libfbow shader2string)
+add_dependencies(libtfw libgw)
+
+# ADD-BY-LEETEN 01/28/2011-BEGIN
+add_dependencies(libfbow libfbo)
+# ADD-BY-LEETEN 01/28/2011-END
+add_dependencies(libfbo libopengl)
+add_dependencies(libopengl libbuf)
+
+add_dependencies(libdvr libfbo)
+add_dependencies(libdvr2 libfbow)
+
+##############################################################		 
+# LIBGW testing program
+# 
+foreach(LIBGW_TESTER_NAME example_single_win example_single_win_global example_multi_wins example_multi_wins_global example_multi_wins_glui)
+	build_executable(${LIBGW_TESTER_NAME} ${PROJECT_SOURCE_DIR}/libgw/examples/${LIBGW_TESTER_NAME})
+	add_dependencies(${LIBGW_TESTER_NAME} libgw liblog libbuf libfbow libfps)
+	target_link_libraries (${LIBGW_TESTER_NAME} libgw)
+	if(NOT DEFINED WIN32)
+		# MOD-BY-LEETEN 01/28/2011-FROM:
+			# target_link_libraries (${LIBGW_TESTER_NAME} libfps opencv_core opencv_highgui "GLEW" "GL" "glut" "glui" ) 
+		# TO:
+			target_link_libraries (${LIBGW_TESTER_NAME} 
+				libfps 
+				opencv_core 
+				opencv_highgui 
+				"GLEW" 
+				"GL" 
+				"GLU" 
+				"glut" 
+				"glui" ) 
+		# MOD-BY-LEETEN 01/28/2011-END
+	endif()
+	add_test (${LIBGW_TESTER_NAME} ${LIBGW_TESTER_NAME})
+endforeach(LIBGW_TESTER_NAME)
+
+# ADD-BY-LEETEN 01/23/2011-BEGIN
+build_executable(example_dvr ${PROJECT_SOURCE_DIR}/libdvr/example_dvr)
+add_dependencies(example_dvr libgw libdvr)
+
+# MOD-BY-LEETEN 01/28/2011-FROM:
+# MOD-BY-LEETEN 01/28/2011-TO:
+target_link_libraries (example_dvr 
+	libtfw
+	libdvr
+	libopt
+	libshader
+	libfbo	
+	# DEL-BY-LEETEN 01/28/2011-BEGIN
+	# DEL-BY-LEETEN 01/28/2011-END
+	libgw 
+	libfps 
+	) 
+if(NOT DEFINED WIN32)	
+	target_link_libraries (example_dvr
+		opencv_core 
+		opencv_highgui 
+		GLEW 
+		GL 
+		GLU 
+		glut 
+		glui 
+	) 
+	# DEL-BY-LEETEN 01/28/2011-BEGIN
+	# DEL-BY-LEETEN 01/28/2011-END
+endif()
+# MOD-BY-LEETEN 01/28/2011-END
+add_test (example_dvr example_dvr "${PROJECT_SOURCE_DIR}/data/hipip")
+
+# ADD-BY-LEETEN 01/25/2011-BEGIN
+build_executable(example_dvr2 ${PROJECT_SOURCE_DIR}/libdvr2/example_dvr2)
+add_dependencies(example_dvr2 libgw libdvr2)
+# MOD-BY-LEETEN 01/28/2011-FROM:
+# MOD-BY-LEETEN 01/28/2011-TO:
+target_link_libraries (example_dvr2
+	libtfw
+	libdvr2
+	libopt
+	libshader
+	libfbo
+	libclip
+	# DEL-BY-LEETEN 01/28/2011-BEGIN
+	# DEL-BY-LEETEN 01/28/2011-END
+	libgw 
+	# ADD-BY-LEETEN 01/28/2011-BEGIN
+	libfps 
+	# ADD-BY-LEETEN 01/28/2011-END
+	) 
+if(NOT DEFINED WIN32)	
+	target_link_libraries (example_dvr2
+		opencv_core 
+		opencv_highgui 
+		GLEW 
+		GL 
+		GLU 
+		glut 
+		glui 
+		)
+	# DEL-BY-LEETEN 01/28/2011-BEGIN
+	# DEL-BY-LEETEN 01/28/2011-BEGIN
+endif()
+# MOD-BY-LEETEN 01/28/2011-END
+
+add_test (example_dvr2 example_dvr2 "${PROJECT_SOURCE_DIR}/data/hipip")
+# ADD-BY-LEETEN 01/25/2011-END
+  
+##############################################################
+# create the header for the makefile
+configure_file (
+	"${PROJECT_SOURCE_DIR}/mylib.mak.in"
+	"${PROJECT_BINARY_DIR}/mylib.mak"
+)
+
+##############################################################
+install(
+	TARGETS shader2string 
+	DESTINATION "${CMAKE_INSTALL_PREFIX}/bin")
+install(
+	DIRECTORY ${MYLIB_INC_DIR}
+	DESTINATION "${CMAKE_INSTALL_PREFIX}")
+install(
+	DIRECTORY ${MYLIB_LIB_DIR}
+	DESTINATION "${CMAKE_INSTALL_PREFIX}")
+
+#
+# $Log: not supported by cvs2svn $
+# Revision 1.9  2011-05-16 00:05:44  leeten
+#
+# [05/15/2011]
+# 1. [DEL] Remove the project w/ postfixes _glsh and _h.
+# 2. [ADD] Use add_custom_command w/ MIN_DEPENDENCY and DEPENDS to force the compilation when a shader file is modified.
+# 3. [DEL] Remove the headers generated by the programs from the project.
+#
+# Revision 1.8  2011/01/30 21:34:26  leeten
+#
+# [01/30/2011]
+# 1. [DEL] Remove the redundant link to libfps.
+# 2. [DEL] Remove the redundant links to the OpenGL/OpenCV libraries.
+#
+# Revision 1.7  2011/01/28 16:01:06  leeten
+#
+# [01/28/2011]
+# 1. [ADD] Link the OpenGL and OpenCV libraries twice in order to build example_dvr and example_dvr2 on Linux.
+# 2. [DEL] Remove the code deleted before 01/24/2011.
+# 3. [ADD] Add the subfolder opencv to the include path.
+# 4. [ADD] Link the library glut when build shader2string.
+#
+# Revision 1.6  2011/01/27 02:45:37  leeten
+#
+# [01/26/2011]
+# 1. [DEL] Remove old deleted code segments.
+#
+# Revision 1.5  2011/01/25 06:18:09  leeten
+#
+# [01/25/2011]
+# 1. [ADD] Add the path of the dataset HIPIP to the tests example_dvr and example_dvr2.
+# 2. [ADD] Add the executable example_dvr2.
+#
+# Revision 1.4  2011/01/25 02:39:19  leeten
+#
+# [01/24/2011]
+# 1. [MOD] Set the default value of FREEGLU to OFF.
+# 2. [DEL] Remove the paramter with_shader in the function build_library.
+# 3. [MOD] For the libraries with headers, create a new project to copy these headers to include/. The original project will depend on this project so thiss project will be built before the original project.
+# 4. [MOD] For the libraries with shaders, create a new project to convert these shaders to .h. The original project will depend on this project so thiss project will be built before the original project.
+# 5. [DEL] Remove the shaders and headers from the library projects.
+# 6. [ADD] Add extra dependencies.
+#
+# Revision 1.3  2011/01/24 19:50:51  leeten
+#
+# [01/24/2011]
+# 1. [MOD] Remove the FORCE property when setting the needed variables,
+# 2. [ADD] Define a new variable MYLIB_LIB_DIR.
+# 3. [ADD] Add the .geom files to the projects.
+# 4. [ADD] Define a new function build_executable.
+# 5. [ADD] Install the library and headers to the folder CMAKE_INSTALL_PREFIX.
+#
+# Revision 1.2  2011/01/24 02:21:08  leeten
+#
+# [01/23/2011]
+# 1. [ADD] Add the variable LIBRARY_OUTPUT_PATH.
+# 2. [ADD] Make the LIBGW samples depend on LIBFPS.
+# 
+#
