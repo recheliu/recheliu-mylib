@@ -86,7 +86,11 @@ struct TBuffer2D: public TBuffer<t>
 	}
 
 	// ADD-BY-LEETEN 09/19/2010-BEGIN
-	void _Save(char *szFilenamePrefix)
+	// MOD-BY-LEETEN 07/18/2011-FROM:
+		// void _Save(char *szFilenamePrefix)
+	// TO:
+	void _Save(const char *szFilenamePrefix)
+	// MOD-BY-LEETEN 07/18/2011-END
 	{
 		// MOD-BY-LEETEN 01/25/2011-FROM:
 			// if( !BIsAllocated() )
@@ -135,6 +139,11 @@ struct TBuffer2D: public TBuffer<t>
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.7  2011-07-06 03:24:45  leeten
+
+[07/05/2011]
+1. [MOD] Use the new macro ASSERT_OR_LOG to verify whether the file can be written.
+
 Revision 1.6  2011-02-25 02:27:29  leeten
 
 [02/20/2011]
