@@ -48,7 +48,11 @@ template <typename t> struct TBuffer
 	// ADD-BY-TLEE 2008/08/14-END
 
 	// ADD-BY-LEETEN 09/19/2010-BEGIN
-	void _Save(char *szFilenamePrefix)
+	// MOD-BY-LEETEN 07/18/2011-FROM:
+		// void _Save(char *szFilenamePrefix)
+	// TO:
+	void _Save(const char *szFilenamePrefix)
+	// MOD-BY-LEETEN 07/18/2011-END
 	{
 		if( !BIsAllocated() )
 		{
@@ -109,7 +113,9 @@ template <typename t> struct TBuffer
 		// data = (t*)calloc(num, sizeof(t));
 		data = new t[num];
 		assert(data);
-		memset(data, 0, sizeof(t) * num);
+		// DEL-BY-LEETEN 07/18/2011-BEGIN
+			// memset(data, 0, sizeof(t) * num);
+		// MOD-BY-LEETEN 07/18/2011-END
 		return data;
 	}
 
@@ -181,6 +187,11 @@ template <typename t> struct TBuffer
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.9  2011-07-06 03:24:46  leeten
+
+[07/05/2011]
+1. [MOD] Use the new macro ASSERT_OR_LOG to verify whether the file can be written.
+
 Revision 1.8  2011-02-25 02:27:29  leeten
 
 [02/20/2011]
