@@ -35,6 +35,25 @@ struct TBuffer3D: public TBuffer<t>
 	{	
 	}
 
+	// ADD-BY-LEETEN 07/18/2011-BEGIN
+	t* New(int n)
+	{
+		iWidth = n;
+		iHeight = 1;
+		iDepth = 1;
+		return TBuffer<t>::New(n);
+	}
+
+	t* New(int w, int h, int d)
+	{
+		assert(w > 0 && h > 0 && d > 0);
+		iWidth = w;
+		iHeight = h;
+		iDepth = d;
+		return TBuffer<t>::New(iWidth * iHeight * iDepth);
+	}
+	// ADD-BY-LEETEN 07/18/2011-END
+
 	// ADD-BY-LEETEN 01/26/2010-BEGIN
 	t* alloc(int n)
 	{
@@ -42,8 +61,12 @@ struct TBuffer3D: public TBuffer<t>
 			TBuffer::alloc(n);
 			return data;
 		#else	// MOD-BY-LEETEN 01/25/2011-TO:
-		TBuffer<t>::alloc(n);
-		return TBuffer<t>::data;
+		#if	0	// MOD-BY-LEETEN 07/18/2011-FROM:
+			TBuffer<t>::alloc(n);
+			return TBuffer<t>::data;
+		#else		// MOD-BY-LEETEN 07/18/2011-TO:
+		return TBuffer<t>::alloc(n);
+		#endif		// MOD-BY-LEETEN 07/18/2011-END
 		#endif	// MOD-BY-LEETEN 01/25/2011-END
 	}
 	// ADD-BY-LEETEN 01/26/2010-END
@@ -58,8 +81,12 @@ struct TBuffer3D: public TBuffer<t>
 			TBuffer::alloc(iWidth * iHeight * iDepth);
 			return data;
 		#else	// MOD-BY-LEETEN 01/25/2011-TO:
-		TBuffer<t>::alloc(iWidth * iHeight * iDepth);
-		return TBuffer<t>::data;
+		#if	0	// MOD-BY-LEETEN 07/18/2011-FROM:
+			TBuffer<t>::alloc(iWidth * iHeight * iDepth);
+			return TBuffer<t>::data;
+		#else		// MOD-BY-LEETEN 07/18/2011-TO:
+		return TBuffer<t>::alloc(iWidth * iHeight * iDepth);
+		#endif		// MOD-BY-LEETEN 07/18/2011-END
 		#endif	// MOD-BY-LEETEN 01/25/2011-END
 	}
 
@@ -142,6 +169,11 @@ struct TBuffer3D: public TBuffer<t>
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.7  2011-07-18 21:55:53  leeten
+
+[07/18/2011]
+1. [MOD] Change the type of the filename for method _Save to const char*.
+
 Revision 1.6  2011-07-06 03:24:46  leeten
 
 [07/05/2011]

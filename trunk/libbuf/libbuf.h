@@ -101,21 +101,38 @@ template <typename t> struct TBuffer
 		#endif	// MOD-BY-TLEE 2008/08/14-END
 	}
 
-	t* alloc(int n)
+	// ADD-BY-LEETEN 07/18/2011-BEGIN
+	t* New(int n)
 	{
 		assert(n > 0);
 		num = n;
-
-		// ADD-BY-TLEE 2008/08/14-BEGIN
 		free();
-		// ADD-BY-TLEE 2008/08/14-END
-
-		// data = (t*)calloc(num, sizeof(t));
 		data = new t[num];
 		assert(data);
-		// DEL-BY-LEETEN 07/18/2011-BEGIN
-			// memset(data, 0, sizeof(t) * num);
-		// MOD-BY-LEETEN 07/18/2011-END
+		return data;
+	}
+	// ADD-BY-LEETEN 07/18/2011-END
+
+	t* alloc(int n)
+	{
+		#if	0	// MOD-BY-LEETEN 07/18/2011-FROM:
+			assert(n > 0);
+			num = n;
+
+			// ADD-BY-TLEE 2008/08/14-BEGIN
+			free();
+			// ADD-BY-TLEE 2008/08/14-END
+
+			// data = (t*)calloc(num, sizeof(t));
+			data = new t[num];
+			assert(data);
+			// DEL-BY-LEETEN 07/18/2011-BEGIN
+				// memset(data, 0, sizeof(t) * num);
+			// MOD-BY-LEETEN 07/18/2011-END
+		#else		// MOD-BY-LEETEN 07/18/2011-TO:
+		New(n);
+		memset(data, 0, sizeof(t) * num);
+		#endif		// MOD-BY-LEETEN 07/18/2011-END
 		return data;
 	}
 
@@ -187,6 +204,11 @@ template <typename t> struct TBuffer
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.10  2011-07-18 21:55:53  leeten
+
+[07/18/2011]
+1. [MOD] Change the type of the filename for method _Save to const char*.
+
 Revision 1.9  2011-07-06 03:24:46  leeten
 
 [07/05/2011]
