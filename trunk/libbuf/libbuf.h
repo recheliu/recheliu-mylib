@@ -35,7 +35,11 @@ template <typename t> struct TBuffer
 
 	// ADD-BY-TLEE 2009/02/14-BEGIN
 	bool BIsAllocated()		{	return (NULL != data)?true:false;	}
-	unsigned int USize()	{	return (unsigned int)num;			}
+	// MOD-BY-LEETEN 07/22/2011-FROM:
+		// unsigned int USize()	{	return (unsigned int)num;			}
+	// TO:
+	unsigned int USize()	const	{	return (unsigned int)num;			}
+	// MOD-BY-LEETEN 07/22/2011-END
 	// ADD-BY-TLEE 2009/02/14-END
 
 	// ADD-BY-TLEE 2008/08/14-BEGIN
