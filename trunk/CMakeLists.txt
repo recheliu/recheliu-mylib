@@ -44,18 +44,22 @@ set(MYLIB_LIB_DIR "${PROJECT_BINARY_DIR}/lib")
 set(MYLIB_LIB_DIR_DEBUG "${MYLIB_LIB_DIR}/debug")
 set(MYLIB_LIB_DIR_RELEASE "${MYLIB_LIB_DIR}/release")
 
-set(LIBRARY_OUTPUT_PATH "${PROJECT_BINARY_DIR}/lib")	
+# DEL-BY-LEETEN 09/02/2011-BEGIN
+	# set(LIBRARY_OUTPUT_PATH "${PROJECT_BINARY_DIR}/lib")	
+# DEL-BY-LEETEN 09/02/2011-END
 
 # add the binary tree to the search path for include files
 include_directories (
 	"${CUDA_INC_DIR}"
 	"${CUDASDK_INC_DIR}"
 	"${OPENCV_INC_DIR}"
-	# ADD-BY-LEETEN 01/28/2011-BEGIN
 	"${OPENCV_INC_DIR}/opencv"	
-	# ADD-BY-LEETEN 01/28/2011-END
 	"${THIRDPARTY_INC_DIR}"
-	"${MYLIB_INC_DIR}"
+	# MOD-BY-LEETEN 09/02/2011-FROM:
+		# "${MYLIB_INC_DIR}"
+	# TO:
+	"${CMAKE_SOURCE_DIR}"
+	# MOD-BY-LEETEN 09/02/2011-END
 	)
 
 # add the binary tree to the search path for libraries
@@ -64,8 +68,10 @@ list(APPEND LIB_DIRS
 	"${CUDASDK_LIB_DIR}"
 	"${OPENCV_LIB_DIR}"
 	"${THIRDPARTY_LIB_DIR}"
-	"${MYLIB_LIB_DIR_DEBUG}"
-	"${MYLIB_LIB_DIR_RELEASE}"
+	# DEL-BY-LEETEN 09/02/2011-BEGIN
+	# "${MYLIB_LIB_DIR_DEBUG}"
+	# "${MYLIB_LIB_DIR_RELEASE}"
+	# DEL-BY-LEETEN 09/02/2011-END
 	)
 
 link_directories(
@@ -86,14 +92,22 @@ add_definitions(
 )
 
 ##############################################################
-if(DEFINED WIN32)
-	set(COPY "copy")
-else()
-	set(COPY "cp")
-endif()
+# DEL-BY-LEETEN 09/02/2011-BEGIN
+	# if(DEFINED WIN32)
+		# set(COPY "copy")
+	# else()
+		# set(COPY "cp")
+	# endif()
+# DEL-BY-LEETEN 09/02/2011-END
 
 function(build_library libname src_subdir dst_subdir)
 	set(SRC_DIR "${PROJECT_SOURCE_DIR}/${libname}/${src_subdir}/")
+
+	# ADD-BY-LEETEN 09/02/2011-BEGIN
+	include_directories (
+		"${SRC_DIR}"
+	)
+	# ADD-BY-LEETEN 09/02/2011-END
 	
 	AUX_SOURCE_DIRECTORY ("${SRC_DIR}" 	SRC_FILES)
 	file(GLOB HEADER_FILES "${SRC_DIR}/*.h" )
@@ -101,7 +115,6 @@ function(build_library libname src_subdir dst_subdir)
 	file(GLOB VERT_FILES "${SRC_DIR}/*.vert" )
 	file(GLOB GEOM_FILES "${SRC_DIR}/*.geom" )
 
-	# ADD-BY-LEETEN 05/15/2011-BEGIN
 	# remove the headers convertted from the shaders
 	set(TMP_HEADER_FILES "")
 	foreach(HEADER ${HEADER_FILES})
@@ -119,27 +132,20 @@ function(build_library libname src_subdir dst_subdir)
 	set(SHADER_FILES "")
 	list(APPEND SHADER_FILES ${FRAG_FILES} ${VERT_FILES} ${GEOM_FILES} )
 	
-	set(DST_INC_DIR "${MYLIB_INC_DIR}/${dst_subdir}")
-	file(TO_NATIVE_PATH ${DST_INC_DIR} DST_INC_NATIVE_DIR)
-	# ADD-BY-LEETEN 05/15/2011-END
+	# DEL-BY-LEETEN 09/02/2011-BEGIN
+	# 	set(DST_INC_DIR "${MYLIB_INC_DIR}/${dst_subdir}")
+	#	file(TO_NATIVE_PATH ${DST_INC_DIR} DST_INC_NATIVE_DIR)
+	# DEL-BY-LEETEN 09/02/2011-END
 	
 	list(LENGTH SRC_FILES N_SRC_FILES)
 	if( N_SRC_FILES EQUAL 0 )
-		# MOD-BY-LEETEN 05/15/2011-FROM:
-			# set(HEADER_PROJ_NAME ${libname})
-		# TO:
 		add_custom_target (
 			${libname}
-			# MOD-BY-LEETEN 05/15/2011-FROM:
-				# SOURCES ${SRC_FILES}
-			# TO:
 			SOURCES 
 				${SHADER_FILES}
 				${HEADER_FILES}
 				${SRC_FILES}
-			# MOD-BY-LEETEN 05/15/2011-END
 		)
-		# MOD-BY-LEETEN 05/15/2011-END
 	else()
 		add_library ( ${libname} 
 			# ADD-BY-LEETEN 05/15/2011-BEGIN
@@ -152,14 +158,14 @@ function(build_library libname src_subdir dst_subdir)
 			DEBUG_OUTPUT_NAME "${libname}_d"
 			RELEASE_OUTPUT_NAME "${libname}_r"
 		)
-		# DEL-BY-LEETEN 05/15/2011-BEGIN
-			# set(HEADER_PROJ_NAME ${libname}_h)
-		# DEL-BY-LEETEN 05/15/2011-END
+		# ADD-BY-LEETEN 09/02/2011-BEGIN
+		install(
+			TARGETS ${libname}
+			DESTINATION lib	)	
+		# ADD-BY-LEETEN 09/02/2011-END
+		
 	endif()
 
-	# MOD-BY-LEETEN 05/15/2011-FROM:
-	# MOD-BY-LEETEN 05/15/2011-TO:
-	
 	# convert all GLSL shaders to .h
 	foreach(SHADER ${SHADER_FILES})
 		file(TO_NATIVE_PATH ${SHADER} SHADER_NATIVE_PATH)
@@ -170,28 +176,30 @@ function(build_library libname src_subdir dst_subdir)
 			DEPENDS ${SHADER}
 			COMMAND shader2string ${SHADER_NATIVE_PATH} ${SHADER_OUTPUT_NATIVE_PATH}
 		)
-
-
-
 	endforeach(SHADER)
 
 	# create the folder for the headers
-	add_custom_command (
-
-		TARGET ${libname}
-		PRE_BUILD
-		COMMAND cmake -E make_directory ${DST_INC_DIR} )
-		
-	foreach(HEADER ${HEADER_FILES})
-		file(TO_NATIVE_PATH ${HEADER} HEADER_NATIVE_PATH)
-		add_custom_command (
-
-			TARGET	${libname}
-			PRE_BUILD
-			COMMAND ${COPY} ${HEADER_NATIVE_PATH} ${DST_INC_NATIVE_DIR} 
-		)
-	endforeach(HEADER)
-	# MOD-BY-LEETEN 05/15/2011-END
+	# MOD-BY-LEETEN 09/02/2011-FROM:
+		#	add_custom_command (
+		#
+		#		TARGET ${libname}
+		#		PRE_BUILD
+		#		COMMAND cmake -E make_directory ${DST_INC_DIR} )
+		#	
+		#	foreach(HEADER ${HEADER_FILES})
+		#		file(TO_NATIVE_PATH ${HEADER} HEADER_NATIVE_PATH)
+		#		add_custom_command (
+		#
+		#			TARGET	${libname}
+		#			PRE_BUILD
+		#			COMMAND ${COPY} ${HEADER_NATIVE_PATH} ${DST_INC_NATIVE_DIR} 
+		#		)
+		#	endforeach(HEADER)
+	# MOD-BY-LEETEN 09/02/2011-TO:
+	install(
+		FILES ${HEADER_FILES}
+		DESTINATION "include/${dst_subdir}")
+	# MOD-BY-LEETEN 09/02/2011-END
 endfunction (build_library)
 
 # ADD-BY-LEETEN 01/23/2011-BEGIN
@@ -202,8 +210,6 @@ function(build_executable exename src_dir)
 	file(GLOB FRAG_FILES "${src_dir}/*.frag" )
 	file(GLOB GEOM_FILES "${src_dir}/*.geom" )
 	
-	# MOD-BY-LEETEN 05/15/2011-FROM:
-	# MOD-BY-LEETEN 05/15/2011-TO:
 	# remove the headers convertted from the shaders
 	set(TMP_HEADER_FILES "")
 	foreach(HEADER ${HEADER_FILES})
@@ -239,9 +245,12 @@ function(build_executable exename src_dir)
 			COMMAND shader2string ${SHADER_NATIVE_PATH} ${SHADER_OUTPUT_NATIVE_PATH}
 		)
 	endforeach(SHADER)
-	# MOD-BY-LEETEN 05/15/2011-END
-
-	# copy_headers (${libname} ${src_subdir} ${dst_subdir})
+	
+	# ADD-BY-LEETEN 09/02/2011-BEGIN
+	install(
+		TARGETS ${exename}
+		DESTINATION bin	)	
+	# ADD-BY-LEETEN 09/02/2011-END
 endfunction (build_executable)
 
 # ADD-BY-LEETEN 01/23/2011-END
@@ -252,7 +261,7 @@ build_executable(shader2string ${PROJECT_SOURCE_DIR}/libshader/shader2string)
 add_dependencies(shader2string libshader)
 target_link_libraries (shader2string libshader)
 if(DEFINED WIN32) 
-target_link_libraries (shader2string "${THIRDPARTY_LIB_DIR}/glew32.lib")
+	target_link_libraries (shader2string "${THIRDPARTY_LIB_DIR}/glew32.lib")
 else()
 	target_link_libraries (shader2string "GLEW")
 	# ADD-BY-LEETEN 01/28/2011-BEGIN
@@ -312,20 +321,21 @@ foreach(LIBGW_TESTER_NAME example_single_win example_single_win_global example_m
 	build_executable(${LIBGW_TESTER_NAME} ${PROJECT_SOURCE_DIR}/libgw/examples/${LIBGW_TESTER_NAME})
 	add_dependencies(${LIBGW_TESTER_NAME} libgw liblog libbuf libfbow libfps)
 	target_link_libraries (${LIBGW_TESTER_NAME} libgw)
+	# ADD-BY-LEETEN 09/02/2011-BEGIN
+	target_link_libraries (${LIBGW_TESTER_NAME} 
+		libfps 
+	)
+	# ADD-BY-LEETEN 09/02/2011-END
 	if(NOT DEFINED WIN32)
-		# MOD-BY-LEETEN 01/28/2011-FROM:
-			# target_link_libraries (${LIBGW_TESTER_NAME} libfps opencv_core opencv_highgui "GLEW" "GL" "glut" "glui" ) 
-		# TO:
-			target_link_libraries (${LIBGW_TESTER_NAME} 
-				libfps 
-				opencv_core 
-				opencv_highgui 
-				"GLEW" 
-				"GL" 
-				"GLU" 
-				"glut" 
-				"glui" ) 
-		# MOD-BY-LEETEN 01/28/2011-END
+		target_link_libraries (${LIBGW_TESTER_NAME} 
+			libfps 
+			opencv_core 
+			opencv_highgui 
+			"GLEW" 
+			"GL" 
+			"GLU" 
+			"glut" 
+			"glui" ) 
 	endif()
 	add_test (${LIBGW_TESTER_NAME} ${LIBGW_TESTER_NAME})
 endforeach(LIBGW_TESTER_NAME)
@@ -334,16 +344,12 @@ endforeach(LIBGW_TESTER_NAME)
 build_executable(example_dvr ${PROJECT_SOURCE_DIR}/libdvr/example_dvr)
 add_dependencies(example_dvr libgw libdvr)
 
-# MOD-BY-LEETEN 01/28/2011-FROM:
-# MOD-BY-LEETEN 01/28/2011-TO:
 target_link_libraries (example_dvr 
 	libtfw
 	libdvr
 	libopt
 	libshader
 	libfbo	
-	# DEL-BY-LEETEN 01/28/2011-BEGIN
-	# DEL-BY-LEETEN 01/28/2011-END
 	libgw 
 	libfps 
 	) 
@@ -357,17 +363,11 @@ if(NOT DEFINED WIN32)
 		glut 
 		glui 
 	) 
-	# DEL-BY-LEETEN 01/28/2011-BEGIN
-	# DEL-BY-LEETEN 01/28/2011-END
 endif()
-# MOD-BY-LEETEN 01/28/2011-END
 add_test (example_dvr example_dvr "${PROJECT_SOURCE_DIR}/data/hipip")
 
-# ADD-BY-LEETEN 01/25/2011-BEGIN
 build_executable(example_dvr2 ${PROJECT_SOURCE_DIR}/libdvr2/example_dvr2)
 add_dependencies(example_dvr2 libgw libdvr2)
-# MOD-BY-LEETEN 01/28/2011-FROM:
-# MOD-BY-LEETEN 01/28/2011-TO:
 target_link_libraries (example_dvr2
 	libtfw
 	libdvr2
@@ -375,8 +375,6 @@ target_link_libraries (example_dvr2
 	libshader
 	libfbo
 	libclip
-	# DEL-BY-LEETEN 01/28/2011-BEGIN
-	# DEL-BY-LEETEN 01/28/2011-END
 	libgw 
 	# ADD-BY-LEETEN 01/28/2011-BEGIN
 	libfps 
@@ -392,13 +390,9 @@ if(NOT DEFINED WIN32)
 		glut 
 		glui 
 		)
-	# DEL-BY-LEETEN 01/28/2011-BEGIN
-	# DEL-BY-LEETEN 01/28/2011-BEGIN
 endif()
-# MOD-BY-LEETEN 01/28/2011-END
 
 add_test (example_dvr2 example_dvr2 "${PROJECT_SOURCE_DIR}/data/hipip")
-# ADD-BY-LEETEN 01/25/2011-END
   
 ##############################################################
 # create the header for the makefile
@@ -411,15 +405,23 @@ configure_file (
 install(
 	TARGETS shader2string 
 	DESTINATION "${CMAKE_INSTALL_PREFIX}/bin")
-install(
-	DIRECTORY ${MYLIB_INC_DIR}
-	DESTINATION "${CMAKE_INSTALL_PREFIX}")
-install(
-	DIRECTORY ${MYLIB_LIB_DIR}
-	DESTINATION "${CMAKE_INSTALL_PREFIX}")
+	# DEL-BY-LEETEN 09/02/2011-BEGIN
+	#	install(
+	#		DIRECTORY ${MYLIB_INC_DIR}
+	#		DESTINATION "${CMAKE_INSTALL_PREFIX}")
+	#	install(
+	#		DIRECTORY ${MYLIB_LIB_DIR}
+	#		DESTINATION "${CMAKE_INSTALL_PREFIX}")
+	# DEL-BY-LEETEN 09/02/2011-END
+
 
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.10  2011-07-06 03:21:25  leeten
+#
+# [07/05/2011]
+# 1. [DEL] Remove old-deleted code segments.
+#
 # Revision 1.9  2011-05-16 00:05:44  leeten
 #
 # [05/15/2011]
