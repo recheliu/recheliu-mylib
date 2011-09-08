@@ -37,6 +37,12 @@ set(THIRDPARTY_LIB_DIR "${THIRDPARTY_DIR}/lib")
 set(OPENCV_INC_DIR "${OPENCV_DIR}/include")
 set(OPENCV_LIB_DIR "${OPENCV_DIR}/lib")
 
+
+# ADD-BY-LEETEN 09/07/2011-BEGIN
+set(WITH_OPENGL OFF CACHE BOOL "Flag to decide whether OpenGL is used")
+set(WITH_CUDA   OFF CACHE BOOL "Flag to decide whether CUDA is used")
+# ADD-BY-LEETEN 09/07/2011-END
+
 # mylib
 set(MYLIB_BIN_DIR "${PROJECT_BINARY_DIR}/bin")
 set(MYLIB_INC_DIR "${PROJECT_BINARY_DIR}/include")
@@ -255,6 +261,7 @@ endfunction (build_executable)
 
 # ADD-BY-LEETEN 01/23/2011-END
  
+if( WITH_OPENGL ) # ADD-BY-LEETEN 09/07/2011
 ##############################################################
 # shader2string
 build_executable(shader2string ${PROJECT_SOURCE_DIR}/libshader/shader2string)
@@ -268,22 +275,42 @@ else()
 	target_link_libraries (shader2string "glut")
 	# ADD-BY-LEETEN 01/28/2011-END
 endif()
+endif() # if( WITH_OPENGL ) # ADD-BY-LEETEN 09/07/2011
 
 ##############################################################
 foreach(LIB_NAME 
 			libbuf 
 			libclock 
-			libcuda 
+			# DEL-BY-LEETEN 09/07/2011	libcuda 
 			liblog 
-			libfbow
-			libshader 
+			# DEL-BY-LEETEN 09/07/2011	libfbow
+			# DEL-BY-LEETEN 09/07/2011	libshader 
 			libopt 
-			libopengl 
+			# DEL-BY-LEETEN 09/07/2011	libopengl 
 			libfps 
-			libfbo
+			# DEL-BY-LEETEN 09/07/2011	libfbo
 	)
 	build_library(${LIB_NAME} "/" "/" false)
 endforeach(LIB_NAME)
+
+# ADD-BY-LEETEN 09/07/2011-BEGIN
+if( WITH_CUDA )
+	foreach(LIB_NAME 
+			libcuda 
+		)
+		build_library(${LIB_NAME} "/" "/" false)
+	endforeach(LIB_NAME)
+endif()
+
+if( WITH_OPENGL )
+	foreach(LIB_NAME 
+			libfbow
+			libshader 
+			libopengl 
+			libfbo
+		)
+		build_library(${LIB_NAME} "/" "/" false)
+	endforeach(LIB_NAME)
 
 ##############################################################
 # libgw
@@ -393,6 +420,9 @@ if(NOT DEFINED WIN32)
 endif()
 
 add_test (example_dvr2 example_dvr2 "${PROJECT_SOURCE_DIR}/data/hipip")
+
+endif()
+# ADD-BY-LEETEN 09/07/2011-END
   
 ##############################################################
 # create the header for the makefile
@@ -402,6 +432,7 @@ configure_file (
 )
 
 ##############################################################
+if( WITH_OPENGL ) # ADD-BY-LEETEN 09/07/2011
 install(
 	TARGETS shader2string 
 	DESTINATION "${CMAKE_INSTALL_PREFIX}/bin")
@@ -413,10 +444,16 @@ install(
 	#		DIRECTORY ${MYLIB_LIB_DIR}
 	#		DESTINATION "${CMAKE_INSTALL_PREFIX}")
 	# DEL-BY-LEETEN 09/02/2011-END
-
+endif() # if( WITH_OPENGL ) # ADD-BY-LEETEN 09/07/2011
 
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.11  2011-09-03 03:42:38  leeten
+#
+# [09/02/2011]
+# 1. [KIL] Remove old deleted code segments.
+# 2. [MOD] Change the parameter of the insall command so the manual copy can be avioded and make sure that all files will be installed.
+#
 # Revision 1.10  2011-07-06 03:21:25  leeten
 #
 # [07/05/2011]
