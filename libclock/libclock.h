@@ -81,7 +81,28 @@
 
 #else	// #ifdef WIN32
 	#include <time.h>
+	// ADD-BY-LEETEN 09/13/2011-BEGIN
+	#if defined(__APPLE__) && defined(__MACH__)
+	#include <sys/time.h>
+	#include <mach/mach.h>
+	#include <mach/clock.h>
+
+	#define CLOCK_REALTIME	0
+	inline void clock_gettime(int unused, struct timespec* ts)
+	{
+		clock_serv_t cclock;
+		mach_timespec_t mts;
+		host_get_clock_service(mach_host_self(), CALENDAR_CLOCK, &cclock);
+		clock_get_time(cclock, &mts);
+		mach_port_deallocate(mach_task_self(), cclock);
+		ts->tv_sec = mts.tv_sec;
+		ts->tv_nsec = mts.tv_nsec;
+	}
+	#else	// #if defined(__APPLE__) && defined(__MACH__)
+	// ADD-BY-LEETEN 09/13/2011-END
+
 	#pragma message("Remerber to add the argument '-l rt' to the linker options.")
+	#endif	// #if defined(__APPLE__) && defined(__MACH__)		// ADD-BY-LEETEN 09/13/2011
 
 	#if	0	// MOD-BY-LEETEN 02/24/2011-FROM:
 		#define LIBCLOCK_INIT(flag, header)							\
@@ -158,6 +179,11 @@
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.2  2011-02-25 02:30:08  leeten
+
+[02/20/2011]
+1. [MOD] Delay the printing of header until LIBCLOCK_PRINT is called.
+
 Revision 1.1  2011/01/10 19:35:45  leeten
 
 [01/09/2010]
