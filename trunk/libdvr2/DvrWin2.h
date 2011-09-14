@@ -1,5 +1,11 @@
 #pragma once
+// ADD-BY-LEETEN 09/13/2011-BEGIN
+#if defined(__APPLE__) && defined(__MACH__)
+#include <OpenGL/gl.h>
+#else
+// ADD-BY-LEETEN 09/13/2011-END
 #include <GL/gl.h>
+#endif	// ADD-BY-LEETEN 09/13/2011
 
 	#include "FboWin.h"
 
@@ -82,6 +88,11 @@ public:
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.5  2011-01-25 02:41:50  leeten
+
+[01/24/2011]
+1. [DEL] Solve compilation error.
+
 Revision 1.4  2010/04/06 19:56:56  leeten
 
 [04/06/2010]
