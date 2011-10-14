@@ -1,6 +1,8 @@
 #ifndef		__GLUT_WINDOW_H__
 #define		__GLUT_WINDOW_H__
 
+#include "GlutWin_config.h"	// ADD-BY-LEETEN 10/14/2011
+
 // ADD-BY-LEETEN 08/09/2008-BEGIN
 #include <vector>
 #include <stack>
@@ -26,6 +28,7 @@ using namespace std;
 	#ifndef OPENCV_VER
 	#pragma message( "Warning: Remember to specify the preprocessor OPENCV before linking LIBGW!"  )
 	#else
+		/*	// MOD-BY-LEETEN 10/14/2011-FROM:
 		#if	OPENCV_VER == 210	
 			#pragma message( "OPENCV 2.10 will be used."  )
 			#pragma comment (lib, "cv210.lib")      // link with my own library libfps
@@ -36,6 +39,18 @@ using namespace std;
 			#pragma message( "OPENCV 2.20 will be used."  )
 			#pragma comment (lib, "opencv_core220.lib")      // link with my own library libfps
 			#pragma comment (lib, "opencv_highgui220.lib")      // link with my own library libfps
+		*/	// MOD-BY-LEETEN 10/14/2011-TO :
+		#if	OPENCV_VER >= 200
+			#pragma message( OPENCV_MESSAGE  )
+			#pragma comment (lib, OPENCV_CORE_LIB )      // link with my own library libfps
+			#pragma comment (lib, OPENCV_HIGHGUI_LIB )      // link with my own library libfps
+		#elif OPENCV_VER >= 100
+			#pragma message( OPENCV_MESSAGE  )
+			#pragma comment (lib, "cv.lib")      
+			#pragma comment (lib, "cxcore.lib")  
+			#pragma comment (lib, "highgui.lib") 
+			#pragma comment (lib, "cvaux.lib")   
+		// MOD-BY-LEETEN 10/14/2011-END
 		#else
 			#pragma error( "Unsupported OpenCV version" )
 		#endif
@@ -560,6 +575,11 @@ public:
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.26  2011-01-24 02:54:58  leeten
+
+[01/23/2011]
+1. [MOD] Automatically link the OpenCV libraries for different versions. current only 2.10 and 2.20 are supported.
+
 Revision 1.25  2010/08/07 12:06:02  leeten
 
 [08/07/2010]
