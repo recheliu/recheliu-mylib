@@ -1,0 +1,14 @@
+#ifndef __MYLIB_CONFIG_H__
+#define __MYLIB_CONFIG_H__
+
+#define OPENCV_MESSAGE			@OPENCV_MESSAGE@
+#define OPENCV_CORE_LIB			@OPENCV_CORE_LIB@
+#define OPENCV_HIGHGUI_LIB		@OPENCV_HIGHGUI_LIB@
+
+#endif	// __MYLIB_CONFIG_H__
+
+/*
+
+$Log: not supported by cvs2svn $
+
+*/
