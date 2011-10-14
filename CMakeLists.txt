@@ -36,6 +36,15 @@ set(THIRDPARTY_LIB_DIR "${THIRDPARTY_DIR}/lib")
 # OpenCV
 set(OPENCV_INC_DIR "${OPENCV_DIR}/include")
 set(OPENCV_LIB_DIR "${OPENCV_DIR}/lib")
+# ADD-BY-LEETEN 10/14/2011-BEGIN
+set(OPENCV_MESSAGE		"\"OpenCV Ver. ${OPENCV_VER} will be used."\")
+set(OPENCV_CORE_LIB		"\"opencv_core${OPENCV_VER}.lib\"")
+set(OPENCV_HIGHGUI_LIB	"\"opencv_highgui${OPENCV_VER}.lib\"")
+configure_file (
+  "${PROJECT_SOURCE_DIR}/libgw/libgw/GlutWin_config.h.in"
+  "${PROJECT_SOURCE_DIR}/libgw/libgw/GlutWin_config.h"
+)  
+# ADD-BY-LEETEN 10/14/2011-END
 
 
 # ADD-BY-LEETEN 09/07/2011-BEGIN
@@ -50,10 +59,6 @@ set(MYLIB_LIB_DIR "${PROJECT_BINARY_DIR}/lib")
 set(MYLIB_LIB_DIR_DEBUG "${MYLIB_LIB_DIR}/debug")
 set(MYLIB_LIB_DIR_RELEASE "${MYLIB_LIB_DIR}/release")
 
-# DEL-BY-LEETEN 09/02/2011-BEGIN
-	# set(LIBRARY_OUTPUT_PATH "${PROJECT_BINARY_DIR}/lib")	
-# DEL-BY-LEETEN 09/02/2011-END
-
 # add the binary tree to the search path for include files
 include_directories (
 	"${CUDA_INC_DIR}"
@@ -61,11 +66,7 @@ include_directories (
 	"${OPENCV_INC_DIR}"
 	"${OPENCV_INC_DIR}/opencv"	
 	"${THIRDPARTY_INC_DIR}"
-	# MOD-BY-LEETEN 09/02/2011-FROM:
-		# "${MYLIB_INC_DIR}"
-	# TO:
 	"${CMAKE_SOURCE_DIR}"
-	# MOD-BY-LEETEN 09/02/2011-END
 	)
 
 # add the binary tree to the search path for libraries
@@ -98,14 +99,6 @@ add_definitions(
 )
 
 ##############################################################
-# DEL-BY-LEETEN 09/02/2011-BEGIN
-	# if(DEFINED WIN32)
-		# set(COPY "copy")
-	# else()
-		# set(COPY "cp")
-	# endif()
-# DEL-BY-LEETEN 09/02/2011-END
-
 function(build_library libname src_subdir dst_subdir)
 	set(SRC_DIR "${PROJECT_SOURCE_DIR}/${libname}/${src_subdir}/")
 
@@ -137,11 +130,6 @@ function(build_library libname src_subdir dst_subdir)
 	# merge all shader files into a single list 
 	set(SHADER_FILES "")
 	list(APPEND SHADER_FILES ${FRAG_FILES} ${VERT_FILES} ${GEOM_FILES} )
-	
-	# DEL-BY-LEETEN 09/02/2011-BEGIN
-	# 	set(DST_INC_DIR "${MYLIB_INC_DIR}/${dst_subdir}")
-	#	file(TO_NATIVE_PATH ${DST_INC_DIR} DST_INC_NATIVE_DIR)
-	# DEL-BY-LEETEN 09/02/2011-END
 	
 	list(LENGTH SRC_FILES N_SRC_FILES)
 	if( N_SRC_FILES EQUAL 0 )
@@ -185,27 +173,9 @@ function(build_library libname src_subdir dst_subdir)
 	endforeach(SHADER)
 
 	# create the folder for the headers
-	# MOD-BY-LEETEN 09/02/2011-FROM:
-		#	add_custom_command (
-		#
-		#		TARGET ${libname}
-		#		PRE_BUILD
-		#		COMMAND cmake -E make_directory ${DST_INC_DIR} )
-		#	
-		#	foreach(HEADER ${HEADER_FILES})
-		#		file(TO_NATIVE_PATH ${HEADER} HEADER_NATIVE_PATH)
-		#		add_custom_command (
-		#
-		#			TARGET	${libname}
-		#			PRE_BUILD
-		#			COMMAND ${COPY} ${HEADER_NATIVE_PATH} ${DST_INC_NATIVE_DIR} 
-		#		)
-		#	endforeach(HEADER)
-	# MOD-BY-LEETEN 09/02/2011-TO:
 	install(
 		FILES ${HEADER_FILES}
 		DESTINATION "include/${dst_subdir}")
-	# MOD-BY-LEETEN 09/02/2011-END
 endfunction (build_library)
 
 # ADD-BY-LEETEN 01/23/2011-BEGIN
@@ -436,18 +406,16 @@ if( WITH_OPENGL ) # ADD-BY-LEETEN 09/07/2011
 install(
 	TARGETS shader2string 
 	DESTINATION "${CMAKE_INSTALL_PREFIX}/bin")
-	# DEL-BY-LEETEN 09/02/2011-BEGIN
-	#	install(
-	#		DIRECTORY ${MYLIB_INC_DIR}
-	#		DESTINATION "${CMAKE_INSTALL_PREFIX}")
-	#	install(
-	#		DIRECTORY ${MYLIB_LIB_DIR}
-	#		DESTINATION "${CMAKE_INSTALL_PREFIX}")
-	# DEL-BY-LEETEN 09/02/2011-END
 endif() # if( WITH_OPENGL ) # ADD-BY-LEETEN 09/07/2011
 
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.12  2011-09-08 00:58:47  leeten
+#
+#
+# [09/07/2011]
+# 1. [ADD] Add new parameter WITH_OPENGL and WITH_CUDA. When these preprocessors are off, a subset of libraries won't be compiled.
+#
 # Revision 1.11  2011-09-03 03:42:38  leeten
 #
 # [09/02/2011]
