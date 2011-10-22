@@ -46,6 +46,14 @@ configure_file (
 )  
 # ADD-BY-LEETEN 10/14/2011-END
 
+# ADD-BY-LEETEN 10/21/2011-BEGIN
+set(WITH_NRRD OFF CACHE BOOL "Flag to decide whether NRRD is used")
+if( ${WITH_NRRD} )
+	add_definitions(
+		-DWITH_NRRD=1
+	)
+endif()
+# ADD-BY-LEETEN 10/21/2011-END
 
 # ADD-BY-LEETEN 09/07/2011-BEGIN
 set(WITH_OPENGL OFF CACHE BOOL "Flag to decide whether OpenGL is used")
@@ -410,6 +418,12 @@ endif() # if( WITH_OPENGL ) # ADD-BY-LEETEN 09/07/2011
 
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.13  2011-10-14 22:25:31  leeten
+#
+# [10/14/2011]
+# 1. [ADD] Create the configuration file (GlutWin_config.h) for GlutWin. Currently this config file include the filenames of OpenCV libraries.
+# 2. [KIL] Deleted older code segments.
+#
 # Revision 1.12  2011-09-08 00:58:47  leeten
 #
 #
