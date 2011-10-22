@@ -4,6 +4,17 @@
 
 	#include <stdio.h>
 
+	// ADD-By-LEETEN 10/21/2011-BEGIN
+	#if		WITH_NRRD
+	#include "NrrdIO.h"
+	#ifdef WIN32
+		#pragma comment (lib, "ITKNrrdIO.lib")      // link with my own library libfps
+		#pragma comment (lib, "zlib.lib")      // link with my own library libfps
+	#endif	// #ifdef	WIN32
+	#endif	// #if		WITH_NRRD
+	// ADD-By-LEETEN 10/21/2011-END
+
+	
 	// my own program argument parser
 	#include "libopt.h"
 
@@ -46,6 +57,98 @@
 
 					// buffer of the histogram
 	TBuffer<float> pfTransFunc;
+
+// ADD-BY-LEETEN 10/21/2011-BEGIN
+#if		WITH_NRRD
+	Nrrd *nin;
+
+template<typename T>
+void 
+_BuildHistogram()
+{	
+	T *data = (T*)nin->data;	
+
+	// search for the range
+	dValueMin = HUGE_VAL;
+	dValueMax = -HUGE_VAL;
+	for(int v = 0,	z = 0; z < (int)nin->axis[2].size; z++)
+		for(int		y = 0; y < (int)nin->axis[1].size; y++)
+			for(int x = 0; x < (int)nin->axis[0].size; x++, v++)
+			{
+				dValueMin = min(dValueMin, (double)data[v]);
+				dValueMax = max(dValueMax, (double)data[v]);
+			}
+	LOG_VAR(dValueMin);
+	LOG_VAR(dValueMax);
+
+	pfHist.alloc(iNrOfTfEntries);
+	for(int i = 0,	z = 0; z < (int)nin->axis[2].size; z++)
+		for(int		y = 0; y < (int)nin->axis[1].size; y++)
+			for(int x = 0; x < (int)nin->axis[0].size; x++, i++)
+			{
+				int iTfEntry = (int)ceil((double)(iNrOfTfEntries - 1) * (double)(data[i] - dValueMin) / (double)(dValueMax - dValueMin));
+				pfHist[iTfEntry] += 1.0f;
+			}
+
+	// normalize the histogram
+	fMaxCount = -(float)HUGE_VAL;
+	for(int b = 0; b < iNrOfTfEntries; b++) 
+		fMaxCount = max(fMaxCount, pfHist[b]);
+
+	for(int b = 0; b < iNrOfTfEntries; b++) 
+		pfHist[b] /= fMaxCount;
+}
+
+void
+_ReadVolume(char* szPathFilename)
+{
+	/* create a nrrd; at this point this is just an empty container */
+	nin = nrrdNew();
+
+	/* tell nrrdLoad to only read the header, not the data */
+	NrrdIoState *nio = nrrdIoStateNew();
+	nrrdIoStateSet(nio, nrrdIoStateSkipData, AIR_TRUE);
+
+	/* read in the nrrd from file */
+	if (nrrdLoad(nin, szPathFilename, nio)) {
+		char *err = biffGetDone(NRRD);
+		LOG_ERROR(fprintf(stderr, "%s", err));
+		free(err);
+		return;
+	}
+
+	/* we're done with the nrrdIoState, this sets it to NULL */
+	nio = nrrdIoStateNix(nio);
+
+	LOG_VAR(nrrdElementNumber(nin));
+	LOG_VAR(nrrdElementSize(nin));
+	nin->data = calloc(nrrdElementNumber(nin), nrrdElementSize(nin));
+
+	if (nrrdLoad(nin, szPathFilename, NULL)) {
+		char *err = biffGetDone(NRRD);
+		LOG_ERROR(fprintf(stderr, "%s", err));
+		free(err);
+		return;
+	}
+
+	switch(nin->type)
+	{
+	case nrrdTypeUChar:	_BuildHistogram<unsigned char>();	break;
+	case nrrdTypeChar:	_BuildHistogram<char>();			break;
+	case nrrdTypeShort:	_BuildHistogram<short>();			break;
+	case nrrdTypeUShort:_BuildHistogram<unsigned short>();	break;
+	case nrrdTypeInt:	_BuildHistogram<int>();				break;
+	case nrrdTypeUInt:	_BuildHistogram<unsigned int>();	break;
+	case nrrdTypeFloat:	_BuildHistogram<float>();			break;
+
+	default:
+		break;
+	}
+	return;
+}
+
+#else	// #if		WITH_NRRD
+// ADD-BY-LEETEN 10/21/2011-END
 
 void
 // MOD-BY-LEETEN 01/25/2011-FROM:
@@ -110,6 +213,11 @@ _ReadVolume(char* szPathFilename)
 			}
 	#endif	// MOD-BY-LEETEN 07/05/2011-END
 	// ADD-BY-TLEE 2008/08/17-END
+
+	// ADD-By-LEETEN 10/21/2011-BEGIN
+	void _BuildHistogram();
+	_BuildHistogram();
+	// ADD-By-LEETEN 10/21/2011-END
 }
 
 void
@@ -142,6 +250,7 @@ _BuildHistogram()
 	for(int b = 0; b < iNrOfTfEntries; b++) 
 		pfHist[b] /= fMaxCount;
 }
+#endif		// #if		WITH_NRRD	// ADD-BY-LEETEN 10/21/2011
 
 /////////////////////////////////////////////////////////
 // ADD-BY-TLEE 08/13/2008-BEGIN
@@ -222,9 +331,11 @@ main(int argn, char *argv[])
 
 	#endif	// MOD-BY-LEETEN 09/10/2010-END
 
-	// ADD-BY-TLEE 08/13/2008-BEGIN
-	_BuildHistogram();
-	// ADD-BY-TLEE 08/13/2008-END
+	#if	0	// DEL-BY-LEETEN 10/21/2011-BEGIN
+		// ADD-BY-TLEE 08/13/2008-BEGIN
+		_BuildHistogram();
+		// ADD-BY-TLEE 08/13/2008-END
+	#endif	// DEL-BY-LEETEN 10/21/2011-END
 
 	#if	0		// DEL-BY-LEETEN 01/26/2011-BEGIN
 											// create the DVR window
@@ -271,7 +382,25 @@ main(int argn, char *argv[])
 			cDvrWin._SetVolume(GL_LUMINANCE, &p3DubVol[0], GL_LUMINANCE, GL_UNSIGNED_BYTE, iXDim, iYDim, iZDim);
 	#else	// MOD-BY-LEETEN 07/05/2011-TO:
 	cDvrWin.ICreate("Direct Volume Rendering"); 
+	// ADD-BY-LEETEN 10/21/2011-BEGIN
+	#if 	WITH_NRRD	
+		int iType;
+		switch(nin->type)
+		{
+		case nrrdTypeUChar:	iType = GL_UNSIGNED_BYTE;	break;
+		case nrrdTypeChar:	iType = GL_BYTE;			break;
+		case nrrdTypeShort:	iType = GL_SHORT;			break;
+		case nrrdTypeUShort:iType = GL_UNSIGNED_SHORT;	break;
+		case nrrdTypeInt:	iType = GL_INT;				break;
+		case nrrdTypeUInt:	iType = GL_UNSIGNED_INT;	break;
+		case nrrdTypeFloat:	iType = GL_FLOAT;			break;
+		}
+
+		cDvrWin._SetVolume(GL_LUMINANCE32F_ARB, nin->data, GL_LUMINANCE, iType, (int)nin->axis[0].size, (int)nin->axis[1].size, (int)nin->axis[2].size);
+	#else	// #if 	WITH_NRRD	
+	// ADD-BY-LEETEN 10/21/2011-END
 		cDvrWin._SetVolume(GL_LUMINANCE, &p3DfVol[0], GL_LUMINANCE, GL_FLOAT, iXDim, iYDim, iZDim);
+	#endif	// #if 	WITH_NRRD	// ADD-BY-LEETEN 10/21/2011
 	#endif	// MOD-BY-LEETEN 07/05/2011-END
 		cDvrWin._SetTransferFunc(&pfTransFunc[0], GL_RGBA, GL_FLOAT, iNrOfTfEntries);
 		cDvrWin._LoadSavedMatrix();	
@@ -287,6 +416,10 @@ main(int argn, char *argv[])
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.4  2011-07-06 03:37:57  leeten
+[07/15/2011]
+1. [MOD] Change the program to read the file in .b3d format (3 integers for X, Y, Z length and then the raw data in single type.)
+
 Revision 1.3  2011-01-27 02:43:33  leeten
 
 [01/26/2011]
