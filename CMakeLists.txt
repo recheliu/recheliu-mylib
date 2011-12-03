@@ -17,7 +17,7 @@ set(THIRDPARTY_DIR "D:/lib" CACHE PATH "The path to the 3rd party libraries")
 set(OPENCV_DIR "C:/OpenCV2.1" CACHE PATH "The installed path of OpenCV")
 set(OPENCV_VER "210" CACHE STRING "The Version of OpenCV")
 set(FREEGLUT OFF CACHE BOOL "Flag to decide whether FREEGLUT is used")
-set(CMAKE_INSTALL_PREFIX ${PROJECT_SOURCE_DIR})
+# DEL-BY-LEETEN 12/03/2011		set(CMAKE_INSTALL_PREFIX ${PROJECT_SOURCE_DIR})
 
 # CUDA
 set(CUDA_DIR "${CUDA_TOOLKIT_ROOT_DIR}")
@@ -267,6 +267,7 @@ foreach(LIB_NAME
 			# DEL-BY-LEETEN 09/07/2011	libopengl 
 			libfps 
 			# DEL-BY-LEETEN 09/07/2011	libfbo
+			libgrid		# ADD-BY-LEETEN 12/03/2011
 	)
 	build_library(${LIB_NAME} "/" "/" false)
 endforeach(LIB_NAME)
@@ -418,6 +419,11 @@ endif() # if( WITH_OPENGL ) # ADD-BY-LEETEN 09/07/2011
 
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.14  2011-10-22 01:53:19  leeten
+#
+# [10/21/2011]
+# 1. [ADD] Define a new variable WITH_NRRD. If it is 1, NRRD will be used, which is currently used by example_dvr2.
+#
 # Revision 1.13  2011-10-14 22:25:31  leeten
 #
 # [10/14/2011]
