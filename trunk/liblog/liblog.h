@@ -12,34 +12,26 @@ using namespace std;
 
 #ifdef WIN32
 	#include <string.h>
-	// MOD-BY-LEETEN 02/16/2010-FROM:
-		// #define PRINT_HEADER	printf("[%s() @ %s(%d)]: ", __FUNCTION__, strrchr(__FILE__, '\\') + 1, __LINE__)	
-	// TO:
 	#define PRINT_HEADER	cout<<"["<<__FUNCTION__<<"() @ "<<strrchr(__FILE__, '\\') + 1<<"("<<__LINE__<<")]: ";
-	// MOD-BY-LEETEN 02/16/2010-END
 #else
-	// MOD-BY-LEETEN 02/16/2010-FROM:
-		// #define PRINT_HEADER	printf("[%s()@%s(%d)]: ", __FUNCTION__, __FILE__, __LINE__)	
-	// TO:
 	#define PRINT_HEADER	cout<<"["<<__FUNCTION__<<"() @ "<<__FILE__<<"("<<__LINE__<<")]: ";
-	// MOD-BY-LEETEN 02/16/2010-END
 #endif
 
+#if 0 // MOD-BY-LEETEN 12/29/2011-FROM:
 #define	LOG_VAR(var)					\
 	{									\
 		PRINT_HEADER;					\
 		cout<<#var<<" = "<<(var)<<endl;	\
 	}									\
 
-#if	0	// MOD-BY-LEETEN 02/16/2010-FROM:
-	#define LOG(printf_stmt)	\
-		{						\
-			PRINT_HEADER;		\
-			(printf_stmt);		\
-			printf("\n");		\
-		}						\
+#else // MOD-BY-LEETEN 12/29/2011-TO:
+#define	LOG_VAR(var)					\
+	{									\
+		PRINT_HEADER;					\
+		cout<<#var<<": "<<(var)<<endl;	\
+	}									\
 
-#else	// MOD-BY-LEETEN 02/16/2010-TO:
+#endif // MOD-BY-LEETEN 12/29/2011-END
 
 #define LOG(printf_stmt)	\
 	{						\
@@ -47,8 +39,6 @@ using namespace std;
 		(printf_stmt);		\
 		cout<<endl;			\
 	}						
-
-#endif	// MOD-BY-LEETEN 02/16/2010-END
 
 // ADD-BY-LEETEN 03/22/2010-BEGIN
 
@@ -69,11 +59,21 @@ using namespace std;
 		cerr<<endl;			\
 	}						
 
+#if 0 // MOD-BY-LEETEN 12/29/2011-FROM:
 #define LOG_VAR_TO_ERROR(var)	\
 	{						\
 		PRINT_ERROR_HEADER;		\
 		cerr<<#var<<" = "<<(var)<<endl;	\
 	}						
+
+#else // MOD-BY-LEETEN 12/29/2011-TO:
+#define LOG_VAR_TO_ERROR(var)	\
+	{						\
+		PRINT_ERROR_HEADER;		\
+		cerr<<#var<<": "<<(var)<<endl;	\
+	}						
+
+#endif // MOD-BY-LEETEN 12/29/2011-END
 
 // ADD-BY-LEETEN 03/22/2010-END
 
@@ -91,11 +91,30 @@ using namespace std;
 
 // ADD-BY-LEETEN 06/28/2010-END
 
+// ADD-BY-LEETEN 12/29/2011-BEGIN
+#define LOG_IF(condition, printf_stmt)		\
+	{						\
+		if( (condition) )			\
+		{					\
+			char *COND = #condition;	\
+			LOG_VAR(COND);		\
+			LOG(printf_stmt);		\
+		}					\
+	}						\
+
+// ADD-BY-LEETEN 12/29/2011-END
+
 #endif	// __LIB_LOG_H__
 
 /*
 
 $Log: not supported by cvs2svn $
+Revision 1.5  2011-07-06 03:22:46  leeten
+
+[07/05/2011]
+1. [MOD] solve the bug that crashes LOG_ERROR and LOG_VAR_TO_ERROR.
+2. [ADD] Define a new macro ASSERT_OR_LOG.
+
 Revision 1.4  2010-03-25 15:43:03  leeten
 
 [03/23/2010]
