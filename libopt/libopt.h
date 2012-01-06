@@ -70,6 +70,8 @@ void _OPTAddEnum(const char* szArgName, int *piParameter, int iDefault, int iNrO
 
 void _OPTAddComment(const char* szArgName, const char *szComment);
 
+void _OPTAddNames(const char* szArgName, int iNrOfParameters, ...);	// ADD-BY-LEETEN 01/05/2011
+
 void _OptPrintComment();
 // ADD-BY-LEETEN 07/02/2008-END
 
