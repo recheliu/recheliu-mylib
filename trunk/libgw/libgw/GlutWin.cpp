@@ -1,24 +1,13 @@
-	// ADD-BY-LEETEN 06/01/2008-BEGIN
 	#include <typeinfo>
-	// ADD-BY-LEETEN 06/01/2008-END
 
-	// ADD-BY-LEETEN 08/25/2008-BEGIN
 	#include <GL/glew.h>
 
-	// ADD-BY-LEETEN 11/17/2008-BEGIN
-
-	// ADD-BY-LEETEN 06/01/2008-BEGIN
 	#ifdef WIN32	
-	// ADD-BY-LEETEN 06/01/2008-END
 	#include <GL/wglew.h>
 	#pragma comment (lib, "glew32.lib")      
-	// ADD-BY-LEETEN 06/01/2008-BEGIN
 	#endif
-	// ADD-BY-LEETEN 06/01/2008-END
-	// ADD-BY-LEETEN 11/17/2008-END
 
 	#include <time.h>
-	// ADD-BY-LEETEN 08/25/2008-END
 
 #include "GlutWin.h"
 
@@ -308,11 +297,7 @@ _Begin();
 
 	float fX, fY;
 							// calculate the x coordinate
-	// MOD-BY-LEETEN 2009/01/09-FROM:
-		// fX = (float)(( iX >= 0 ) ? iX : (piViewport[2] - iX));
-	// TO:
 	fX = (float)(( iX >= 0 ) ? iX : (piViewport[2] + iX));
-	// MOD-BY-LEETEN 2009/01/09-END
 
 	if( bAlignToRight )
 	{
@@ -321,11 +306,7 @@ _Begin();
 	}
 
 							// calculate the y coordinate
-	// MOD-BY-LEETEN 2009/01/09-FROM:
-		// fY = (float)(( iY >= 0 ) ? iY : (piViewport[3] - iY));
-	// TO:
 	fY = (float)(( iY >= 0 ) ? iY : (piViewport[3] + iY));
-	// MOD-BY-LEETEN 2009/01/09-END
 
 	glTranslatef(fX, fY, 0.0f);
 
@@ -378,11 +359,7 @@ CGlutWin::_DisplayCB()
 		glColor4f(0.0f, 1.0f, 1.0f, 1.0f);
 
 		float fFps = cFps.GetFps();
-		// MOD-BY-LEETEN 2008/08/17-FROM:
-			// _DrawString(SZSprintf("FPS = %f", fFps));
-		// TO:
 		_DrawString(SZSprintf("FPS = %.2f", fFps));
-		// MOD-BY-LEETEN 2008/08/17-END
 	}
 
 	// ADD-BY-TLEE 2008/08/18-BEGIN
@@ -400,6 +377,11 @@ CGlutWin::_DisplayCB()
 void 
 CGlutWin::_ReshapeCB(int w, int h)
 {
+	// ADD-BY-LEETEN 02/17/2012-BEGIN
+	iGlutWindowWidth = w;
+	iGlutWindowHeight = h;
+	// ADD-BY-LEETEN 02/17/2012-END
+
 	int tx, ty, tw, th;
 	GLUI_Master.get_viewport_area( &tx, &ty, &tw, &th );
 	glViewport(tx, ty, tw, th);
@@ -407,19 +389,11 @@ CGlutWin::_ReshapeCB(int w, int h)
 	glGetIntegerv(GL_VIEWPORT, piViewport);
 	// ADD-BY-LEETEN 08/13/2008-END
 
-	// MOD-BY-LEETEN 08/18/2008-FROM:
-		// if( tw & th )
-	// TO:
 	if( tw && th )
-	// MOD-BY-LEETEN 08/18/2008-END
 	{
 		glMatrixMode(GL_PROJECTION);
 		glLoadIdentity();
-		// MOD-BY-TLEE 2008/08/20-FROM:
-			// gluPerspective(30.0f, (float)piViewport[2]/(float)piViewport[3], 0.05f, 20.0f);
-		// TO:
 		gluPerspective(cViewFrustrum.fAngle_degree, (float)piViewport[2]/(float)piViewport[3], cViewFrustrum.fNear, cViewFrustrum.fFar);
-		// MOD-BY-TLEE 2008/08/20-END
 		glGetDoublev(GL_PROJECTION_MATRIX, tProjectionMatrix);
 	
 		_ReshapeFunc(tw, th);
@@ -432,10 +406,17 @@ CGlutWin::_ReshapeCB(int w, int h)
 void 
 CGlutWin::_UpdateWinCoord(int *piX, int *piY, bool bFlipY)
 {
+	#if	0	// MOD-BY-LEETEN 02/17/2012-FROM:
+		*piX -= piViewport[0];
+		*piY -= piViewport[1];
+		if( bFlipY )
+			*piY = piViewport[3] - *piY;
+	#else	// MOD-BY-LEETEN 02/17/2012-TO:
 	*piX -= piViewport[0];
-	*piY -= piViewport[1];
 	if( bFlipY )
-		*piY = piViewport[3] - *piY;
+		*piY = iGlutWindowHeight - *piY;
+	*piY -= piViewport[1];
+	#endif	// MOD-BY-LEETEN 02/17/2012-END
 }
 // ADD-BY-LEETEN 08/13/2008-END
 
@@ -575,28 +556,14 @@ CGlutWin::_KeyboardCB(unsigned char key, int x, int y)
 					break;
 				}
 				switch(key){
-				#if	0	// MOD-BY-LEETEN 01/19/2010-FROM:
-					case '1':	dAngle = +45.0;		break;
-					case '7':	dAngle = +135.0;	break;
-					case '3':	dAngle = -45.0;		break;
-					case '9':	dAngle = -135.0;	break;
-				#else	// MOD-BY-LEETEN 01/19/2010-TO:
 				case '1':	dAngle = +5.0;		break;
 				case '7':	dAngle = +45.0;		break;
 				case '3':	dAngle = -5.0;		break;
 				case '9':	dAngle = -45.0;		break;
-				#endif	// MOD-BY-LEETEN 01/19/2010-END
-				#if	0	// MOD-BY-LEETEN 01/04/2010-FROM:
-					case '4':	dAngle = +45.0;		break;
-					case '6':	dAngle = -45.0;		break;
-					case '2':	dAngle = -45.0;		break;
-					case '8':	dAngle = +45.0;		break;
-				#else	// MOD-BY-LEETEN 01/04/2010-TO:
 				case '4':	dAngle = -45.0;		break;
 				case '6':	dAngle = +45.0;		break;
 				case '2':	dAngle = +45.0;		break;
 				case '8':	dAngle = -45.0;		break;
-				#endif	// MOD-BY-LEETEN 01/04/2010-END
 				}
 
 				glMatrixMode(GL_MODELVIEW);
@@ -615,12 +582,6 @@ CGlutWin::_KeyboardCB(unsigned char key, int x, int y)
 			// ADD-BY-LEETEN 01/31/2010-END
 			break;
 		// ADD-BY-LEETEN 01/02/2010-END
-
-		#if	0	// DEL-BY-LEETEN 2009/11/04-BEGIN
-			default:
-				_KeyboardFunc(key, x, y);
-				;
-		#endif	// ADD-BY-LEETEN 2009/11/04-END
 	}
 
 	// ADD-BY-LEETEN 2009/11/04-BEGIN
@@ -636,19 +597,6 @@ CGlutWin::_SpecialCB(int skey, int x, int y)
 	// ADD-BY-LEETEN 08/13/2008-END
 
 	switch(skey) {
-		#if	0	// MOD-BY-LEETEN 01/04/2010-FROM:
-			case GLUT_KEY_LEFT:
-				break;
-
-			case GLUT_KEY_RIGHT:
-				break;
-
-			case GLUT_KEY_UP:
-				break;
-
-			case GLUT_KEY_DOWN:
-				break;
-		#else	// MOD-BY-LEETEN 01/04/2010-TO:
 		case GLUT_KEY_LEFT:
 		case GLUT_KEY_RIGHT:
 		case GLUT_KEY_UP:
@@ -687,7 +635,6 @@ CGlutWin::_SpecialCB(int skey, int x, int y)
 			glutPostRedisplay();
 			// ADD-BY-LEETEN 01/31/2010-END
 			break;
-		#endif	// MOD-BY-LEETEN 01/04/2010-END
 
 		default:
 			_SpecialFunc(skey, x, y);
@@ -1259,18 +1206,7 @@ _Begin();
 	char szTempSnapshotFilename[1024+1];
 	if( !szSnapshotFilename )
 	{
-		// MOD-BY-LEETEN 2008/11/29-FROM:
-			// sprintf(szTempSnapshotFilename, "%s_snapshot_%d.png", typeid(*this).name(), time(NULL));
-		// TO:
-		// DEL-BY-LEETEN 12/05/2008-BEGIN
-			// static int iSnapshotIndex = 0;
-		// DEL-BY-LEETEN 12/05/2008-END
 		sprintf(szTempSnapshotFilename, "%s_snapshot.%d.png", typeid(*this).name(), iSnapshotIndex++);
-		// MOD-BY-LEETEN 2008/11/29-END
-		#if	0	// DEL-BY-LEETEN 2009/01/09-BEGIN
-			for(char *pc = strchr(szTempSnapshotFilename, ' '); pc; pc = strchr(pc, ' '))
-				*pc = '_';
-		#endif	// END
 		szSnapshotFilename  = szTempSnapshotFilename;
 	}
 	#if	1	// ADD-BY-LEETEN 2009/01/09-BEGIN
