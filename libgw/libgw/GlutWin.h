@@ -13,33 +13,9 @@ using namespace std;
 	#include "cxcore.h"
 	#include "highgui.h"
 
-	#if	0	// MOD-BY-LEETEN 08/06/2010-FROM:
-		#pragma comment (lib, "cv.lib")      // link with my own library libfps
-		#pragma comment (lib, "cxcore.lib")      // link with my own library libfps
-		#pragma comment (lib, "highgui.lib")      // link with my own library libfps
-		#pragma comment (lib, "cvaux.lib")      // link with my own library libfps
-	#else	// MOD-BY-LEETEN 08/06/2010-TO:
-	#if	0	// MOD-BY-LEETEN 01/20/2011-FROM:
-		#pragma comment (lib, "cv210.lib")      // link with my own library libfps
-		#pragma comment (lib, "cxcore210.lib")      // link with my own library libfps
-		#pragma comment (lib, "highgui210.lib")      // link with my own library libfps
-		#pragma comment (lib, "cvaux210.lib")      // link with my own library libfps
-	#else	// MOD-BY-LEETEN 01/20/2011-TO:
 	#ifndef OPENCV_VER
 	#pragma message( "Warning: Remember to specify the preprocessor OPENCV before linking LIBGW!"  )
 	#else
-		/*	// MOD-BY-LEETEN 10/14/2011-FROM:
-		#if	OPENCV_VER == 210	
-			#pragma message( "OPENCV 2.10 will be used."  )
-			#pragma comment (lib, "cv210.lib")      // link with my own library libfps
-			#pragma comment (lib, "cxcore210.lib")      // link with my own library libfps
-			#pragma comment (lib, "highgui210.lib")      // link with my own library libfps
-			#pragma comment (lib, "cvaux210.lib")      // link with my own library libfps
-		#elif	OPENCV_VER == 220
-			#pragma message( "OPENCV 2.20 will be used."  )
-			#pragma comment (lib, "opencv_core220.lib")      // link with my own library libfps
-			#pragma comment (lib, "opencv_highgui220.lib")      // link with my own library libfps
-		*/	// MOD-BY-LEETEN 10/14/2011-TO :
 		#if	OPENCV_VER >= 200
 			#pragma message( OPENCV_MESSAGE  )
 			#pragma comment (lib, OPENCV_CORE_LIB )      // link with my own library libfps
@@ -50,13 +26,10 @@ using namespace std;
 			#pragma comment (lib, "cxcore.lib")  
 			#pragma comment (lib, "highgui.lib") 
 			#pragma comment (lib, "cvaux.lib")   
-		// MOD-BY-LEETEN 10/14/2011-END
 		#else
 			#pragma error( "Unsupported OpenCV version" )
 		#endif
 	#endif
-	#endif	// MOD-BY-LEETEN 01/20/2011-END
-	#endif	// MOD-BY-LEETEN 08/06/2010-END
 	// ADD-BY-LEETEN 08/25/2008-END
 
 	#pragma comment (lib, "winmm.lib")      /* link with Windows MultiMedia lib */
@@ -74,25 +47,15 @@ using namespace std;
 	// ADD-BY-LEETEN 11/17/2008-BEGIN
 	#pragma comment (lib, "opengl32.lib")      /* link with Windows MultiMedia lib */
 	#pragma comment (lib, "glu32.lib")      /* link with Windows MultiMedia lib */
-	// MOD-BY-LEETEN 08/06/2010-FROM:
-		// #pragma comment (lib, "glut32.lib")      /* link with Windows MultiMedia lib */
-	// TO:
 	#ifdef USE_FREEGLUT
 		#define GLUI_FREEGLUT
 		#pragma comment (lib, "freeglut.lib")      /* link with Windows MultiMedia lib */
 	#else
 		#pragma comment (lib, "glut32.lib")      /* link with Windows MultiMedia lib */
 	#endif
-	// MOD-BY-LEETEN 08/06/2010-END
 	// ADD-BY-LEETEN 11/17/2008-END
 
-	#if	0	// MOD-BY-LEETEN 08/06/2010-FROM:
-		#if		defined(_WIN32)
-			#define GLUT_BUILDING_LIB	
-		#endif
-	#else	// MOD-BY-LEETEN 08/06/2010-TO:
 	#define GLUIDLL 
-	#endif	// MOD-BY-LEETEN 08/06/2010-END
 
 	// ADD-BY-LEETEN 08/11/2008-BEGIN
 	// combine w/ GLUI
@@ -139,31 +102,10 @@ using namespace std;
 	#include <assert.h>
 #endif
 
-#if	0	// DEL-BY-LEETEN 02/16/2010-BEGIN
-	// ADD-BY-LEETEN 2009/06/01-BEGIN
-	#ifndef M_PI
-	// ADD-BY-LEETEN 2009/06/01-END
-		#define M_PI		(3.14159)
-	// ADD-BY-LEETEN 2009/06/01-BEGIN
-	#endif
-	// ADD-BY-LEETEN 2009/06/01-END
-
-	// ADD-BY-LEETEN 2009/06/01-BEGIN
-	#ifndef M_PI_2
-	// ADD-BY-LEETEN 2009/06/01-END
-		#define M_PI_2		(M_PI / 2.0)
-	// ADD-BY-LEETEN 2009/06/01-BEGIN
-	#endif
-	// ADD-BY-LEETEN 2009/06/01-END
-#endif	// ADD-BY-LEETEN 02/16/2010-END
-
 #include "libopengl.h"
 
 // ADD-BY-LEETEN 08/12/2008-BEGIN
 #include "libfps.h"
-// DEL-BY-LEETEN 2008/08/14-BEGIN
-	// #pragma comment (lib, "libfps.lib")      
-// DEL-BY-LEETEN 2008/08/14-END
 // ADD-BY-LEETEN 08/12/2008-END
 
 class CGlutWin {
@@ -243,11 +185,7 @@ public:
 				// variables and method for output string
 public:
 	char *SZSprintf(const char *szFormat, ...);
-	// MOD-BY-LEETEN 2008/08/17-FROM:
-		// void _DrawString(char *szString);		// draw a string on the screen
-	// TO:
 	void _DrawString(char *szString, int iX = 0, int iY = 0, bool bAlignToRight = false);		// draw a string on the screen
-	// MOD-BY-LEETEN 2008/08/17-END
 	void _AddToLog(char *szString, FILE* fpOutput = stderr);			// print out a string on the console as the log
 
 	// ADD-BY-LEETEN 2008/12/21-BEGIN
@@ -327,6 +265,11 @@ protected:
 						// the viewport
 	int piViewport[4];
 
+	// ADD-BY-LEETEN 02/17/2012-BEGIN
+	int iGlutWindowWidth;
+	int iGlutWindowHeight;
+	// ADD-BY-LEETEN 02/17/2012-END
+
 						// the model, view, and projection matrices
 	TMatrix tViewMatrix, tInitViewMatrix;
 	TMatrix tModelMatrix, tInitModelMatrix;
@@ -385,11 +328,7 @@ protected:
 	virtual void _InitFunc();
 
 	// ADD-BY-LEETEN 08/11/2008-BEGIN
-	// MOD-BY-TLEE 2008/08/16-FROM:
-		// virtual void _TimerFunc(int value);
-	// TO:
 	virtual void _TimerFunc(unsigned short value);
-	// MOD-BY-TLEE 2008/08/16-END
 	// ADD-BY-LEETEN 08/11/2008-END
 
 	// ADD-BY-LEETEN 08/16/2008-BEGIN
@@ -431,19 +370,11 @@ public:
 	// ADD-BY-LEETEN 2009/03/04-END
 
 	// ADD-BY-LEETEN 08/11/2008-BEGIN
-	// MOD-BY-TLEE 2008/08/16-FROM:
-		// virtual void _TimerCB(int value);
-	// TO:
 	virtual void _TimerCB(unsigned short value);
-	// MOD-BY-TLEE 2008/08/16-END
 	// ADD-BY-LEETEN 08/11/2008-END
 
 	// ADD-BY-LEETEN 08/11/2008-BEGIN
-	// MOD-BY-TLEE 2008/08/16-FROM:
-		// void _AddTimer(unsigned int msecs, short value = 0);	// add a timer event
-	// TO:
 	void _AddTimer(unsigned int msecs, unsigned short value = 0);	// add a timer event
-	// MOD-BY-TLEE 2008/08/16-END
 	void _Redisplay();										// trigger a display event
 	// ADD-BY-LEETEN 08/11/2008-END
 
@@ -480,18 +411,14 @@ public:
 	void _PopWid();			// pop current window ID
 	void _Begin();			// push current window and set
 	void _End();			// pop the window
-	// ADD-BY-LEETEN 08/12/2008-BEGIN
 
-	// ADD-BY-LEETEN 08/09/2008-BEGIN
 	void _Set();			// force the window to be the active window
 
-	// ADD-BY-LEETEN 08/15/2008-BEGIN
 	void _Reshape(int w, int h)
 	{
 		_Set();
 		glutReshapeWindow(w, h);
 	}
-	// ADD-BY-LEETEN 08/15/2008-END
 
 	//////////////////////////////////////////////////////////////////////////////
 										// static variables/methods
@@ -501,64 +428,26 @@ public:
 	static void _SetActiveWin(int iWin);
 	static CGlutWin *PCGetActiveWin();
 
-	#if	0	// DEL-BY-TLEE 2008/08/16-BEGIN
-		static void _AddWin(
-			CGlutWin *win, 
-			char *szTitle, 
-			bool bUseDefault = true, int x = 0, int y = 0, int w = 128, int h = 128);
-	#endif	// DEL-BY-TLEE 2008/08/16-END
-
-	// ADD-BY-LEETEN 08/09/2008-END
-
-	// ADD-BY-LEETEN 08/11/2008-BEGIN
 										// given a GLUT window id, return its order in the vcWins;
 	static int IGetWin(int iWid);
 
 										// add a timer event in the given time period in msecs to the specified window with the given value
-	// MOD-BY-TLEE 2008/08/16-FROM:
-		// static void _AddTimer(CGlutWin *win, unsigned int msecs, short value);
-	// TO:
 	static void _AddTimer(CGlutWin *win, unsigned int msecs, unsigned short value);
-	// MOD-BY-TLEE 2008/08/16-END
-	// ADD-BY-LEETEN 08/11/2008-END
 
-	// ADD-BY-LEETEN 08/12/2008-BEGIN
 	static bool bSwapBuffer;
 
 	static void _Init(int *argcp, char **argv, unsigned int mode);
-	// ADD-BY-LEETEN 08/12/2008-END
 
-	// ADD-BY-LEETEN 08/13/2008-BEGIN
 	virtual void _GluiFunc(unsigned short usValue);
 	virtual void _GluiCB(unsigned short usValue);
 
-	// ADD-BY-LEETEN 2008/08/15-BEGIN
 											// combine the window ID with the given value
 											// the purpose of this method is to create an unique ID 
 											// for GLUI controls
 	int IAddWid(unsigned short usValue)
 	{
-		// MOD-BY-LEETEN 2009/02/22-FROM:
-			// return IGetId() * 0x0100 + usValue;
-		// TO:
 		return IGetId() * 0x010000 + (int)usValue;
-		// MOD-BY-LEETEN 2009/02/22-END
 	}
-	// ADD-BY-LEETEN 2008/08/15-END
-
-	#if	0	// DEL-BY-LEETEN 08/19/2008-BEGIN
-		#if	0		// MOD-BY-LEETEN 2008/08/15-FROM:
-			void _AddButton(char *szName, unsigned short usValue);
-			static void _AddButton(CGlutWin *win, char *szName, unsigned short usValue);
-		#else		// MOD-BY-LEETEN 2008/08/15-TO:
-												// add one parameter to decide the panel
-
-		void _AddButton(char *szName, unsigned short usValue, GLUI_Panel *pcPanel = NULL);
-		static void _AddButton(CGlutWin *win, char *szName, unsigned short usValue, GLUI_Panel *pcPanel = NULL);
-
-		#endif		// MOD-BY-LEETEN 2008/08/15-END
-	#endif	// DEL-BY-LEETEN 08/19/2008-END
-	// ADD-BY-LEETEN 08/13/2008-END
 
 	// ADD-BY-LEETEN 08/14/2008-BEGIN
 	static void _IdleCB_static();
