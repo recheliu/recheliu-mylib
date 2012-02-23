@@ -13,8 +13,10 @@ CDvrSampleWin::_BeginDisplay()
 	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 
 	glPushMatrix();
-						// flip the Z axis
-	glScalef(1.0f, 1.0f, -1.0f);
+	#if	0	// DEL-BY-LEETEN 02/23/2012-BEGIN
+							// flip the Z axis
+		glScalef(1.0f, 1.0f, -1.0f);
+	#endif	// DEL-BY-LEETEN 02/23/2012-END
 
 	float fMaxDim = max(iXDim, max(iYDim, iZDim));
 	glScalef(
