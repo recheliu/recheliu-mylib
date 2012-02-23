@@ -198,6 +198,11 @@ _ReadVolume(char* szPathFilename)
 		for(int 	y = 0; y < iYDim; y++)
 			for(int x = 0; x < iXDim; x++, i++)
 			{
+				// ADD-BY-LEETEN 02/23/2012-BEGIN
+				if( (float)HUGE_VAL == p3DfVol[i] )
+					continue;
+				// ADD-BY-LEETEN 02/23/2012-END
+
 				double dValue = (double)p3DfVol[i];
 				dValueMin = min(dValueMin, dValue);
 				dValueMax = max(dValueMax, dValue);
@@ -208,6 +213,14 @@ _ReadVolume(char* szPathFilename)
 		for(int 	y = 0; y < iYDim; y++)
 			for(int x = 0; x < iXDim; x++, i++)
 			{
+				// ADD-BY-LEETEN 02/23/2012-BEGIN
+				if( (float)HUGE_VAL == p3DfVol[i] )
+				{
+					p3DfVol[i] = 0.0f;
+					continue;
+				}
+				// ADD-BY-LEETEN 02/23/2012-END
+
 				double dValue = (double)p3DfVol[i];
 				p3DfVol[i] = (dValue - dValueMin)/(dValueMax - dValueMin);
 			}
@@ -232,6 +245,10 @@ _BuildHistogram()
 			// TO:
 			{
 				float fV = p3DfVol[i];
+				// ADD-BY-LEETEN 02/23/2012-BEGIN
+				if( (float)HUGE_VAL == fV )
+					continue;
+				// ADD-BY-LEETEN 02/23/2012-END
 				int iEntry = (int)((float)iNrOfTfEntries * fV);
 				iEntry = min(max(iEntry, 0), iNrOfTfEntries - 1);
 				pfHist[iEntry] += 1.0f;
