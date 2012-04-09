@@ -17,9 +17,37 @@ using namespace std;
 	#pragma message( "Warning: Remember to specify the preprocessor OPENCV before linking LIBGW!"  )
 	#else
 		#if	OPENCV_VER >= 200
+
+	// ADD-BY-LEETEN 04/05/2012-BEGIN	
+	#if WITH_STATIC_LINK
+		#if defined(_DEBUG)
+			#pragma comment (lib, "libjasperd.lib")
+			#pragma comment (lib, "libjpegd.lib")
+			#pragma comment (lib, "libpngd.lib")
+			#pragma comment (lib, "libtiffd.lib")
+			#pragma comment (lib, "zlibd.lib")
+		#else	// #if defined(_DEBUG)
+			#pragma comment (lib, "libjasper.lib")
+			#pragma comment (lib, "libjpeg.lib")
+			#pragma comment (lib, "libpng.lib")
+			#pragma comment (lib, "libtiff.lib")
+			#pragma comment (lib, "zlib.lib")
+		#endif	// #if defined(_DEBUG)
+	#endif	// #if WITH_STATIC_LINK
+	// ADD-BY-LEETEN 04/05/2012-END
+
 			#pragma message( OPENCV_MESSAGE  )
+			
+			// ADD-BY-LEETEN 04/05/2012-BEGIN	
+			#if defined( WITH_STATIC_LINK ) && defined( _DEBUG )
+				#pragma comment (lib, OPENCV_CORE_DEBUG_LIB )      // link with my own library libfps
+				#pragma comment (lib, OPENCV_HIGHGUI_DEBUG_LIB )      // link with my own library libfps
+			#else	// #if defined( WITH_STATIC_LINK) && !defined( _DEBUG )
+			// ADD-BY-LEETEN 04/05/2012-END
+
 			#pragma comment (lib, OPENCV_CORE_LIB )      // link with my own library libfps
 			#pragma comment (lib, OPENCV_HIGHGUI_LIB )      // link with my own library libfps
+			#endif	// #if defined( WITH_STATIC_LINK) && !defined( _DEBUG )	// ADD-BY-LEETEN 04/05/2012
 		#elif OPENCV_VER >= 100
 			#pragma message( OPENCV_MESSAGE  )
 			#pragma comment (lib, "cv.lib")      
@@ -49,20 +77,41 @@ using namespace std;
 	#pragma comment (lib, "glu32.lib")      /* link with Windows MultiMedia lib */
 	#ifdef USE_FREEGLUT
 		#define GLUI_FREEGLUT
-		#pragma comment (lib, "freeglut.lib")      /* link with Windows MultiMedia lib */
+
+	// ADD-BY-LEETEN 04/05/2012-BEGIN
+	#if	defined(WITH_STATIC_LINK)
+		#pragma comment (lib, "freeglut_static.lib")
+	#else	// #if	defined(WITH_STATIC_LINK)	
+	// ADD-BY-LEETEN 04/05/2012-END
+		#pragma comment (lib, "freeglut.lib")      
+	#endif	// #if	defined(WITH_STATIC_LINKP)	// ADD-BY-LEETEN 04/05/2012
 	#else
 		#pragma comment (lib, "glut32.lib")      /* link with Windows MultiMedia lib */
 	#endif
 	// ADD-BY-LEETEN 11/17/2008-END
 
+	#if	!defined(WITH_STATIC_LINK)		// ADD-BY-LEETEN 04/05/2012
 	#define GLUIDLL 
+	#endif	// #if	!defined(WITH_STATIC_LINK)	// ADD-BY-LEETEN 04/05/2012
 
 	// ADD-BY-LEETEN 08/11/2008-BEGIN
 	// combine w/ GLUI
 	// ADD-BY-LEETEN 08/07/2010-BEGIN
 	#ifdef USE_FREEGLUT
 		#pragma message( "Use GLUI w/ FREEGLUT" )
+
+		// ADD-BY-LEETEN 04/05/2012-BEGIN
+		#if	defined(WITH_STATIC_LINK)
+			#if	defined(_DEBUG)
+				#pragma comment (lib, "glui32d_freeglut.lib")
+			#else	// #if	defined(_DEBUG)
+				#pragma comment (lib, "glui32_freeglut.lib")
+			#endif	// #if	defined(_DEBUG)
+		#else	// #if	defined(WITH_STATIC_LINK)	
+		// ADD-BY-LEETEN 04/05/2012-END
 		#pragma comment (lib, "glui32dll_freeglut.lib")
+
+		#endif	// #if	defined(WITH_STATIC_LINK)	// ADD-BY-LEETEN 04/05/2012
 	#else
 		#pragma message( "Use GLUI w/o FREEGLUT" )
 		#pragma comment (lib, "glui32dll.lib")
@@ -82,7 +131,7 @@ using namespace std;
 	// ADD-BY-LEETEN 02/16/2010-END
 	#include <math.h>
 
-	// ADD-BY-LEETEN 08/12/2008-BEGIN
+ 	// ADD-BY-LEETEN 08/12/2008-BEGIN
 	#include <stdarg.h>	
 	// ADD-BY-LEETEN 08/12/2008-END
 

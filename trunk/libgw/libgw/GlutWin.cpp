@@ -4,7 +4,14 @@
 
 	#ifdef WIN32	
 	#include <GL/wglew.h>
+
+	// ADD-BY-LEETEN 04/05/2012-BEGIN
+	#if	defined(WITH_STATIC_LINK)
+		#pragma comment (lib, "glew32s.lib")      
+	#else	// #if	defined(WITH_STATIC_LINK)
+	// ADD-BY-LEETEN 04/05/2012-END
 	#pragma comment (lib, "glew32.lib")      
+	#endif	// #if	defined(WITH_STATIC_LINK)	// ADD-BY-LEETEN 04/05/2012
 	#endif
 
 	#include <time.h>

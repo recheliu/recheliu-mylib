@@ -18,7 +18,14 @@ The proecduer to use this class is as below:
 
 										// remove the libraries
 // ADD-BY-LEETEN 2008/08/16-BEGIN
+	// ADD-BY-LEETEN 04/05/2012-BEGIN
+	#ifdef WITH_STATIC_LINK
+	#pragma comment (lib, "glew32s.lib")      
+	#else	// #ifdef WITH_STATIC_LINK
+	// ADD-BY-LEETEN 04/05/2012-END
 	#pragma comment (lib, "glew32.lib")      
+	#endif	// #ifdef WITH_STATIC_LINK		// ADD-BY-LEETEN 04/05/2012
+
 	#if	0	// MOD-BY-LEETEN 08/05/2010-FROM:
 		#pragma comment (lib, "libfbo.lib")      
 		#pragma comment (lib, "libshader.lib")      

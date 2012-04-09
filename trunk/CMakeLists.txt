@@ -17,6 +17,7 @@ set(THIRDPARTY_DIR "D:/lib" CACHE PATH "The path to the 3rd party libraries")
 set(OPENCV_DIR "C:/OpenCV2.1" CACHE PATH "The installed path of OpenCV")
 set(OPENCV_VER "210" CACHE STRING "The Version of OpenCV")
 set(FREEGLUT OFF CACHE BOOL "Flag to decide whether FREEGLUT is used")
+set(WITH_STATIC_LINK OFF CACHE BOOL "Flag to decide whether static libraries are linked")	# ADD-BY-LEETEN 04/05/2012
 # DEL-BY-LEETEN 12/03/2011		set(CMAKE_INSTALL_PREFIX ${PROJECT_SOURCE_DIR})
 
 # CUDA
@@ -40,6 +41,10 @@ set(OPENCV_LIB_DIR "${OPENCV_DIR}/lib")
 set(OPENCV_MESSAGE		"\"OpenCV Ver. ${OPENCV_VER} will be used."\")
 set(OPENCV_CORE_LIB		"\"opencv_core${OPENCV_VER}.lib\"")
 set(OPENCV_HIGHGUI_LIB	"\"opencv_highgui${OPENCV_VER}.lib\"")
+# ADD-BY-LEETEN 04/05/2012-BEGIN
+set(OPENCV_CORE_DEBUG_LIB		"\"opencv_core${OPENCV_VER}d.lib\"")
+set(OPENCV_HIGHGUI_DEBUG_LIB	"\"opencv_highgui${OPENCV_VER}d.lib\"")
+# ADD-BY-LEETEN 04/05/2012-END
 configure_file (
   "${PROJECT_SOURCE_DIR}/libgw/libgw/GlutWin_config.h.in"
   "${PROJECT_SOURCE_DIR}/libgw/libgw/GlutWin_config.h"
@@ -95,10 +100,32 @@ link_directories(
 
 set(CMAKE_LIBRARY_PATH ${LIB_DIRS})
 find_library(FREEGLUT_LIB freeglut.lib)
+# ADD-BY-LEETEN 04/05/2012-BEGIN
+if( WITH_STATIC_LINK )
+	message(WARNING "To link static libraries in lib/ for VC projects, please add '/NODEFAULTLIB:LIBCMT' to CMAKE_EXE_LINKER_FLAGS.")
+	
+	link_directories (
+		"${OPENCV_DIR}/share/OpenCV/3rdparty/lib"
+		)
+		
+	add_definitions(
+		-DGLEW_STATIC
+		-DWITH_STATIC_LINK
+	)	
+endif()
+# ADD-BY-LEETEN 04/05/2012-END
+
 if( FREEGLUT_LIB AND FREEGLUT )
 	add_definitions(
 		-DUSE_FREEGLUT
 	)
+	# ADD-BY-LEETEN 04/05/2012-BEGIN
+	if( WITH_STATIC_LINK )
+		add_definitions(
+			-DFREEGLUT_STATIC
+		)	
+	endif()
+	# ADD-BY-LEETEN 04/05/2012-END
 endif()
 
 add_definitions(
@@ -246,7 +273,14 @@ build_executable(shader2string ${PROJECT_SOURCE_DIR}/libshader/shader2string)
 add_dependencies(shader2string libshader)
 target_link_libraries (shader2string libshader)
 if(DEFINED WIN32) 
+	# ADD-BY-LEETEN 04/05/2012-BEGIN
+	if( WITH_STATIC_LINK )
+		target_link_libraries (shader2string "opengl32")
+		target_link_libraries (shader2string "${THIRDPARTY_LIB_DIR}/glew32s.lib")
+	else()
+	# ADD-BY-LEETEN 04/05/2012-END
 	target_link_libraries (shader2string "${THIRDPARTY_LIB_DIR}/glew32.lib")
+	endif() # ADD-BY-LEETEN 04/05/2012
 else()
 	target_link_libraries (shader2string "GLEW")
 	# ADD-BY-LEETEN 01/28/2011-BEGIN
