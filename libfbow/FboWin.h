@@ -13,7 +13,13 @@ existing projects.
 */
 
 	#pragma once
+	// ADD-BY-LEETEN 04/05/2012-BEGIN
+	#ifdef			WITH_STATIC_LINK
+	#pragma comment (lib, "glew32s.lib")      // link with my own library libfps
+	#else	// #ifdef	WITH_STATIC_LINK
+	// ADD-BY-LEETEN 04/05/2012-END
 	#pragma comment (lib, "glew32.lib")      // link with my own library libfps
+	#endif	//#ifdef	WITH_STATIC_LINK	// ADD-BY-LEETEN 04/05/2012-BEGIN	
 	// MOD-BY-LEETEN 08/05/2010-FROM:
 		// #pragma comment (lib, "libfbo.lib")      // link with my own library libfps
 	// TO:

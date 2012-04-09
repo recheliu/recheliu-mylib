@@ -138,11 +138,11 @@ main(int argn, char *argv[])
 	_OPTInit(true);
 
 	_OPTAddIntegerVector(	"--dvr-nr_of_slices", 1, &cDvrWin.iNrOfSlices, 128);
-		_OPTAlign(			"--dvr-nr_of_slices", "-S");
+		// DEL-BY-LEETEN 04/05/2012:		_OPTAlign(			"--dvr-nr_of_slices", "-S");
 		_OPTAddComment(		"--dvr-nr_of_slices", "Specify #slices.");
 
 	_OPTAddFloatingVector(	"--dvr-thickness_ratio", 1, &cDvrWin.fThicknessRatio, 1.0f);
-		_OPTAlign(			"--dvr-thickness_ratio", "-T");
+		// DEL-BY-LEETEN 04/05/2012:		_OPTAlign(			"--dvr-thickness_ratio", "-T");
 		_OPTAddComment(		"--dvr-thickness_ratio", "Specify the thickness gain.");
 
 	_OPTAddIntegerVector(	"--dvr-max_nr_of_slices", 1, &cDvrWin.iMaxNrOfSlices, 4096);
