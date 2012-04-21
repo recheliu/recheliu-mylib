@@ -8,8 +8,18 @@
 	#if		WITH_NRRD
 	#include "NrrdIO.h"
 	#ifdef WIN32
-		#pragma comment (lib, "ITKNrrdIO.lib")      // link with my own library libfps
+		#if	0	// MOD-BY-LEETEN 04/21/2012-FROM:
+			#pragma comment (lib, "ITKNrrdIO.lib")      // link with my own library libfps
+			#pragma comment (lib, "zlib.lib")      // link with my own library libfps
+		#else		// MOD-BY-LEETEN 04/21/2012-TO:
+		#if		defined(_DEBUG)
+		#pragma comment (lib, "ITKNrrdIOd.lib")      
+		#pragma comment (lib, "zlibd.lib")      // link with my own library libfps
+		#else	// #if	defined(_DEBUG)
+		#pragma comment (lib, "ITKNrrdIO.lib")     
 		#pragma comment (lib, "zlib.lib")      // link with my own library libfps
+		#endif	// #if	defined(_DEBUG)
+		#endif		// MOD-BY-LEETEN 04/21/2012-END
 	#endif	// #ifdef	WIN32
 	#endif	// #if		WITH_NRRD
 	// ADD-By-LEETEN 10/21/2011-END
