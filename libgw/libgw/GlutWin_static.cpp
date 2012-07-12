@@ -54,11 +54,7 @@ static
 void
  _IdleCB()
 {
-	// MOD-BY-LEETEN 08/14/2008-FROM:
-		// CGlutWin::PCGetActiveWin()->_IdleCB();
-	// TO:
 	CGlutWin::_IdleCB_static();
-	// MOD-BY-LEETEN 08/14/2008-END:
 }
 
 // ADD-BY-LEETEN 2009/03/04-BEGIN
@@ -96,25 +92,14 @@ static
 void 
 _TimerCB(int iIdValue)
 {
-	#if	0	// MOD-BY-LEETEN 2009/02/22-FROM:
-		int iWid =		iIdValue	/ 0x0100;
-		int iValue =	iIdValue	% 0x0100;
-	#else	// MOD-BY-LEETEN 2009/02/22-TO:
-
 	int iWid =		iIdValue	/ 0x010000;
 	int iValue =	iIdValue	% 0x010000;
-
-	#endif	// MOD-BY-LEETEN 2009/02/22-END
 
 	int iWin = CGlutWin::IGetWin(iWid);
 	if( iWin >= 0 )
 	{
 		glutSetWindow(iWid);
-		// MOD-BY-TLEE 2008/08/16-FROM:
-			// CGlutWin::PCGetActiveWin()->_TimerCB(iValue);
-		// TO:
 		CGlutWin::PCGetActiveWin()->_TimerCB((unsigned short)iValue);
-		// MOD-BY-TLEE 2008/08/16-END
 
 		// ADD-BY-LEETEN 2009/01/15-BEGIN
 		CGlutWin::_GlobalCB(CGlutWin::PCGetActiveWin()->IGetId(), CGlutWin::CB_TIMER, iValue);
@@ -122,25 +107,6 @@ _TimerCB(int iIdValue)
 	}
 }
 // ADD-BY-LEETEN 08/11/2008-END
-
-										// use the static method CGlutWin_static instead
-#if	0	// DEL-BY-LEETEN 08/15/2008-BEGIN
-	// ADD-BY-LEETEN 08/13/2008-BEGIN
-	void
-	_GluiCB(int iIdValue)
-	{
-		int iWid =		iIdValue	/ 0x0100;
-		int iValue =	iIdValue	% 0x0100;
-
-		int iWin = CGlutWin::IGetWin(iWid);
-		if( iWin >= 0 )
-		{
-			glutSetWindow(iWid);
-			CGlutWin::PCGetActiveWin()->_GluiCB((unsigned short)iValue);
-		}
-	}
-	// ADD-BY-LEETEN 08/13/2008-END
-#endif	// DEL-BY-LEETEN 08/15/2008-END
 
 } // namespace CGlutWin_static
 
@@ -167,19 +133,11 @@ CGlutWin::_IdleCB_static()
 // a static member method to add a timer event to the fiven window
 // it is decalred as a static method in order to call the _TimerCB in the namespace GLutWin_static
 void 
-// MOD-BY-TLEE 2008/08/16-FROM:
-	// CGlutWin::_AddTimer(CGlutWin *win, unsigned int msecs, short value)
-// TO:
 CGlutWin::_AddTimer(CGlutWin *win, unsigned int msecs, unsigned short value)
-// MOD-BY-TLEE 2008/08/16-END
 {
 					// because the timer events from all windows are passed throught the same callback, 
 					// the windows id is added so later the callback can correctly bypass the timer event
-	// MOD-BY-LEETEN 2008/08/15-FROM:
-		// int iIdValue = win->iId * 0x0100 + value;
-	// TO:
 	int iIdValue = win->IAddWid(value);
-	// MOD-BY-LEETEN 2008/08/15-FROM:
 
 					// register a timer event
 	GLUI_Master.set_glutTimerFunc(msecs, CGlutWin_static::_TimerCB, iIdValue);
@@ -204,19 +162,11 @@ CGlutWin::_SetActiveWin(int iWin)
 CGlutWin *
 CGlutWin::PCGetActiveWin()
 {
-	// MOD-BY-LEETEN 08/11/2008-FROM:
-		// return vcWins[IGetActiveWin()];
-	// TO:
 	// Since the GLUI windows/subwindows might change the active window, it is manually reset to the current window
 
 	CGlutWin *pcActiveWin = vcWins[IGetActiveWin()];
-	// MOD-By-TLEE 08/11/2008-FROM:
-		// glutSetWindow(pcActiveWin->iId);
-	// TO:
 		pcActiveWin->_Set();
-	// MOD-By-TLEE 08/11/2008-END
 	return pcActiveWin;
-	// MOD-BY-LEETEN 08/11/2008-END
 }
 
 int 
@@ -257,31 +207,8 @@ CGlutWin::IGetActiveWin()
 
 void 
 CGlutWin::_AddWin(
-	#if	0	// MOD-BY-TLEE 2008/08/16-FROM:
-		CGlutWin *win, 
-		char *szTitle, 
-		bool bUseDefault, 
-		int x, int y, int w, int h)
-	#else	// MOD-BY-TLEE 2008/08/16-TO:
 	CGlutWin *win)
-	#endif	// MOD-BY-TLEE 2008/08/16-END
 {
-	// DEL-BY-TLEE 2008/08/16
-		// win->ICreate(szTitle, bUseDefault, x, y, w, h);
-
-	#if	0	// MOD-BY-LEETEN 08/11/2008-FROM:
-
-
-		glutDisplayFunc(	CGlutWin_static::_DisplayCB);
-		glutReshapeFunc(	CGlutWin_static::_ReshapeCB);
-		glutKeyboardFunc(	CGlutWin_static::_KeyboardCB);
-		glutSpecialFunc(	CGlutWin_static::_SpecialCB);
-		glutMotionFunc(		CGlutWin_static::_MotionCB);
-		glutMouseFunc(		CGlutWin_static::_MouseCB);
-		glutIdleFunc(		CGlutWin_static::_IdleCB);
-
-	#else	// MOD-BY-LEETEN 08/11/2008-TO:
-
 	GLUI_Master.set_glutDisplayFunc(	CGlutWin_static::_DisplayCB);
 	GLUI_Master.set_glutReshapeFunc(	CGlutWin_static::_ReshapeCB);
 	GLUI_Master.set_glutKeyboardFunc(	CGlutWin_static::_KeyboardCB);
@@ -295,31 +222,6 @@ CGlutWin::_AddWin(
 	// ADD-BY-LEETEN 2009/03/04-END
 
 	GLUI_Master.set_glutIdleFunc(		CGlutWin_static::_IdleCB);
-
-	#if	0	// DEL-BY-TLEE 2008/08/16-BEGIN
-		if( win->iGluiEnum & GLUI_SUBWIN )
-		{
-			win->pcGluiSubwin = GLUI_Master.create_glui_subwindow(win->iId, win->iSubwinPosistion);
-			win->pcGluiSubwin->set_main_gfx_window( win->iId );
-		}
-
-		if( win->iGluiEnum & GLUI_WIN )
-		{
-			static char szGluiTitle[1024+1];
-			sprintf(szGluiTitle, "%s-GLUI", szTitle);
-			win->pcGluiWin = GLUI_Master.create_glui(szGluiTitle);
-			win->pcGluiWin->set_main_gfx_window( win->iId );
-		}
-	#endif	// DEL-BY-TLEE 2008/08/16-END
-
-	#endif	// MOD-BY-LEETEN 08/11/2008-END
-
-	#if	0	// DEL-BY-TLEE 2008/08/16-BEGIN
-		// ADD-BY-TLEE 08/13/2008-BEGIN
-					// call _InitFunc after the GLUI win/subwin have been created
-		win->_InitFunc();
-		// ADD-BY-TLEE 08/13/2008-END
-	#endif	// DEL-BY-TLEE 2008/08/16-END
 
 	vcWins.push_back(win);
 }
@@ -361,37 +263,6 @@ CGlutWin::_Init(
 }
 // ADD-BY-LEETEN 08/12/2008-END
 
-#if	0	// DEL-BY-LEETEN 08/19/2008-BEGIN
-	// ADD-BY-LEETEN 08/13/2008-BEGIN
-	void 
-	CGlutWin::_AddButton(
-		CGlutWin *win,
-		char *szName,
-		unsigned short usValue,
-									// Add a new parameter to specify the panel
-		// ADD-BY-LEETEN 2008/08/15-BEGIN
-		GLUI_Panel *pcPanel
-		// ADD-BY-LEETEN 2008/08/15-END
-		)
-	{
-		// MOD-BY-LEETEN 2008/08/15-FROM:
-			// int iWidValue = win->IGetId() * 0x0100 + usValue;
-		// TO:
-		int iWidValue = win->IAddWid(usValue);
-		// MOD-BY-LEETEN 2008/08/15-FROM:
-		
-									// Add the button to the specified panel if given
-		// MOD-BY-LEETEN 2008/08/15-FROM:
-			// win->PCGetGluiSubwin()->add_button(szName, iWidValue, CGlutWin_static::_GluiCB);
-		//	TO:
-		if(	pcPanel )
-			win->PCGetGluiSubwin()->add_button_to_panel(pcPanel, szName, iWidValue, &CGlutWin::_GluiCB_static);
-		else
-			win->PCGetGluiSubwin()->add_button(szName, iWidValue, &CGlutWin::_GluiCB_static);
-		// MOD-BY-LEETEN 2008/08/15-END
-	}
-#endif	// DEL-BY-LEETEN 08/19/2008-END
-
 // ADD-BY-LEETEN 08/13/2008-END
 
 										// define a static method as the GLUI callbacks
@@ -399,13 +270,8 @@ CGlutWin::_Init(
 void 
 CGlutWin::_GluiCB_static(int iIdValue)
 {
-	#if	0	// MOD-BY-LEETEN 2009/02/22-FROM:
-		int iWid =		iIdValue	/ 0x0100;
-		int iValue =	iIdValue	% 0x0100;
-	#else	// MOD-BY-LEETEN 2009/02/22-TO:
 	int iWid =		iIdValue	/ 0x010000;
 	int iValue =	iIdValue	% 0x010000;
-	#endif	// MOD-BY-LEETEN 2009/02/22-END
 
 	int iWin = CGlutWin::IGetWin(iWid);
 	if( iWin >= 0 )
