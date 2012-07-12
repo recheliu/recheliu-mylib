@@ -19,7 +19,7 @@ using namespace std;
 		#if	OPENCV_VER >= 200
 
 	// ADD-BY-LEETEN 04/05/2012-BEGIN	
-	#if WITH_STATIC_LINK
+	#if WITH_STATIC_OPENCV	// MOD-BY-LEETEN 07/12/2012-FROM:	#if WITH_STATIC_LINK
 		#if defined(_DEBUG)
 			#pragma comment (lib, "libjasperd.lib")
 			#pragma comment (lib, "libjpegd.lib")
@@ -39,14 +39,14 @@ using namespace std;
 			#pragma message( OPENCV_MESSAGE  )
 			
 			// ADD-BY-LEETEN 04/05/2012-BEGIN	
-			#if defined( WITH_STATIC_LINK ) && defined( _DEBUG )
-				#pragma comment (lib, OPENCV_CORE_DEBUG_LIB )      // link with my own library libfps
-				#pragma comment (lib, OPENCV_HIGHGUI_DEBUG_LIB )      // link with my own library libfps
+			#if defined( WITH_STATIC_OPENCV	) && defined( _DEBUG )	// MOD-BY-LEETEN 07/12/2012-:	#if defined( WITH_STATIC_LINK ) && defined( _DEBUG )
+				#pragma comment (lib, OPENCV_CORE_DEBUG_LIB )      
+				#pragma comment (lib, OPENCV_HIGHGUI_DEBUG_LIB )   
 			#else	// #if defined( WITH_STATIC_LINK) && !defined( _DEBUG )
 			// ADD-BY-LEETEN 04/05/2012-END
 
-			#pragma comment (lib, OPENCV_CORE_LIB )      // link with my own library libfps
-			#pragma comment (lib, OPENCV_HIGHGUI_LIB )      // link with my own library libfps
+			#pragma comment (lib, OPENCV_CORE_LIB )      
+			#pragma comment (lib, OPENCV_HIGHGUI_LIB )   
 			#endif	// #if defined( WITH_STATIC_LINK) && !defined( _DEBUG )	// ADD-BY-LEETEN 04/05/2012
 		#elif OPENCV_VER >= 100
 			#pragma message( OPENCV_MESSAGE  )

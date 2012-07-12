@@ -18,6 +18,7 @@ set(OPENCV_DIR "C:/OpenCV2.1" CACHE PATH "The installed path of OpenCV")
 set(OPENCV_VER "210" CACHE STRING "The Version of OpenCV")
 set(FREEGLUT OFF CACHE BOOL "Flag to decide whether FREEGLUT is used")
 set(WITH_STATIC_LINK OFF CACHE BOOL "Flag to decide whether static libraries are linked")	# ADD-BY-LEETEN 04/05/2012
+set(WITH_STATIC_OPENCV	OFF CACHE BOOL "Flag to decide whether the static version of OpenCV is linked")	# ADD-BY-LEETEN 07/12/2012
 # DEL-BY-LEETEN 12/03/2011		set(CMAKE_INSTALL_PREFIX ${PROJECT_SOURCE_DIR})
 
 # CUDA
@@ -103,10 +104,12 @@ find_library(FREEGLUT_LIB freeglut.lib)
 # ADD-BY-LEETEN 04/05/2012-BEGIN
 if( WITH_STATIC_LINK )
 	message(WARNING "To link static libraries in lib/ for VC projects, please add '/NODEFAULTLIB:LIBCMT' to CMAKE_EXE_LINKER_FLAGS.")
-	
-	link_directories (
-		"${OPENCV_DIR}/share/OpenCV/3rdparty/lib"
-		)
+
+	# DEL-BY-LEETEN 07/12/2012-BEGIN
+	# link_directories (
+		# "${OPENCV_DIR}/share/OpenCV/3rdparty/lib"
+		# )
+	# DEL-BY-LEETEN 07/12/2012-END
 		
 	add_definitions(
 		-DGLEW_STATIC
@@ -114,6 +117,21 @@ if( WITH_STATIC_LINK )
 	)	
 endif()
 # ADD-BY-LEETEN 04/05/2012-END
+
+# ADD-BY-LEETEN 07/12/2012-BEGIN
+if( WITH_STATIC_OPENCV )
+	message(WARNING "To link static libraries in lib/ for VC projects, please add '/NODEFAULTLIB:LIBCMT' to CMAKE_EXE_LINKER_FLAGS.")
+	
+	link_directories (
+		"${OPENCV_DIR}/share/OpenCV/3rdparty/lib"
+		)
+		
+	add_definitions(
+		-DWITH_STATIC_OPENCV
+	)	
+endif()
+# ADD-BY-LEETEN 07/12/2012-BEGIN
+
 
 if( FREEGLUT_LIB AND FREEGLUT )
 	add_definitions(
