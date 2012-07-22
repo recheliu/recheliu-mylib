@@ -6,10 +6,13 @@ function [vx, vy, dim] = func_read_vec_2D(filename)
     fclose(fid);
 
     vec = reshape(vec, 3, dim(1), dim(2));
+    vec = permute(vec, [1 3 2]);    % ADD-BY-LEETEN 07/22/2012
     vx = squeeze(vec(1, :, :));
     vy = squeeze(vec(2, :, :));
-    vx = vx';
-    vy = vy';
+    % DEL-BY-LEETEN 07/22/2012-BEGIN
+        % vx = vx';
+        % vy = vy';
+    % DEL-BY-LEETEN 07/22/2012-END
     dim = size(vx);
 end
 
