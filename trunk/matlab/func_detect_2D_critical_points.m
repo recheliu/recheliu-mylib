@@ -22,7 +22,9 @@ NY = sign(V_border(1:end-2,   2:end-1)- V_middle);
 
 %%
 % local min
-S_min = (PX >= 0) .* (NX >= 0) .* (PY >= 0) .* (NY >= 0);
+% MOD-BY-LEETEN 07/29/2012-FROM:    S_min = (PX >= 0) .* (NX >= 0) .* (PY >= 0) .* (NY >= 0);
+S_min = (PX >= 0) .* (NX >= 0) .* (PY >= 0) .* (NY >= 0) .* (0 ~= PX + NX + PY + NY);
+% MOD-BY-LEETEN 07/29/2012-END
 I_min = find(S_min);
 [Y_min, X_min] = ind2sub(V_size, I_min);
 V_min = V_middle(I_min);
@@ -30,7 +32,9 @@ C_min = [X_min(:), Y_min(:), V_min];
 
 %%
 % local max
-S_max = (PX <= 0) .* (NX <= 0) .* (PY <= 0) .* (NY <= 0);
+% MOD-BY-LEETEN 07/29/2012-FROM:    S_max = (PX <= 0) .* (NX <= 0) .* (PY <= 0) .* (NY <= 0);
+S_max = (PX <= 0) .* (NX <= 0) .* (PY <= 0) .* (NY <= 0) .* (0 ~= PX + NX + PY + NY);
+% MOD-BY-LEETEN 07/29/2012-END
 I_min = find(S_max);
 [Y_max, X_max] = ind2sub(V_size, I_min);
 V_max = V_middle(I_min);
@@ -38,7 +42,13 @@ C_max = [X_max(:), Y_max(:), V_max(:)];
 
 %%
 % saddle as the grid points
-S_saddle = ((PX <= 0) .* (NX <= 0) .* (PY >= 0) .* (NY >= 0)) | ((PX >= 0) .* (NX >= 0) .* (PY <= 0) .* (NY <= 0));
+% MOD-BY-LEETEN 07/29/2012-FROM:    S_saddle = ((PX <= 0) .* (NX <= 0) .* (PY >= 0) .* (NY >= 0)) | ((PX >= 0) .* (NX >= 0) .* (PY <= 0) .* (NY <= 0));
+S_saddle = (((PX <= 0) & (NX <= 0) & ...
+             (PY >= 0) & (NY >= 0) ) | ...
+            ((PX >= 0) & (NX >= 0) & ...
+             (PY <= 0) .* (NY <= 0))) & ...
+            (0 ~= PX + NX) & (0 ~= PY + NY);
+% MOD-BY-LEETEN 07/29/2012-END
 I_saddle = find(S_saddle);
 [Y_saddle, X_saddle] = ind2sub(V_size, I_saddle);
 V_saddle = V_middle(I_saddle);
