@@ -1,7 +1,15 @@
-function [vx, vy, dim] = func_read_vec_2D(filename)
+% MOD-BY-LEETEN 07/28/2012-FROM:    function [vx, vy, dim] = func_read_vec_2D(filename)
+function [vx, vy, dim] = func_read_vec_2D(filename, varargin)
+    zoffset = 0;
+    switch(length(varargin))
+        case 1
+            zoffset = varargin{1};
+    end           
+% MOD-BY-LEETEN 07/28/2012-END
     fid = fopen(filename,'rb');
 
     dim=fread(fid,3,'int32');
+    fseek(fid, 3 * dim(1) * dim(2) * zoffset * 4, 'cof');   % ADD-BY-LEETEN 07/29/2012
     vec= fread(fid, 3 * dim(1)*dim(2), 'single');
     fclose(fid);
 
