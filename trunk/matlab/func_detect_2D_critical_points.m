@@ -69,5 +69,7 @@ LI_wsaddle = find(0 <= LS & LS <= 1 & 0 <= LT & LT <= 1 ); % & 0 <= S_wsaddle & 
 X_wsaddle = [X_wsaddle(:) + LS(LI_wsaddle)];
 Y_wsaddle = [Y_wsaddle(:) + LT(LI_wsaddle)];
 V_wsaddle = interp2(V, X_wsaddle, Y_wsaddle);
-C_wsaddle = [X_saddle(:), Y_saddle(:), V_saddle(:)];
+% MOD-BY-LEETEN 08/16/2012-FROM:    C_wsaddle = [X_saddle(:), Y_saddle(:), V_saddle(:)];
+C_wsaddle = [X_wsaddle(:), Y_wsaddle(:), V_wsaddle(:)];
+% MOD-BY-LEETEN 08/16/2012-END
 end
