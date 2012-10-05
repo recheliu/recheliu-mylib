@@ -10,12 +10,25 @@ using namespace std;
 #include <stdio.h>
 #include <stdarg.h>
 
+#if	0	// MOD-BY-LEETEN 10/05/2012-FROM:
+	#ifdef WIN32
+		#include <string.h>
+		#define PRINT_HEADER	cout<<"["<<__FUNCTION__<<"() @ "<<strrchr(__FILE__, '\\') + 1<<"("<<__LINE__<<")]: ";
+	#else
+		#define PRINT_HEADER	cout<<"["<<__FUNCTION__<<"() @ "<<__FILE__<<"("<<__LINE__<<")]: ";
+	#endif
+#else		// MOD-BY-LEETEN 10/05/2012-TO:
+
 #ifdef WIN32
 	#include <string.h>
-	#define PRINT_HEADER	cout<<"["<<__FUNCTION__<<"() @ "<<strrchr(__FILE__, '\\') + 1<<"("<<__LINE__<<")]: ";
-#else
-	#define PRINT_HEADER	cout<<"["<<__FUNCTION__<<"() @ "<<__FILE__<<"("<<__LINE__<<")]: ";
 #endif
+#define PRINT_HEADER	{	\
+		const char *szFileSlash = strrchr(__FILE__, '\\');				\
+		const char *szFile = (NULL == szFileSlash)?(__FILE__):(szFileSlash + 1);	\
+		cout<<"["<<__FUNCTION__<<"()@"<<szFile<<"("<<__LINE__<<")]: ";			\
+	}
+
+#endif		// MOD-BY-LEETEN 10/05/2012-END
 
 #if 0 // MOD-BY-LEETEN 12/29/2011-FROM:
 #define	LOG_VAR(var)					\
@@ -42,15 +55,29 @@ using namespace std;
 
 // ADD-BY-LEETEN 03/22/2010-BEGIN
 
-// ADD-BY-LEETEN 06/28/2010-BEGIN
-#ifdef WIN32	
-// ADD-BY-LEETEN 06/28/2010-END
-#define PRINT_ERROR_HEADER	cerr<<"["<<__FUNCTION__<<"() @ "<<strrchr(__FILE__, '\\') + 1<<"("<<__LINE__<<")]: ";
-// ADD-BY-LEETEN 06/28/2010-BEGIN
-#else
-	#define PRINT_ERROR_HEADER	cerr<<"["<<__FUNCTION__<<"() @ "<<__FILE__<<"("<<__LINE__<<")]: ";
+#if	0	// MOD-BY-LEETEN 10/05/2012-FROM:
+	// ADD-BY-LEETEN 06/28/2010-BEGIN
+	#ifdef WIN32	
+	// ADD-BY-LEETEN 06/28/2010-END
+	#define PRINT_ERROR_HEADER	cerr<<"["<<__FUNCTION__<<"() @ "<<strrchr(__FILE__, '\\') + 1<<"("<<__LINE__<<")]: ";
+	// ADD-BY-LEETEN 06/28/2010-BEGIN
+	#else
+		#define PRINT_ERROR_HEADER	cerr<<"["<<__FUNCTION__<<"() @ "<<__FILE__<<"("<<__LINE__<<")]: ";
+	#endif
+	// ADD-BY-LEETEN 06/28/2010-END
+#else		// MOD-BY-LEETEN 10/05/2012-TO:
+
+#ifdef WIN32
+	#include <string.h>
 #endif
-// ADD-BY-LEETEN 06/28/2010-END
+
+#define PRINT_HEADER_ERROR	{	\
+		const char *szFileSlash = strrchr(__FILE__, '\\');				\
+		const char *szFile = (NULL == szFileSlash)?(__FILE__):(szFileSlash + 1);	\
+		cerr<<"["<<__FUNCTION__<<"()@"<<szFile<<"("<<__LINE__<<")]: ";			\
+	}
+
+#endif		// MOD-BY-LEETEN 10/05/2012-END
 
 #define LOG_ERROR(printf_stmt)	\
 	{						\

@@ -49,7 +49,9 @@ function [n_rows, n_cols] = func_subplot(n_figs, dim, aspect_ratios)
         % MOD-BY-LEETEN 07/22/2012-TO:
         test_Ms = floor(min_M):ceil(max_M);
         for test_M = test_Ms
-            if( test_M * (test_N - 1) < n_figs && n_figs <= test_M * test_N )
+            % MOD-BY-LEETEN 10/05/2012-FROM:    if( test_M * (test_N - 1) < n_figs && n_figs <= test_M * test_N )
+            if( (test_M - 1) * test_N < n_figs && n_figs <= test_M * test_N )
+            % MOD-BY-LEETEN 10/05/2012-END
                 test_pairs(end+1, :) = [test_M, test_N];
             end
         end
