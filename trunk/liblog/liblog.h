@@ -71,7 +71,8 @@ using namespace std;
 	#include <string.h>
 #endif
 
-#define PRINT_HEADER_ERROR	{	\
+// MOD-BY-LEETEN 10/06/2012-FROM: #define PRINT_HEADER_ERROR	{
+#define PRINT_ERROR_HEADER	{	\
 		const char *szFileSlash = strrchr(__FILE__, '\\');				\
 		const char *szFile = (NULL == szFileSlash)?(__FILE__):(szFileSlash + 1);	\
 		cerr<<"["<<__FUNCTION__<<"()@"<<szFile<<"("<<__LINE__<<")]: ";			\
