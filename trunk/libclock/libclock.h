@@ -15,7 +15,7 @@
 			const int _iMaxNrOfTimers = MAX_NR_OF_TIMERS;			\
 			DWORD _pdBeginTimers[_iMaxNrOfTimers];					\
 			DWORD _pdEndTimers[_iMaxNrOfTimers];					\
-			char* szHeader = header;								\
+			const char* szHeader = header;								\
 			size_t _t = 0;											
 
 
