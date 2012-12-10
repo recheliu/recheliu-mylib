@@ -11,7 +11,56 @@ This file defines several important macros for CUDA.
 	#include <cuda_runtime_api.h>
 	// ADD-BY-TLEE 2008/08/29-END
 
-#include <cutil.h>
+	// MOD-BY-LEETEN 12/10/2012-FROM:	#include <cutil.h>
+	// TO:
+
+	#  define CUDA_SAFE_CALL_NO_SYNC( call) do {                                 \
+	    cudaError err = call;                                                    \
+	    if( cudaSuccess != err) {                                                \
+		fprintf(stderr, "Cuda error in file '%s' in line %i : %s.\n",        \
+			__FILE__, __LINE__, cudaGetErrorString( err) );              \
+		exit(EXIT_FAILURE);                                                  \
+	    } } while (0)
+
+	#  define CUDA_SAFE_CALL( call) do {                                         \
+	    CUDA_SAFE_CALL_NO_SYNC(call);                                            \
+	    cudaError err = cudaThreadSynchronize();                                 \
+	    if( cudaSuccess != err) {                                                \
+		fprintf(stderr, "Cuda error in file '%s' in line %i : %s.\n",        \
+			__FILE__, __LINE__, cudaGetErrorString( err) );              \
+		exit(EXIT_FAILURE);                                                  \
+	    } } while (0)
+
+	//! Check for CUDA error
+	#ifdef _DEBUG
+	#  define CUT_CHECK_ERROR(errorMessage) {                                    \
+		cudaError_t err = cudaGetLastError();                                    \
+		if( cudaSuccess != err) {                                                \
+			fprintf(stderr, "Cuda error: %s in file '%s' in line %i : %s.\n",    \
+				errorMessage, __FILE__, __LINE__, cudaGetErrorString( err) );\
+			exit(EXIT_FAILURE);                                                  \
+		}                                                                        \
+		err = cudaThreadSynchronize();                                           \
+		if( cudaSuccess != err) {                                                \
+			fprintf(stderr, "Cuda error: %s in file '%s' in line %i : %s.\n",    \
+				errorMessage, __FILE__, __LINE__, cudaGetErrorString( err) );\
+			exit(EXIT_FAILURE);                                                  \
+		}                                                                        \
+	}
+
+	#else	//	#ifdef _DEBUG
+	#  define CUT_CHECK_ERROR(errorMessage) {                                    \
+		cudaError_t err = cudaGetLastError();                                    \
+		if( cudaSuccess != err) {                                                \
+			fprintf(stderr, "Cuda error: %s in file '%s' in line %i : %s.\n",    \
+			errorMessage, __FILE__, __LINE__, cudaGetErrorString( err) );\
+			exit(EXIT_FAILURE);                                                  \
+		}                                                                        \
+	}
+
+	#endif	//	#ifdef _DEBUG
+	// MOD-BY-LEETEN 12/10/2012-END
+
 
 // ADD-BY-LEETEN 2009/06/02-BEGIN
 #include <math.h>
