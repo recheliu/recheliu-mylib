@@ -1,0 +1,11 @@
+NRRD0001
+content: neghip.raw 
+# VolVis distribution of SUNY Stony Brook, NY, USA.
+dimension: 3
+type: uchar
+sizes: 64 64 64
+spacings: 1 1 1
+endian: little
+data file: ./neghip.raw
+encoding: raw
+
