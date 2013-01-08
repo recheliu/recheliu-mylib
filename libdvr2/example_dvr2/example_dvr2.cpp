@@ -115,6 +115,7 @@ _ReadVolume(char* szPathFilename)
 	/* create a nrrd; at this point this is just an empty container */
 	nin = nrrdNew();
 
+	#if	0	// MOD-BY-LEETEN 01/07/2013-FROM:
 	/* tell nrrdLoad to only read the header, not the data */
 	NrrdIoState *nio = nrrdIoStateNew();
 	nrrdIoStateSet(nio, nrrdIoStateSkipData, AIR_TRUE);
@@ -140,7 +141,14 @@ _ReadVolume(char* szPathFilename)
 		free(err);
 		return;
 	}
-
+	#else	// MOD-BY-LEETEN 01/07/2013-TO:
+	if (nrrdLoad(nin, szPathFilename, NULL)) {
+		char *err = biffGetDone(NRRD);
+		LOG_ERROR(fprintf(stderr, "%s", err));
+		free(err);
+		return;
+	}
+	#endif	// MOD-BY-LEETEN 01/07/2013-END
 	switch(nin->type)
 	{
 	case nrrdTypeUChar:	_BuildHistogram<unsigned char>();	break;
