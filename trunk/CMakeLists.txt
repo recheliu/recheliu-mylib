@@ -100,7 +100,7 @@ link_directories(
 )
 
 set(CMAKE_LIBRARY_PATH ${LIB_DIRS})
-find_library(FREEGLUT_LIB freeglut.lib)
+# DEL-BY-LEETEN 01/11/2013:	find_library(FREEGLUT_LIB freeglut.lib)
 # ADD-BY-LEETEN 04/05/2012-BEGIN
 if( WITH_STATIC_LINK )
 	message(WARNING "To link static libraries in lib/ for VC projects, please add '/NODEFAULTLIB:LIBCMT' to CMAKE_EXE_LINKER_FLAGS.")
@@ -133,7 +133,12 @@ endif()
 # ADD-BY-LEETEN 07/12/2012-BEGIN
 
 
-if( FREEGLUT_LIB AND FREEGLUT )
+# MOD-BY-LEETEN 01/11/2013-FROM:	if( FREEGLUT_LIB AND FREEGLUT )
+if( FREEGLUT )
+	add_definitions(
+		-DFREEGLUT_LIB_PRAGMAS=0
+	)
+# MOD-BY-LEETEN 01/11/2013-END
 	add_definitions(
 		-DUSE_FREEGLUT
 	)

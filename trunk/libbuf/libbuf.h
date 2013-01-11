@@ -24,7 +24,9 @@ using namespace std;
 // a template for buffer
 template <typename t> struct TBuffer 
 {
-	int num;
+	// MOD-BY-LEETEN 01/11/2013-FROM:		int num;
+	size_t num;
+	// MOD-BY-LEETEN 01/11/2013-END
 	t* data;
 
 	TBuffer()	
@@ -38,7 +40,9 @@ template <typename t> struct TBuffer
 	// MOD-BY-LEETEN 07/22/2011-FROM:
 		// unsigned int USize()	{	return (unsigned int)num;			}
 	// TO:
-	unsigned int USize()	const	{	return (unsigned int)num;			}
+	// MOD-BY-LEETEN 01/11/2013-FROM:			unsigned int USize()	const	{	return (unsigned int)num;			}
+	size_t USize()	const	{	return num;			}
+	// MOD-BY-LEETEN 01/11/2013-END
 	// MOD-BY-LEETEN 07/22/2011-END
 	// ADD-BY-TLEE 2009/02/14-END
 
@@ -106,7 +110,9 @@ template <typename t> struct TBuffer
 	}
 
 	// ADD-BY-LEETEN 07/18/2011-BEGIN
-	t* New(int n)
+	// MOD-BY-LEETEN 01/11/2013-FROM:			t* New(int n)
+	t* New(size_t n)
+	// MOD-BY-LEETEN 01/11/2013-END
 	{
 		assert(n > 0);
 		num = n;
@@ -117,7 +123,9 @@ template <typename t> struct TBuffer
 	}
 	// ADD-BY-LEETEN 07/18/2011-END
 
-	t* alloc(int n)
+	// MOD-BY-LEETEN 01/11/2013-FROM:			t* alloc(int n)
+	t* alloc(size_t n)
+	// MOD-BY-LEETEN 01/11/2013-END
 	{
 		#if	0	// MOD-BY-LEETEN 07/18/2011-FROM:
 			assert(n > 0);
@@ -140,13 +148,17 @@ template <typename t> struct TBuffer
 		return data;
 	}
 
-	t& operator[](int index)
+	// MOD-BY-LEETEN 01/11/2013-FROM:			t& operator[](int index)
+	t& operator[](size_t index)
+	// MOD-BY-LEETEN 01/11/2013-END
 	{
 		assert( index < num );
 		return data[index];
 	}
 
-	const t& operator[](int index) const
+	// MOD-BY-LEETEN 01/11/2013-FROM:			const t& operator[](int index) const
+	const t& operator[](size_t index) const
+	// MOD-BY-LEETEN 01/11/2013-END
 	{
 		assert( index < num );
 		return data[index];
