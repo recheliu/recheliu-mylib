@@ -97,6 +97,7 @@ _BuildHistogram()
 			for(int x = 0; x < (int)nin->axis[0].size; x++, i++)
 			{
 				int iTfEntry = (int)ceil((double)(iNrOfTfEntries - 1) * (double)(data[i] - dValueMin) / (double)(dValueMax - dValueMin));
+				iTfEntry = min(max(iTfEntry, 0), iNrOfTfEntries - 1);	// ADD-BY-LEETEN 01/11/2013
 				pfHist[iTfEntry] += 1.0f;
 			}
 
@@ -162,6 +163,21 @@ _ReadVolume(char* szPathFilename)
 	default:
 		break;
 	}
+
+	// ADD-BY-LEETEN 01/11/2013-BEGIN
+	if( nrrdTypeFloat == nin->type )
+	{
+		float *data = (float*)nin->data;	
+
+		for(int v = 0,	z = 0; z < (int)nin->axis[2].size; z++)
+			for(int		y = 0; y < (int)nin->axis[1].size; y++)
+				for(int x = 0; x < (int)nin->axis[0].size; x++, v++)
+					data[v] = (data[v] - (float)dValueMin)/(float)(dValueMax - dValueMin);
+
+		LOG_VAR(dValueMin);
+		LOG_VAR(dValueMax);
+	}
+	// ADD-BY-LEETEN 01/11/2013-END
 	return;
 }
 
@@ -193,9 +209,15 @@ _ReadVolume(char* szPathFilename)
 		fread(&p3DubVol[0], sizeof(p3DubVol[0]), iXDim * iYDim * iZDim, fpData);
 	#else	// MOD-BY-LEETEN 07/05/2011-TO:
 	ASSERT_OR_LOG(fpData, perror(szPathFilename));
+#if	1	// TMP-MOD
 	fread(&iXDim, sizeof(iXDim), 1, fpData);
 	fread(&iYDim, sizeof(iYDim), 1, fpData);
 	fread(&iZDim, sizeof(iZDim), 1, fpData);
+#else
+	iXDim = 673;
+	iYDim = 148;
+	iZDim = 12;
+#endif
 	LOG_VAR(iXDim);
 	LOG_VAR(iYDim);
 	LOG_VAR(iZDim);
@@ -438,7 +460,7 @@ main(int argn, char *argv[])
 	#endif	// #if 	WITH_NRRD	// ADD-BY-LEETEN 10/21/2011
 	#endif	// MOD-BY-LEETEN 07/05/2011-END
 		cDvrWin._SetTransferFunc(&pfTransFunc[0], GL_RGBA, GL_FLOAT, iNrOfTfEntries);
-		cDvrWin._LoadSavedMatrix();	
+		cDvrWin._LoadSavedMatrix();		
 		cDvrWin._SetDataValue((float)dValueMin, (float)dValueMax);
 		cDvrWin._SetTfDomain((float)dValueMin, (float)dValueMax);
 	// ADD-BY-LEETEN 01/26/2011-END
