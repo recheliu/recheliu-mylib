@@ -1,7 +1,9 @@
 #ifndef		__GLUT_WINDOW_H__
 #define		__GLUT_WINDOW_H__
 
+#if				WITH_OPENCV	// ADD-BY-LEETEN 01/19/2013
 #include "GlutWin_config.h"	// ADD-BY-LEETEN 10/14/2011
+#endif	// #if	WITH_OPENCV	// ADD-BY-LEETEN 01/19/2013
 
 // ADD-BY-LEETEN 08/09/2008-BEGIN
 #include <vector>
@@ -9,6 +11,7 @@
 using namespace std;
 // ADD-BY-LEETEN 08/09/2008-END
 
+#if				WITH_OPENCV	// ADD-BY-LEETEN 01/19/2013
 	// ADD-BY-LEETEN 08/25/2008-BEGIN
 	#include "cxcore.h"
 	#include "highgui.h"
@@ -59,6 +62,7 @@ using namespace std;
 		#endif
 	#endif
 	// ADD-BY-LEETEN 08/25/2008-END
+#endif	// #if	WITH_OPENCV	// ADD-BY-LEETEN 01/19/2013
 
 	#pragma comment (lib, "winmm.lib")      /* link with Windows MultiMedia lib */
 	// MOD-BY-LEETEN 08/05/2010-FROM:
@@ -389,8 +393,10 @@ protected:
 		CGlutWin *win); 
 	// ADD-BY-LEETEN 08/16/2008-END
 
+	#if				WITH_OPENCV	// ADD-BY-LEETEN 01/19/2013
 	// ADD-BY-LEETEN 08/25/2008-BEGIN
 	IplImage *pcSnapshot;
+	#endif	//	#if	WITH_OPENCV	// ADD-BY-LEETEN 01/19/2013
 
 public:
 

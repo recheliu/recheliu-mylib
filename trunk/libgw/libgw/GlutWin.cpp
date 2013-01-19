@@ -834,9 +834,11 @@ CGlutWin::CGlutWin()
 	szMatrixFilename[0] = '\0';
 	// ADD-BY-TLEE 2008/08/20-END
 
+	#if				WITH_OPENCV	// ADD-BY-LEETEN 01/19/2013
 	// ADD-BY-LEETEN 08/25/2008-BEGIN
 	pcSnapshot = NULL;
 	// ADD-BY-LEETEN 08/25/2008-END
+	#endif	// #if	WITH_OPENCV	// ADD-BY-LEETEN 01/19/2013
 
 	// ADD-BY-LEETEN 12/05/2008-BEGIN
 	iSnapshotIndex = 0;
@@ -847,10 +849,12 @@ CGlutWin::CGlutWin()
 // destructor
 CGlutWin::~CGlutWin()
 {
+	#if			WITH_OPENCV	// ADD-BY-LEETEN 01/19/2013
 	// ADD-BY-LEETEN 08/25/2008-BEGIN
 	if( pcSnapshot )
 		cvReleaseImage(&pcSnapshot);
 	// ADD-BY-LEETEN 08/25/2008-END
+	#endif	// #if	WITH_OPENCV	// ADD-BY-LEETEN 01/19/2013
 }
 
 // ADD-BY-TLEE 2008/08/20-BEGIN
@@ -1187,6 +1191,7 @@ CGlutWin::_End()
 void 
 CGlutWin::_SaveSnapshot(char *szSnapshotFilename)
 {
+	#if			WITH_OPENCV	// ADD-BY-LEETEN 01/19/2013
 	// ADD-BY-LEETEN 12/05/2008-BEGIN
 _Begin();
 	// ADD-BY-LEETEN 12/05/2008-END
@@ -1238,6 +1243,7 @@ _Begin();
 // ADD-BY-LEETEN 12/05/2008-BEGIN
 _End();
 // ADD-BY-LEETEN 12/05/2008-END
+	#endif	// #if	WITH_OPENCV	// ADD-BY-LEETEN 01/19/2013
 }
 
 // ADD-BY-LEETEN 08/25/2008-END
