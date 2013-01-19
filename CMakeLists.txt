@@ -14,11 +14,13 @@ find_package(GLUT)
 
 # The required variables
 set(THIRDPARTY_DIR "D:/lib" CACHE PATH "The path to the 3rd party libraries")
-set(OPENCV_DIR "C:/OpenCV2.1" CACHE PATH "The installed path of OpenCV")
-set(OPENCV_VER "210" CACHE STRING "The Version of OpenCV")
+# # DEL-BY-LEETEN 01/19/2013-BEGIN
+# set(OPENCV_DIR "C:/OpenCV2.1" CACHE PATH "The installed path of OpenCV")
+# set(OPENCV_VER "210" CACHE STRING "The Version of OpenCV")
+# # DEL-BY-LEETEN 01/19/2013-END
 set(FREEGLUT OFF CACHE BOOL "Flag to decide whether FREEGLUT is used")
 set(WITH_STATIC_LINK OFF CACHE BOOL "Flag to decide whether static libraries are linked")	# ADD-BY-LEETEN 04/05/2012
-set(WITH_STATIC_OPENCV	OFF CACHE BOOL "Flag to decide whether the static version of OpenCV is linked")	# ADD-BY-LEETEN 07/12/2012
+# DEL-BY-LEETEN 01/19/2013:	set(WITH_STATIC_OPENCV	OFF CACHE BOOL "Flag to decide whether the static version of OpenCV is linked")	# ADD-BY-LEETEN 07/12/2012
 # DEL-BY-LEETEN 12/03/2011		set(CMAKE_INSTALL_PREFIX ${PROJECT_SOURCE_DIR})
 
 # CUDA
@@ -36,6 +38,13 @@ set(THIRDPARTY_INC_DIR "${THIRDPARTY_DIR}/include")
 set(THIRDPARTY_LIB_DIR "${THIRDPARTY_DIR}/lib")
 
 # OpenCV
+# ADD-BY-LEETEN 01/19/2013-BEGIN
+set(WITH_OPENCV OFF CACHE BOOL "Flag to decide whether FREEGLUT is used")
+if( WITH_OPENCV )
+	set(WITH_STATIC_OPENCV	OFF CACHE BOOL "Flag to decide whether the static version of OpenCV is linked")
+	set(OPENCV_DIR "C:/OpenCV2.1" CACHE PATH "The installed path of OpenCV")
+	set(OPENCV_VER "210" CACHE STRING "The Version of OpenCV")
+# ADD-BY-LEETEN 01/19/2013-END
 set(OPENCV_INC_DIR "${OPENCV_DIR}/include")
 set(OPENCV_LIB_DIR "${OPENCV_DIR}/lib")
 # ADD-BY-LEETEN 10/14/2011-BEGIN
@@ -51,6 +60,22 @@ configure_file (
   "${PROJECT_SOURCE_DIR}/libgw/libgw/GlutWin_config.h"
 )  
 # ADD-BY-LEETEN 10/14/2011-END
+# ADD-BY-LEETEN 01/19/2013-BEGIN
+	include_directories (
+		"${OPENCV_INC_DIR}"
+		"${OPENCV_INC_DIR}/opencv"	
+	)
+
+	list(APPEND LIB_DIRS
+		"${OPENCV_LIB_DIR}"
+	)
+
+	add_definitions(
+		-DWITH_OPENCV
+		-DOPENCV_VER=${OPENCV_VER}
+	)
+endif() 
+# ADD-BY-LEETEN 01/19/2013-END
 
 # ADD-BY-LEETEN 10/21/2011-BEGIN
 set(WITH_NRRD OFF CACHE BOOL "Flag to decide whether NRRD is used")
@@ -77,8 +102,8 @@ set(MYLIB_LIB_DIR_RELEASE "${MYLIB_LIB_DIR}/release")
 include_directories (
 	"${CUDA_INC_DIR}"
 	"${CUDASDK_INC_DIR}"
-	"${OPENCV_INC_DIR}"
-	"${OPENCV_INC_DIR}/opencv"	
+	# DEL-BY-LEETEN 01/19/2013:	"${OPENCV_INC_DIR}"
+	# DEL-BY-LEETEN 01/19/2013:	"${OPENCV_INC_DIR}/opencv"	
 	"${THIRDPARTY_INC_DIR}"
 	"${CMAKE_SOURCE_DIR}"
 	)
@@ -87,7 +112,7 @@ include_directories (
 list(APPEND LIB_DIRS
 	"${CUDA_LIB_DIR}"
 	"${CUDASDK_LIB_DIR}"
-	"${OPENCV_LIB_DIR}"
+	# DEL-BY-LEETEN 01/19/2013:	"${OPENCV_LIB_DIR}"
 	"${THIRDPARTY_LIB_DIR}"
 	# DEL-BY-LEETEN 09/02/2011-BEGIN
 	# "${MYLIB_LIB_DIR_DEBUG}"
@@ -152,7 +177,7 @@ if( FREEGLUT )
 endif()
 
 add_definitions(
-	-DOPENCV_VER=${OPENCV_VER}
+	# DEL-BY-LEETEN 01/19/2013:	-DOPENCV_VER=${OPENCV_VER}
 	-DGLUT_BUILDING_LIB
 )
 
