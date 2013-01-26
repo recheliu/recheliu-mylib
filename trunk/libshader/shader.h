@@ -9,7 +9,7 @@
 // ADD-BY-LEETEN 01/10/2010-END
 
 // ADD-BY-LEETEN 08/14/2008-BEGIN
-char *SzTextFileRead(char *fn);
+// DEL-BY-LEETEN 01/26/2013:	char *SzTextFileRead(char *fn);
 
 // MOD-BY-LEETEN 01/10/2010-FROM:
 	// GLhandleARB CSetShadersByString(const char* szVertexProg, const char* szFragmentProg);

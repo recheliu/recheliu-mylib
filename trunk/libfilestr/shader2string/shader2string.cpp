@@ -10,7 +10,7 @@ This application is used to convert a shader program into a .h that contains its
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "shader.h"
+#include "libfilestr.h"
 
 int
 main(int argn, char * argv[])

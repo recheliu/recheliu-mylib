@@ -314,28 +314,32 @@ endfunction (build_executable)
 
 # ADD-BY-LEETEN 01/23/2011-END
  
-if( WITH_OPENGL ) # ADD-BY-LEETEN 09/07/2011
-##############################################################
-# shader2string
-build_executable(shader2string ${PROJECT_SOURCE_DIR}/libshader/shader2string)
-add_dependencies(shader2string libshader)
-target_link_libraries (shader2string libshader)
-if(DEFINED WIN32) 
-	# ADD-BY-LEETEN 04/05/2012-BEGIN
-	if( WITH_STATIC_LINK )
-		target_link_libraries (shader2string "opengl32")
-		target_link_libraries (shader2string "${THIRDPARTY_LIB_DIR}/glew32s.lib")
-	else()
-	# ADD-BY-LEETEN 04/05/2012-END
-	target_link_libraries (shader2string "${THIRDPARTY_LIB_DIR}/glew32.lib")
-	endif() # ADD-BY-LEETEN 04/05/2012
-else()
-	target_link_libraries (shader2string "GLEW")
-	# ADD-BY-LEETEN 01/28/2011-BEGIN
-	target_link_libraries (shader2string "glut")
-	# ADD-BY-LEETEN 01/28/2011-END
-endif()
-endif() # if( WITH_OPENGL ) # ADD-BY-LEETEN 09/07/2011
+# # MOD-BY-LEETEN 01/26/2013-FROM:
+# if( WITH_OPENGL ) # ADD-BY-LEETEN 09/07/2011
+# ##############################################################
+# # shader2string
+# build_executable(shader2string ${PROJECT_SOURCE_DIR}/libshader/shader2string)
+# add_dependencies(shader2string libshader)
+# target_link_libraries (shader2string libshader)
+# if(DEFINED WIN32) 
+	# # ADD-BY-LEETEN 04/05/2012-BEGIN
+	# if( WITH_STATIC_LINK )
+		# target_link_libraries (shader2string "opengl32")
+		# target_link_libraries (shader2string "${THIRDPARTY_LIB_DIR}/glew32s.lib")
+	# else()
+	# # ADD-BY-LEETEN 04/05/2012-END
+	# target_link_libraries (shader2string "${THIRDPARTY_LIB_DIR}/glew32.lib")
+	# endif() # ADD-BY-LEETEN 04/05/2012
+# else()
+	# target_link_libraries (shader2string "GLEW")
+	# # ADD-BY-LEETEN 01/28/2011-BEGIN
+	# target_link_libraries (shader2string "glut")
+	# # ADD-BY-LEETEN 01/28/2011-END
+# endif()
+# endif() # if( WITH_OPENGL ) # ADD-BY-LEETEN 09/07/2011
+# # MOD-BY-LEETEN 01/26/2013-TO:
+build_executable(shader2string ${PROJECT_SOURCE_DIR}/libfilestr/shader2string)
+# # MOD-BY-LEETEN 01/26/2013-END
 
 ##############################################################
 foreach(LIB_NAME 
@@ -350,6 +354,7 @@ foreach(LIB_NAME
 			libfps 
 			# DEL-BY-LEETEN 09/07/2011	libfbo
 			libgrid		# ADD-BY-LEETEN 12/03/2011
+			libfilestr	# ADD-BY-LEETEN 01/26/2013
 	)
 	build_library(${LIB_NAME} "/" "/" false)
 endforeach(LIB_NAME)
