@@ -9,6 +9,8 @@
 #include <memory.h>
 #include <string.h>
 
+#include "libfilestr.h"	// ADD-BY-LEETEN 01/26/2013
+
 // ADD-BY-LEETEN 08/14/2008-BEGIN
 #include "shader.h"
 
@@ -145,6 +147,7 @@ CSetShadersByString(
 #endif	// MOD-BY-LEETEN 01/10/2010-END
 // ADD-BY-LEETEN 08/14/2008-END
 
+#if	0	// DEL-BY-LEETEN 01/26/2013-BEGIN
 char *SzTextFileRead(char *fn) 
 {
 	FILE *fp;
@@ -171,6 +174,7 @@ char *SzTextFileRead(char *fn)
 	}
 	return content;
 }
+#endif	// DEL-BY-LEETEN 01/26/2013-END
 
 bool
 BCheckObject(GLhandleARB obj)
