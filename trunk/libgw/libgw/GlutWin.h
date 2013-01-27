@@ -62,6 +62,15 @@ using namespace std;
 		#endif
 	#endif
 	// ADD-BY-LEETEN 08/25/2008-END
+// ADD-BY-LEETEN 01/26/2008-BEGIN
+#else	// #if	WITH_OPENCV	
+	#include "lodepng.h"
+	#if defined(_DEBUG)
+	#pragma comment (lib, "lodepngd.lib")
+	#else	// #if defined(_DEBUG)
+	#pragma comment (lib, "lodepng.lib")
+	#endif	// #if defined(_DEBUG)
+// ADD-BY-LEETEN 01/26/2008-END
 #endif	// #if	WITH_OPENCV	// ADD-BY-LEETEN 01/19/2013
 
 	#pragma comment (lib, "winmm.lib")      /* link with Windows MultiMedia lib */

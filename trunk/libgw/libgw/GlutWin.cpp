@@ -1243,6 +1243,45 @@ _Begin();
 // ADD-BY-LEETEN 12/05/2008-BEGIN
 _End();
 // ADD-BY-LEETEN 12/05/2008-END
+// ADD-BY-LEETEN 01/26/2008-BEGIN
+	#else
+_Begin();
+	if( !piViewport[2] || !piViewport[3] )
+	{
+		_AddToLog("Warning: the size of the viewport is zero.");
+		return;
+	}
+								// check the filename 
+	char szTempSnapshotFilename[1024+1];
+	if( !szSnapshotFilename )
+	{
+		sprintf(szTempSnapshotFilename, "%s_snapshot.%d.png", typeid(*this).name(), iSnapshotIndex++);
+		szSnapshotFilename  = szTempSnapshotFilename;
+	}
+	for(char *pc = strchr(szTempSnapshotFilename, ' '); pc; pc = strchr(pc, ' '))
+		*pc = '_';
+
+	for(char *pc = strchr(szTempSnapshotFilename, ':'); pc; pc = strchr(pc, ':'))
+		*pc = '_';
+
+	std::vector<unsigned char> vubSnapshot;
+	vubSnapshot.resize(piViewport[2] * piViewport[3] * 4);
+	glReadPixels(piViewport[0], piViewport[1], piViewport[2], piViewport[3], GL_RGBA, GL_UNSIGNED_BYTE, vubSnapshot.data());
+	for(size_t p = 0; p < piViewport[2] * piViewport[3]; p++)
+		vubSnapshot[4 * p + 3] = 255;
+
+	std::vector<unsigned char> vubFlipped;
+	vubFlipped.resize(piViewport[2] * piViewport[3] * 4);
+	for(size_t y = 0; y < piViewport[3]; y++)
+		memcpy(
+			&vubFlipped.data()[piViewport[2] * 4 * (piViewport[3] - 1 - y)],
+			&vubSnapshot.data()[piViewport[2] * 4 * y],
+			4 * piViewport[2]);
+
+	lodepng::encode(szSnapshotFilename, vubFlipped, piViewport[2], piViewport[3]);
+	_AddToLog(SZSprintf("Snapshot %s was saved\n", szSnapshotFilename));
+_End();
+// ADD-BY-LEETEN 01/26/2008-END
 	#endif	// #if	WITH_OPENCV	// ADD-BY-LEETEN 01/19/2013
 }
 
