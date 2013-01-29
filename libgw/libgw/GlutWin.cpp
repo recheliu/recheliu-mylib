@@ -1266,17 +1266,37 @@ _Begin();
 
 	std::vector<unsigned char> vubSnapshot;
 	vubSnapshot.resize(piViewport[2] * piViewport[3] * 4);
+	#if	0	// MOD-BY-LEETEN 01/28/2013-FROM:
 	glReadPixels(piViewport[0], piViewport[1], piViewport[2], piViewport[3], GL_RGBA, GL_UNSIGNED_BYTE, vubSnapshot.data());
 	for(size_t p = 0; p < piViewport[2] * piViewport[3]; p++)
 		vubSnapshot[4 * p + 3] = 255;
+	#else	// MOD-BY-LEETEN 01/28/2013-TO:
+	glPushAttrib(
+		GL_COLOR_BUFFER_BIT |
+		0);
+	glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_TRUE);
+	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+	glClear(GL_COLOR_BUFFER_BIT);
+	glPopAttrib();
+		// GL_COLOR_BUFFER_BIT |
+	glReadPixels(piViewport[0], piViewport[1], piViewport[2], piViewport[3], GL_RGBA, GL_UNSIGNED_BYTE, &vubSnapshot.front());
+	#endif	// MOD-BY-LEETEN 01/28/2013-END
 
 	std::vector<unsigned char> vubFlipped;
 	vubFlipped.resize(piViewport[2] * piViewport[3] * 4);
 	for(size_t y = 0; y < piViewport[3]; y++)
+		#if	0	// MOD-BY-LEETEN 01/28/2013-FROM:
 		memcpy(
 			&vubFlipped.data()[piViewport[2] * 4 * (piViewport[3] - 1 - y)],
 			&vubSnapshot.data()[piViewport[2] * 4 * y],
 			4 * piViewport[2]);
+		#else	// MOD-BY-LEETEN 01/28/2013-TO:
+		copy(
+			vubSnapshot.begin() + piViewport[2] * 4 * y,
+			vubSnapshot.begin() + piViewport[2] * 4 * (y + 1),
+			vubFlipped.begin() + piViewport[2] * 4 * (piViewport[3] - 1 - y)
+		);
+		#endif	// MOD-BY-LEETEN 01/28/2013-END
 
 	lodepng::encode(szSnapshotFilename, vubFlipped, piViewport[2], piViewport[3]);
 	_AddToLog(SZSprintf("Snapshot %s was saved\n", szSnapshotFilename));
