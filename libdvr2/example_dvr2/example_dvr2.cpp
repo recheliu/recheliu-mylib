@@ -453,7 +453,9 @@ main(int argn, char *argv[])
 		case nrrdTypeFloat:	iType = GL_FLOAT;			break;
 		}
 
-		cDvrWin._SetVolume(GL_LUMINANCE32F_ARB, nin->data, GL_LUMINANCE, iType, (int)nin->axis[0].size, (int)nin->axis[1].size, (int)nin->axis[2].size);
+		// MOD-BY-LEETEN 02/04/2013-FROM:	cDvrWin._SetVolume(GL_LUMINANCE32F_ARB, nin->data, GL_LUMINANCE, iType, (int)nin->axis[0].size, (int)nin->axis[1].size, (int)nin->axis[2].size);
+		cDvrWin._SetVolume(GL_LUMINANCE32F_ARB, nin->data, iType, GL_LUMINANCE, (int)nin->axis[0].size, (int)nin->axis[1].size, (int)nin->axis[2].size);
+		// MOD-BY-LEETEN 02/04/2013-END
 	#else	// #if 	WITH_NRRD	
 	// ADD-BY-LEETEN 10/21/2011-END
 		cDvrWin._SetVolume(GL_LUMINANCE, &p3DfVol[0], GL_LUMINANCE, GL_FLOAT, iXDim, iYDim, iZDim);

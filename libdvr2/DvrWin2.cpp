@@ -41,10 +41,21 @@ _Begin();
 	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);	
 	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);	
 	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);	
+	#if	0	// MOD-BY-LEETEN 02/04/2013-FROM:
 	glTexImage3D(GL_TEXTURE_3D, 0, eInternalFormat,	
 		(GLsizei)iXDim, (GLsizei)iYDim, (GLsizei)iZDim, 0, eType, eFormat, pVol);
+	#else	// MOD-BY-LEETEN 02/04/2013-TO:
+	int iUnpackAlignment;
+	glGetIntegerv(GL_UNPACK_ALIGNMENT, &iUnpackAlignment);
 
-_End();
+	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+	glTexImage3D(GL_TEXTURE_3D, 0, eInternalFormat,	
+		(GLsizei)iXDim, (GLsizei)iYDim, (GLsizei)iZDim, 0, eFormat, eType, pVol);
+
+	glPixelStorei(GL_UNPACK_ALIGNMENT, iUnpackAlignment);
+	#endif	// MOD-BY-LEETEN 02/04/2013-END
+
+_End(); 
 }
 
 void 
