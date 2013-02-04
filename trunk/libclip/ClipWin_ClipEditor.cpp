@@ -1,6 +1,8 @@
-#include "lib3ds/vector.h"
+// DEL-BY-LEETEN 02/04/2013:	#include "lib3ds/vector.h"
 
 #include "ClipWin.h"
+
+#include <glm/glm.hpp>	// ADD-BY-LEETEN 02/04/2013
 
 #include <iostream>
 #include "liblog.h"
@@ -39,11 +41,16 @@ CClipWin::CClipEditor::_DisplayFunc()
 	glPushAttrib(GL_ENABLE_BIT);
 	glPushAttrib(GL_POLYGON_BIT);
 
+	#if	0	// MOD-BY-LEETEN 02/04/2013-FROM:
 	Lib3dsVector v3Normal;
 	v3Normal[0] = f4ClipPlane.x;
 	v3Normal[1] = f4ClipPlane.y;
 	v3Normal[2] = f4ClipPlane.z;
 	float fNormalLength = lib3ds_vector_length(v3Normal);
+	#else	// MOD-BY-LEETEN 02/04/2013-TO:
+	glm::vec3 v3Normal = glm::vec3(f4ClipPlane.x, f4ClipPlane.y, f4ClipPlane.z);
+	float fNormalLength = glm::length(v3Normal);
+	#endif	// MOD-BY-LEETEN 02/04/2013-END
 
 	if( 0.0f < fNormalLength )
 	{
@@ -116,6 +123,7 @@ CClipWin::CClipEditor::_GluiFunc(unsigned short usValue)
 	case EVENT_SPINNER_PLANE_Y:		
 	case EVENT_SPINNER_PLANE_Z:
 		{
+			#if	0	// MOD-BY-LEETEN 02/04/2013-FROM:
 			Lib3dsVector v3Z;
 			v3Z[0] = 0.0f; 
 			v3Z[1] = 0.0f; 
@@ -132,6 +140,15 @@ CClipWin::CClipEditor::_GluiFunc(unsigned short usValue)
 			lib3ds_vector_normalize(v3Up);
 
 			float fCos = lib3ds_vector_dot(v3Z, v3Normal);
+			#else	// MOD-BY-LEETEN 02/04/2013-TO:
+			glm::vec3 v3Z(0.0f, 0.0f, 1.0f);
+			glm::vec3 v3Normal = 
+				glm::normalize(
+					glm::vec3(f4ClipPlane.x, f4ClipPlane.y, f4ClipPlane.z));
+		
+			glm::vec3 v3Up = glm::normalize(glm::cross(v3Z, v3Normal));
+			float fCos = glm::dot(v3Z, v3Normal);
+			#endif	// MOD-BY-LEETEN 02/04/2013-END
 			float fAngle_degree = 180.0f * acos(fCos) / M_PI;
 
 			glPushMatrix();
