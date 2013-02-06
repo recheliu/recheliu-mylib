@@ -1,10 +1,5 @@
-#if	0	// MOD-BY-LEETEN-2009/06/01-FROM:
-	#include <gl/glew.h>
-	#include <gl/glut.h>
-#else		// MOD-BY-LEETEN-2009/06/01-TO:
 #include <GL/glew.h>
 #include <GL/glut.h>
-#endif		// MOD-BY-LEETEN-2009/06/01-END
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -33,13 +28,6 @@ EGetFboStatus(bool bPrint)
 		case GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT_EXT:
 			fprintf(stderr, "GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT_EXT\n");
 			break;
-		// DEL-BY-LEETY 09/05/2006-BEGIN
-		/*
-		case GL_FRAMEBUFFER_INCOMPLETE_DUPLICATE_ATTACHMENT_EXT:
-			fprintf(stderr, "GL_FRAMEBUFFER_DUPLICATE_ATTACHEMENT_EXT\n");
-			break;
-		*/
-		// DEL-BY-LEETY 09/05/2006-END
 		case GL_FRAMEBUFFER_INCOMPLETE_DIMENSIONS_EXT:
 			fprintf(stderr, "GL_FRAMEBUFFER_DIMENSION_EXT\n");
 			break;
@@ -52,13 +40,6 @@ EGetFboStatus(bool bPrint)
 		case GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER_EXT:
 			fprintf(stderr, "GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER_EXT\n");
 			break;
-		// DEL-BY-LEETY 09/05/2006-BEGIN
-		/*
-		case GL_FRAMEBUFFER_STATUS_ERROR_EXT:
-			fprintf(stderr, "GL_FRAMEBUFFER_STATUS_ERROR\n");
-			break;
-		*/
-		// DEL-BY-LEETY 09/05/2006-END
 		}
 	}
 	return eStatus;

@@ -35,15 +35,9 @@ public:
 protected:
 	float fps;
 
-	#if	0	// MOD-BY-LEETEN 01/23/2011-FROM:
-		float lastTime;
-		int frames;
-		float time;
-	#else	// MOD-BY-LEETEN 01/23/2011-TO:
 	int frames;
 	double lastTime;
 	double time;
-	#endif	// MOD-BY-LEETEN 01/23/2011-END
 };
 
 #endif	//FPS_COUNTER_H

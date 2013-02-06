@@ -1,8 +1,4 @@
-// MOD-BY-LEETEN 01/24/2011-FROM:
-	// #include <gl/glew.h>
-// TO:
 	#include <GL/glew.h>
-// MOD-BY-LEETEN 01/24/2011-END
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -37,12 +33,8 @@ _AddShaderProgram
 	hShader = glCreateShaderObjectARB(iShader);
 	glShaderSourceARB(hShader, 1, &szProgSrc, NULL);
 	glCompileShaderARB(hShader);
-	// MOD-BY-LEETEN 08/05/2010-FROM:
-		// assert( true == BCheckObject(hShader) );
-	// TO:
 	bool bIsObjectChecked = BCheckObject(hShader);
 	assert( true == bIsObjectChecked );
-	// MOD-BY-LEETEN 08/05/2010-END
 
 	glAttachObjectARB(hProgramHandle, hShader);
 }
@@ -54,84 +46,11 @@ _LinkPrograms
 )
 {
 	glLinkProgramARB(hProgramHandle);
-	// MOD-BY-LEETEN 08/05/2010-FROM:
-		// assert( true == BCheckObject(hProgramHandle) );
-	// TO:
 	bool bIsObjectChecked = BCheckObject(hProgramHandle);
 	assert( true == bIsObjectChecked );
-	// MOD-BY-LEETEN 08/05/2010-END
 }
 // ADD-BY-LEETEN 01/10/2010-END
 
-#if	0	// MOD-BY-LEETEN 01/10/2010-FROM:
-	GLhandleARB 
-	CSetShadersByString(
-		const char* szVertexProg, 
-		const char* szFragmentProg)
-	{
-		GLhandleARB hFragmentShader, hVertexShader;
-
-		GLhandleARB 
-			hProgramHandle = glCreateProgramObjectARB();
-
-		if( szVertexProg ) 
-		{
-			hVertexShader = glCreateShaderObjectARB(GL_VERTEX_SHADER_ARB);
-			glShaderSourceARB(hVertexShader, 1, &szVertexProg, NULL);
-			glCompileShaderARB(hVertexShader);
-			if( !BCheckObject(hVertexShader) ) 
-			{
-				fprintf(stderr, "Error during parsing the vertex program.\n");
-				return false;
-			}
-		}
-
-		if( szFragmentProg ) 
-		{
-			hFragmentShader = glCreateShaderObjectARB(GL_FRAGMENT_SHADER_ARB);
-			glShaderSourceARB(hFragmentShader, 1, &szFragmentProg, NULL);
-			glCompileShaderARB(hFragmentShader);
-			if( !BCheckObject(hFragmentShader) ) 
-			{
-				fprintf(stderr, "Error during compiling the fragment program.\n");
-				return false;
-			}
-		}
-
-		if( szVertexProg )
-			glAttachObjectARB(hProgramHandle, hVertexShader);
-
-		if( szFragmentProg )
-			glAttachObjectARB(hProgramHandle, hFragmentShader);
-
-		glLinkProgramARB(hProgramHandle);
-
-		if( !BCheckObject(hProgramHandle) )
-		{
-			fprintf(stderr, "Error during linking shaders\n");
-			return false;
-		}
-
-		return hProgramHandle;
-	}
-
-#else	// MOD-BY-LEETEN 01/10/2010-TO:
-
-#if	0	// MOD-BY-LEETEN 01/12/2010-FROM:
-	GLhandleARB 
-	CSetShadersByString(
-		const char* szVertexProg, 
-		const char* szFragmentProg,
-		const char* szGeometryProg)
-	{
-		GLhandleARB hProgramHandle = HCreateProgramHandle();
-		if( szVertexProg )		_AddShaderProgram(hProgramHandle, GL_VERTEX_SHADER_ARB,		szVertexProg);
-		if( szFragmentProg )	_AddShaderProgram(hProgramHandle, GL_FRAGMENT_SHADER_ARB,	szFragmentProg);
-		if( szGeometryProg )	_AddShaderProgram(hProgramHandle, GL_GEOMETRY_SHADER_EXT,	szGeometryProg);
-		_LinkPrograms(hProgramHandle);
-		return hProgramHandle;
-	}
-#else	// MOD-BY-LEETEN 01/12/2010-TO:
 GLhandleARB 
 CSetShadersByString(
 	const char* szVertexProg, 
@@ -143,38 +62,7 @@ CSetShadersByString(
 	_LinkPrograms(hProgramHandle);
 	return hProgramHandle;
 }	
-#endif	// MOD-BY-LEETEN 01/12/2010-END
-#endif	// MOD-BY-LEETEN 01/10/2010-END
 // ADD-BY-LEETEN 08/14/2008-END
-
-#if	0	// DEL-BY-LEETEN 01/26/2013-BEGIN
-char *SzTextFileRead(char *fn) 
-{
-	FILE *fp;
-	char *content = NULL;
-
-	int count=0;
-
-	if (fn != NULL) {
-		fp = fopen(fn,"rt");
-
-		if (fp != NULL) {
-      
-      fseek(fp, 0, SEEK_END);
-      count = ftell(fp);
-      rewind(fp);
-
-			if (count > 0) {
-				content = (char *)malloc(sizeof(char) * (count+1));
-				count = fread(content,sizeof(char),count,fp);
-				content[count] = '\0';
-			}
-			fclose(fp);
-		}
-	}
-	return content;
-}
-#endif	// DEL-BY-LEETEN 01/26/2013-END
 
 bool
 BCheckObject(GLhandleARB obj)

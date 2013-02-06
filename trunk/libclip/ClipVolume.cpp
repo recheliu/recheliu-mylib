@@ -33,12 +33,8 @@ CClipVolume::_ReshapeFunc(int w, int h)
 		glFramebufferTexture2DEXT(
 			GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT,
 			cTexture.eTarget, cTexture.t2d, 0);
-		// MOD-BY-LEETEN 08/05/2010-FROM:
-			// assert( GL_FRAMEBUFFER_COMPLETE_EXT == EGetFboStatus(true) );
-		// TO:
 		unsigned int iFboStatus = EGetFboStatus(true);
 		assert( GL_FRAMEBUFFER_COMPLETE_EXT == iFboStatus );
-		// MOD-BY-LEETEN 08/05/2010-END
 
 		glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
 	}

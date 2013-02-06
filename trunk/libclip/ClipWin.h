@@ -75,11 +75,7 @@ public:
 		void _InitFunc();
 		void _IdleFunc();
 
-		// MOD-BY-LEETEN 01/24/2011-FROM:
-			// void _SetClipPlanes(CClipWin::CClipPlanes *pcClipPlanes)
-		// TO:
 		void _SetClipPlanes(CClipPlanes *pcClipPlanes)
-		// MOD-BY-LEETEN 01/24/2011-END
 		{
 			this->pcClipPlanes = pcClipPlanes;
 		}

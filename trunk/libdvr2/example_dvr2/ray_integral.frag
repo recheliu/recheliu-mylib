@@ -5,11 +5,7 @@ This is the shader program for direct volume rendering
 */
 	uniform sampler3D t3dVolume;	// the texture hold the depths of each knots
 	uniform sampler2D t2dPrevLayer;	// the texture hold the depths of each knots
-	// MOD-BY-LEETEN 09/10/2010-FROM:
-		// uniform sampler2DShadow t2dsDepth;	// the texture hold the depths of each knots
-	// TO:
 	uniform sampler2D t2dsDepth;	// the texture hold the depths of each knots
-	// MOD-BY-LEETEN 09/10/2010-END
 	uniform float fThicknessGain;
 	uniform float fWindowWidth;
 	uniform float fWindowHeight;
@@ -60,17 +56,9 @@ main()
 				// convert the value into color via the transfer function
 	vec4 v4Color = F4GetColorFrom1DTf(fV_normalized);
 
-	// MOD-BY-LEETEN 05/13/2010-FROM:
-		// v4Color.a = 1.0 - pow(1.0 - v4Color.a, fThickness_obj);
-	// TO:
 	v4Color.a = 1.0 - exp(-v4Color.a * fThickness_obj);
-	// MOD-BY-LEETEN 05/13/2010-END
 
-	// MOD-BY-LEETEN 09/10/2010-FROM:
-		// float fBackgroundDepth = shadow2D(t2dsDepth, v4FragCoord.xyz).r;
-	// TO:
 	float fBackgroundDepth = texture2D(t2dsDepth, v4FragCoord.xy).r;
-	// MOD-BY-LEETEN 09/10/2010-END
 	if( v4FragCoord.z > fBackgroundDepth )
 		v4Color.a = 0.0;
 

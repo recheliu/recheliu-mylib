@@ -9,10 +9,6 @@ to create an application with a GLUT windows
 
 #include "../include/TestWin.h"
 
-	// DEL-BY-LEETEN 08/05/2010-BEGIN
-		// #pragma comment (lib, "libgw.lib")      // link with the library libgw
-	// DEL-BY-LEETEN 08/05/2010-END
-
 CTestWin 
 	cRedWin(1.0, 0.0, 0.0, 1.0); 
 

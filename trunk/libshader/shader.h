@@ -9,22 +9,9 @@
 // ADD-BY-LEETEN 01/10/2010-END
 
 // ADD-BY-LEETEN 08/14/2008-BEGIN
-// DEL-BY-LEETEN 01/26/2013:	char *SzTextFileRead(char *fn);
-
-// MOD-BY-LEETEN 01/10/2010-FROM:
-	// GLhandleARB CSetShadersByString(const char* szVertexProg, const char* szFragmentProg);
-// TO:
-#if	0	// MOD-BY-LEETEN 01/12/2010-FROM:
-	GLhandleARB CSetShadersByString(
-		const char* szVertexProg, 
-		const char* szFragmentProg, 
-		const char* szGeometryProg = NULL);
-#else	// MOD-BY-LEETEN 01/12/2010-TO:
 GLhandleARB CSetShadersByString(
 	const char* szVertexProg, 
 	const char* szFragmentProg);
-#endif	// MOD-BY-LEETEN 01/12/2010-END
-// MOD-BY-LEETEN 01/10/2010-END
 // ADD-BY-LEETEN 08/14/2008-END
 
 bool BCheckObject(GLhandleARB obj);

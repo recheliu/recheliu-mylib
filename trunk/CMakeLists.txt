@@ -14,16 +14,9 @@ find_package(GLUT)
 
 # The required variables
 set(THIRDPARTY_DIR "D:/lib" CACHE PATH "The path to the 3rd party libraries")
-# # DEL-BY-LEETEN 01/19/2013-BEGIN
-# set(OPENCV_DIR "C:/OpenCV2.1" CACHE PATH "The installed path of OpenCV")
-# set(OPENCV_VER "210" CACHE STRING "The Version of OpenCV")
-# # DEL-BY-LEETEN 01/19/2013-END
 set(FREEGLUT OFF CACHE BOOL "Flag to decide whether FREEGLUT is used")
 set(WITH_STATIC_LINK OFF CACHE BOOL "Flag to decide whether static libraries are linked")	# ADD-BY-LEETEN 04/05/2012
-# DEL-BY-LEETEN 01/19/2013:	set(WITH_STATIC_OPENCV	OFF CACHE BOOL "Flag to decide whether the static version of OpenCV is linked")	# ADD-BY-LEETEN 07/12/2012
-# DEL-BY-LEETEN 12/03/2011		set(CMAKE_INSTALL_PREFIX ${PROJECT_SOURCE_DIR})
-
-# CUDA
+# CUDA
 set(CUDA_DIR "${CUDA_TOOLKIT_ROOT_DIR}")
 set(CUDA_INC_DIR "${CUDA_DIR}/include")
 set(CUDA_LIB_DIR "${CUDA_DIR}/lib")
@@ -102,8 +95,6 @@ set(MYLIB_LIB_DIR_RELEASE "${MYLIB_LIB_DIR}/release")
 include_directories (
 	"${CUDA_INC_DIR}"
 	"${CUDASDK_INC_DIR}"
-	# DEL-BY-LEETEN 01/19/2013:	"${OPENCV_INC_DIR}"
-	# DEL-BY-LEETEN 01/19/2013:	"${OPENCV_INC_DIR}/opencv"	
 	"${THIRDPARTY_INC_DIR}"
 	"${CMAKE_SOURCE_DIR}"
 	)
@@ -112,12 +103,7 @@ include_directories (
 list(APPEND LIB_DIRS
 	"${CUDA_LIB_DIR}"
 	"${CUDASDK_LIB_DIR}"
-	# DEL-BY-LEETEN 01/19/2013:	"${OPENCV_LIB_DIR}"
 	"${THIRDPARTY_LIB_DIR}"
-	# DEL-BY-LEETEN 09/02/2011-BEGIN
-	# "${MYLIB_LIB_DIR_DEBUG}"
-	# "${MYLIB_LIB_DIR_RELEASE}"
-	# DEL-BY-LEETEN 09/02/2011-END
 	)
 
 link_directories(
@@ -125,17 +111,10 @@ link_directories(
 )
 
 set(CMAKE_LIBRARY_PATH ${LIB_DIRS})
-# DEL-BY-LEETEN 01/11/2013:	find_library(FREEGLUT_LIB freeglut.lib)
 # ADD-BY-LEETEN 04/05/2012-BEGIN
 if( WITH_STATIC_LINK )
 	message(WARNING "To link static libraries in lib/ for VC projects, please add '/NODEFAULTLIB:LIBCMT' to CMAKE_EXE_LINKER_FLAGS.")
 
-	# DEL-BY-LEETEN 07/12/2012-BEGIN
-	# link_directories (
-		# "${OPENCV_DIR}/share/OpenCV/3rdparty/lib"
-		# )
-	# DEL-BY-LEETEN 07/12/2012-END
-		
 	add_definitions(
 		-DGLEW_STATIC
 		-DWITH_STATIC_LINK
@@ -158,12 +137,10 @@ endif()
 # ADD-BY-LEETEN 07/12/2012-BEGIN
 
 
-# MOD-BY-LEETEN 01/11/2013-FROM:	if( FREEGLUT_LIB AND FREEGLUT )
 if( FREEGLUT )
 	add_definitions(
 		-DFREEGLUT_LIB_PRAGMAS=0
 	)
-# MOD-BY-LEETEN 01/11/2013-END
 	add_definitions(
 		-DUSE_FREEGLUT
 	)
@@ -177,7 +154,6 @@ if( FREEGLUT )
 endif()
 
 add_definitions(
-	# DEL-BY-LEETEN 01/19/2013:	-DOPENCV_VER=${OPENCV_VER}
 	-DGLUT_BUILDING_LIB
 )
 
@@ -314,45 +290,15 @@ endfunction (build_executable)
 
 # ADD-BY-LEETEN 01/23/2011-END
  
-# # MOD-BY-LEETEN 01/26/2013-FROM:
-# if( WITH_OPENGL ) # ADD-BY-LEETEN 09/07/2011
-# ##############################################################
-# # shader2string
-# build_executable(shader2string ${PROJECT_SOURCE_DIR}/libshader/shader2string)
-# add_dependencies(shader2string libshader)
-# target_link_libraries (shader2string libshader)
-# if(DEFINED WIN32) 
-	# # ADD-BY-LEETEN 04/05/2012-BEGIN
-	# if( WITH_STATIC_LINK )
-		# target_link_libraries (shader2string "opengl32")
-		# target_link_libraries (shader2string "${THIRDPARTY_LIB_DIR}/glew32s.lib")
-	# else()
-	# # ADD-BY-LEETEN 04/05/2012-END
-	# target_link_libraries (shader2string "${THIRDPARTY_LIB_DIR}/glew32.lib")
-	# endif() # ADD-BY-LEETEN 04/05/2012
-# else()
-	# target_link_libraries (shader2string "GLEW")
-	# # ADD-BY-LEETEN 01/28/2011-BEGIN
-	# target_link_libraries (shader2string "glut")
-	# # ADD-BY-LEETEN 01/28/2011-END
-# endif()
-# endif() # if( WITH_OPENGL ) # ADD-BY-LEETEN 09/07/2011
-# # MOD-BY-LEETEN 01/26/2013-TO:
 build_executable(shader2string ${PROJECT_SOURCE_DIR}/libfilestr/shader2string)
-# # MOD-BY-LEETEN 01/26/2013-END
 
 ##############################################################
 foreach(LIB_NAME 
 			libbuf 
 			libclock 
-			# DEL-BY-LEETEN 09/07/2011	libcuda 
 			liblog 
-			# DEL-BY-LEETEN 09/07/2011	libfbow
-			# DEL-BY-LEETEN 09/07/2011	libshader 
 			libopt 
-			# DEL-BY-LEETEN 09/07/2011	libopengl 
 			libfps 
-			# DEL-BY-LEETEN 09/07/2011	libfbo
 			libgrid		# ADD-BY-LEETEN 12/03/2011
 			libfilestr	# ADD-BY-LEETEN 01/26/2013
 	)

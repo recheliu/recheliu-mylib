@@ -86,17 +86,6 @@ CTfUi::_Redo(int c)
 void 
 CTfUi::_ClearSelectedKnots(int c)
 {
-	#if	0	// DEL-BY-LEETEN 08/14/2008-BEGIN
-		for(vector<list<CKnot>::iterator>::iterator 
-			viiCKnot = pviSelectedKnots[c].begin();
-			viiCKnot != pviSelectedKnots[c].end();
-			viiCKnot ++)
-		{		
-			list<CKnot>::iterator viCKnot = *viiCKnot;
-			viCKnot->bSelected = false;
-		}
-	#endif	// DEL-BY-LEETEN 08/14/2008-END
-
 	pviSelectedKnots[c].clear();
 }
 
@@ -141,11 +130,7 @@ CTfUi::_DeleteSelectedKnots(int c)
 		pcTransFunc->plSplines[c].erase(viKnot);
 	}
 
-	// MOD-BY-LEETEN 2008/08/17-FROM:
-		//	pviSelectedKnots[c].clear();
-	// TO:
 	_ClearSelectedKnots(c);
-	// MOD-BY-LEETEN 2008/08/17-END
 }
 
 		// select knots in the region
@@ -157,30 +142,11 @@ CTfUi::_SelectKnots(int c, float l, float r, float b, float t)
 			viKnot != pcTransFunc->plSplines[c].end(); 
 			viKnot++)
 	{
-		#if	0	// DEL-BY-LEETEN 2008/08/16-BEGIN
-								// skip the fist and last knot
-			if( 0.0f == viKnot->fX || 1.0f == viKnot->fX )
-				continue;
-		#endif	// DEL-BY-LEETEN 2008/08/16-END
-
-		#if	0	// MOD-BY-LEETEN 08/14/2008-FROM:
-			if( l <= viKnot->fX && viKnot->fX < r &&
-				b <= viKnot->fY && viKnot->fY < t )
-		#else	// MOD-BY-LEETEN 08/14/2008-TO:
 		if( l <= viKnot->fX && viKnot->fX <= r &&
 			b <= viKnot->fY && viKnot->fY <= t )
-		#endif	// MOD-BY-LEETEN 08/14/2008-END
 		{
-			// DEL-BY-LEETEN 08/14/2008-BEGIN
-				// viKnot->bSelected = true;
-			// DEL-BY-LEETEN 08/14/2008-END
 			pviSelectedKnots[c].push_back(viKnot);
 		}
-
-		#if	0	// DEL-BY-LEETEN 08/14/2008-BEGIN
-			else
-				viKnot->bSelected = false;
-		#endif	// DEL-BY-LEETEN 08/14/2008-END
 	}
 }
 
@@ -259,43 +225,9 @@ CTfUi::_AddKnot(int c, float x, float y, bool bAddToHistory)
 }
 
 ///////////////////////////////////////////////////////////////////////////
-#if	0	// DEL-BY-LEETEN 08/14/2008-BEGIN
-	void
-	CTfUi::_CreateTransferFunc(int iNrOfEntries, float pfTransferFunc[])
-	{
-	_Begin();
-		for(int			c = 0; c < CTransFunc::NR_OF_COLORS; c++)
-		{
-			list<CKnot>::iterator liKnot = pcTransFunc->plSplines[c].begin();
-			list<CKnot>::iterator liPrevKnot;
-			for(int		e = 0; e < iNrOfEntries; e++)
-			{
-				float v = (0.5f + (float)e) / (float)iNrOfEntries;
-				for( ; liKnot != pcTransFunc->plSplines[c].end() && liKnot->fX <= v; liKnot++)
-				{
-					liPrevKnot = liKnot;
-				}
-
-				float fNextX = liKnot->fX;
-				float fNextY = liKnot->fY;
-				float fPrevX = liPrevKnot->fX;
-				float fPrevY = liPrevKnot->fY;
-
-				float fY = (fPrevY * (fNextX - v) + fNextY * (v - fPrevX) ) / (fNextX - fPrevX);
-				pfTransferFunc[e * CTransFunc::NR_OF_COLORS + c] = fY;
-			}
-		}
-	_End();
-	}
-#endif	// DEL-BY-LEETEN 08/14/2008-END
-
 ///////////////////////////////////////////////////////////////////////////
 void 
-// MOD-BY-LEETEN 08/14/2008-FROM:
-	// CTfUi::_PlotSpline(int c, bool bPlotKnots)
-// TO:
 CTfUi::_PlotSpline(int c, bool bEnhance)
-// MOD-BY-LEETEN 08/14/2008-END
 {
 _Begin();
 	switch(c)
@@ -324,47 +256,11 @@ _Begin();
 	glPopAttrib();	//	glPushAttrib(GL_LINE_BIT);
 	// ADD-BY-LEETEN 08/14/2008-END
 
-	// MOD-BY-LEETEN 08/14/2008-FROM:
-		// if( false == bPlotKnots )
-	// TO:
 	if( false == bEnhance )
-	// MOD-BY-LEETEN 08/14/2008-END
 		return;
 
 	glPushAttrib(GL_POINT_BIT);
 								// plot the selected knots
-
-		#if	0	// MOD-BY-LEETEN 08/14/2008-FROM:
-			glPointSize(8.0);
-			glBegin(GL_POINTS);
-				for(list<CKnot>::iterator 
-						viKnot	= plSplines[c].begin();
-						viKnot != plSplines[c].end(); 
-						viKnot++)
-				{
-					if( viKnot->bSelected )
-						glVertex2f(viKnot->fX, viKnot->fY);
-				}
-			glEnd();
-
-									// plot the selected knots
-			glPointSize(6.0);
-			glPushAttrib(GL_CURRENT_BIT);
-				glColor4f(0.0f, 0.0f, 0.0f, 1.0f);
-
-				glBegin(GL_POINTS);
-					for(list<CKnot>::iterator 
-							viKnot	= plSplines[c].begin();
-							viKnot != plSplines[c].end(); 
-							viKnot++)
-					{
-						if( viKnot->bSelected )
-							glVertex2f(viKnot->fX, viKnot->fY);
-					}
-				glEnd();
-			glPopAttrib();	//	glPushAttrib(GL_CURRENT_BIT);
-
-		#else	// MOD-BY-LEETEN 08/14/2008-TO:
 
 		glPointSize(8.0);
 		glBegin(GL_POINTS);
@@ -394,7 +290,6 @@ _Begin();
 				}
 			glEnd();
 		glPopAttrib();	//	glPushAttrib(GL_CURRENT_BIT);
-		#endif	// MOD-BY-LEETEN 08/14/2008-END
 
 								// plot the knots
 		glPointSize(4.0);
@@ -458,12 +353,7 @@ CTfUi::_KeyboardCB(unsigned char key, int x, int y)
 	case 'D': case 'd':	// D for 'delete'
 	// ADD-BY-LEETEN 2008/08/17-END
 	case 127:	// DEL
-		#if	0	// MOD-BY-LEETEN 2008/08/17-FROM:
-			_DeleteSelectedKnots(iEditingChannel);
-			_Redisplay();
-		#else	// MOD-BY-LEETEN 2008/08/17-TO:
 		this->_GluiFunc(EDIT_DELETE);
-		#endif	// MOD-BY-LEETEN 2008/08/17-END
 		break;
 	}
 }
@@ -551,11 +441,7 @@ CTfUi::_ClearChannel(int channel)
 	pcTransFunc->plSplines[channel].push_back(cEnd);
 
 	// ADD-By-TLEE 08/14/2008-BEGIN
-	// MOD-BY-LEETEN 2008/08/17-FROM:
-		// pviSelectedKnots[channel].clear();
-	// TO:
 	_ClearSelectedKnots(channel);
-	// MOD-BY-LEETEN 2008/08/17-END
 	// ADD-By-TLEE 08/14/2008-END
 }
 
@@ -614,9 +500,6 @@ CTfUi::_GluiFunc(unsigned short usValue)
 				for(int c = 0; c < CTransFunc::NR_OF_COLORS; c++)
 				{
 												// clear the set of selected knots
-					// MOD-BY-TLEE 2008/08/20-FROM:
-						// pviSelectedKnots[c].clear();
-					// TO:
 					_ClearSelectedKnots(c);
 												// reset the edit history
 					plcEditHistorys[c]._Clear();
@@ -653,29 +536,16 @@ CTfUi::_InitFunc()
 											// move the File panel to above the Edit panel
 	// ADD-BY-LEETEN 08/15/2008-BEGIN
 											// add new control for accessing TF as files
-	// MOD-BY-LEETEN 08/16/2008-FROM:
-		// GLUI_Panel *pcFilePanel = PCGetGluiSubwin()->add_panel("File");
-	// TO:
 	GLUI_Rollout* pcFilePanel = PCGetGluiSubwin()->add_rollout("File", false);
-	// MOD-BY-LEETEN 08/16/2008-END
 		pcEditText_Dir		= PCGetGluiSubwin()->add_edittext_to_panel(pcFilePanel, "Dir",		GLUI_EDITTEXT_TEXT, szDir,		IAddWid(FILE_DIR),		&CGlutWin::_GluiCB_static);
 		pcEditText_Filename = PCGetGluiSubwin()->add_edittext_to_panel(pcFilePanel, "Filename", GLUI_EDITTEXT_TEXT, szFilename, IAddWid(FILE_FILENAME), &CGlutWin::_GluiCB_static);
-		#if	0	// MOD-BY-LEETEN 2008/08/19-FROM:
-			_AddButton("Save", FILE_SAVE, pcFilePanel);
-			_AddButton("Open", FILE_OPEN, pcFilePanel);
-		#else	// MOD-BY-LEETEN 2008/08/19-TO:
 		PCGetGluiSubwin()->add_button_to_panel(pcFilePanel, "Save", IAddWid(FILE_SAVE), &CGlutWin::_GluiCB_static);
 		PCGetGluiSubwin()->add_button_to_panel(pcFilePanel, "Open", IAddWid(FILE_OPEN), &CGlutWin::_GluiCB_static);
-		#endif	// MOD-BY-LEETEN 2008/08/19-END
 
 									// by default, use current director and *.* as the filename
 	char szDir[1024+1];
 	#if defined(WIN32)
-		// MOD-BY-TLEE 2008/08/23-FROM:
-			// GetCurrentDirectoryA((DWORD)strlen(szDir), szDir);
-		// TO:
 		GetCurrentDirectoryA((DWORD)sizeof(szDir), szDir);
-		// MOD-BY-TLEE 2008/08/23-END
 	#else
 		getcwd(szDir, sizeof(szDir));
 	#endif
@@ -685,20 +555,7 @@ CTfUi::_InitFunc()
 	// ADD-BY-LEETEN 08/15/2008-END
 
 											// add a panel to group the radio group and buttons
-	#if	0	// MOD-BY-LEETEN 08/15/2008-FROM:
-		GLUI_Panel *pcChannelPanel = PCGetGluiSubwin()->add_panel("Channel");
-		GLUI_RadioGroup* pcRadioGroup = PCGetGluiSubwin()->add_radiogroup_to_panel(pcChannelPanel, &iEditingChannel, CTransFunc::COLOR_R);
-			PCGetGluiSubwin()->add_radiobutton_to_group(pcRadioGroup, "R");
-			PCGetGluiSubwin()->add_radiobutton_to_group(pcRadioGroup, "G");
-			PCGetGluiSubwin()->add_radiobutton_to_group(pcRadioGroup, "B");
-			PCGetGluiSubwin()->add_radiobutton_to_group(pcRadioGroup, "A");
-			pcRadioGroup->set_int_val(iEditingChannel);
-	#else	// MOD-BY-LEETEN 08/15/2008-TO:
-	// MOD-BY-LEETEN 08/16/2008-FROM:
-		// GLUI_Panel *pcEditPanel = PCGetGluiSubwin()->add_panel("Edit");
-	// TO:
 	GLUI_Rollout* pcEditPanel  = PCGetGluiSubwin()->add_rollout("Edit");
-	// MOD-BY-LEETEN 08/16/2008-END
 
 	GLUI_Panel *pcChannelPanel = PCGetGluiSubwin()->add_panel_to_panel(pcEditPanel, "Channel");
 	GLUI_RadioGroup *pcRadioGroup_Channel = PCGetGluiSubwin()->add_radiogroup_to_panel(pcChannelPanel, &iEditingChannel);
@@ -708,41 +565,16 @@ CTfUi::_InitFunc()
 		PCGetGluiSubwin()->add_radiobutton_to_group(pcRadioGroup_Channel, "A");
 		pcRadioGroup_Channel->set_int_val(iEditingChannel);
 
-		#if	0	// MOD-BY-LEETEN 08/19/2008-FROM:
-			_AddButton("Redo", EDIT_REDO, pcEditPanel);
-			_AddButton("Undo", EDIT_UNDO, pcEditPanel);
-			_AddButton("Clear", EDIT_CLEAR, pcEditPanel);
-			// ADD-BY-LEETEN 2008/08/17-BEGIN
-			_AddButton("Delete", EDIT_DELETE, pcEditPanel);
-			// ADD-BY-LEETEN 2008/08/17-END
-		#else	// MOD-BY-LEETEN 08/19/2008-TO:
 		PCGetGluiSubwin()->add_button_to_panel(pcEditPanel, "Redo",		IAddWid(EDIT_REDO),		&CGlutWin::_GluiCB_static);
 		PCGetGluiSubwin()->add_button_to_panel(pcEditPanel, "Undo",		IAddWid(EDIT_UNDO),		&CGlutWin::_GluiCB_static);
 		PCGetGluiSubwin()->add_button_to_panel(pcEditPanel, "Clear",	IAddWid(EDIT_CLEAR),	&CGlutWin::_GluiCB_static);
 		PCGetGluiSubwin()->add_button_to_panel(pcEditPanel, "Delete",	IAddWid(EDIT_DELETE),	&CGlutWin::_GluiCB_static);
-		#endif	// MOD-BY-LEETEN 08/19/2008-END
-	#endif	// MOD-BY-LEETEN 08/15/2008-END
-
-	#if	0	// DEL-BY-LEETEN 08/15/2008-BEGIN
-		_AddButton("Redo", EDIT_REDO);
-		_AddButton("Undo", EDIT_UNDO);
-		_AddButton("Update", EDIT_UPDATE);
-		// ADD-BY-LEETEN 08/14/2008-BEGIN
-		_AddButton("Clear", EDIT_CLEAR);
-		// ADD-BY-LEETEN 08/14/2008-END
-	#endif	// DEL-BY-LEETEN 08/15/2008-END
 
 	// ADD-BY-TLEE 2008/08/21-BEGIN
 	GLUI_Rollout* pcTfPanel = PCGetGluiSubwin()->add_rollout("TF Setting", false);
 	GLUI_Panel* pcPanel;
 	GLUI_Spinner *pcSpinner;
 		pcPanel = PCGetGluiSubwin()->add_panel_to_panel(pcTfPanel, "Data Value");
-			#if	0	// MOD-BY-LEETEN 08/12/2009-FROM:
-				pcSpinner = PCGetGluiSubwin()->add_spinner_to_panel(pcPanel, "Min", GLUI_SPINNER_FLOAT, &fHistogramMin);
-				pcSpinner->disable();
-				pcSpinner = PCGetGluiSubwin()->add_spinner_to_panel(pcPanel, "Max", GLUI_SPINNER_FLOAT, &fHistogramMax);
-				pcSpinner->disable();
-			#else	// MOD-BY-LEETEN 08/12/2009-TO:
 			pcSpinner = PCGetGluiSubwin()->add_spinner_to_panel(pcPanel, "Min (Significand)",	GLUI_SPINNER_FLOAT, &cHistogramMin.fSignificand);
 			pcSpinner->disable();
 			pcSpinner = PCGetGluiSubwin()->add_spinner_to_panel(pcPanel, "Min (Exponent)",		GLUI_SPINNER_FLOAT, &cHistogramMin.fExponent);
@@ -752,42 +584,19 @@ CTfUi::_InitFunc()
 			pcSpinner->disable();
 			pcSpinner = PCGetGluiSubwin()->add_spinner_to_panel(pcPanel, "Max (Exponent)",		GLUI_SPINNER_FLOAT, &cHistogramMax.fExponent);
 			pcSpinner->disable();
-			#endif	// MOD-BY-LEETEN 08/12/2009-END
 
 		pcPanel = PCGetGluiSubwin()->add_panel_to_panel(pcTfPanel, "TF Domain");
 
-		#if	0	// MOD-BY-LEETEN 08/12/2009-FROM:
-				PCGetGluiSubwin()->add_spinner_to_panel(pcPanel, "Min", GLUI_SPINNER_FLOAT, &pcTransFunc->fDomainMin);	
-				PCGetGluiSubwin()->add_spinner_to_panel(pcPanel, "Max", GLUI_SPINNER_FLOAT, &pcTransFunc->fDomainMax);	
-		#else	// MOD-BY-LEETEN 08/12/2009-TO:
 			PCGetGluiSubwin()->add_spinner_to_panel(pcPanel, "Min (Significand)",	GLUI_SPINNER_FLOAT, &pcTransFunc->cDomainMin.fSignificand);	
 			PCGetGluiSubwin()->add_spinner_to_panel(pcPanel, "Min (Exponent)",		GLUI_SPINNER_FLOAT, &pcTransFunc->cDomainMin.fExponent);	
 
 			PCGetGluiSubwin()->add_spinner_to_panel(pcPanel, "Max (Significand)",	GLUI_SPINNER_FLOAT, &pcTransFunc->cDomainMax.fSignificand);	
 			PCGetGluiSubwin()->add_spinner_to_panel(pcPanel, "Max (Exponent)",		GLUI_SPINNER_FLOAT, &pcTransFunc->cDomainMax.fExponent);	
-		#endif	// MOD-BY-LEETEN 08/12/2009-END
 	// ADD-BY-TLEE 2008/08/21-END
 
 											// move the File panel to above the Edit panel
-	#if	0	// DEL-BY-LEETEN 08/15/2008-BEGIN
-											// add new control for accessing TF as files
-		// ADD-BY-LEETEN 08/15/2008-BEGIN
-		GLUI_Panel *pcFilePanel = PCGetGluiSubwin()->add_panel("File");
-			pcEditText_Dir		= PCGetGluiSubwin()->add_edittext_to_panel(pcFilePanel, "Dir",		GLUI_EDITTEXT_TEXT, szDir,		IAddWid(FILE_DIR),		&CGlutWin::_GluiCB_static);
-			pcEditText_Filename = PCGetGluiSubwin()->add_edittext_to_panel(pcFilePanel, "Filename", GLUI_EDITTEXT_TEXT, szFilename, IAddWid(FILE_FILENAME), &CGlutWin::_GluiCB_static);
-			_AddButton("Save", FILE_SAVE, pcFilePanel);
-			_AddButton("Open", FILE_OPEN, pcFilePanel);
-		// ADD-BY-LEETEN 08/15/2008-END
-
-	#endif	// DEL-BY-LEETEN 08/15/2008-BEGIN
-
-	#if	0	// MOD-BY-LEETEN 08/19/2008-FROM:
-		_AddButton("Update", EDIT_UPDATE);
-		_AddButton("Exit", EDIT_EXIT);
-	#else	// MOD-BY-LEETEN 08/19/2008-TO:
 	PCGetGluiSubwin()->add_button("Update",	IAddWid(EDIT_UPDATE),	&CGlutWin::_GluiCB_static);
 	PCGetGluiSubwin()->add_button("Exit",	IAddWid(EDIT_EXIT),		&CGlutWin::_GluiCB_static);
-	#endif	// MOD-BY-LEETEN 08/19/2008-END
 
 							// specify a default window size for the TF editor
 	// ADD-BY-LEETEN 08/15/2008-BEGIN
@@ -814,13 +623,6 @@ CTfUi::_DisplayFunc()
 
 		// plot the histogram as backgroun
 		glPushMatrix();
-		// MOD-BY-TLEE 2008/08/21-FROM:
-			// glScalef(1.0f / (float)pfHistogram.num, 1.0f, 1.0f);
-		// TO:
-		#if	0	// MOD-BY-LEETEN 08/12/2009-FROM:
-			glScalef(1.0f / (float)(pcTransFunc->fDomainMax - pcTransFunc->fDomainMin), 1.0f, 1.0f);
-			glTranslatef(-pcTransFunc->fDomainMin, 0.0f, 0.0f);
-		#else	// MOD-BY-LEETEN 08/12/2009-TO:
 		float fDomainMin  = pcTransFunc->cDomainMin.FGetValue();
 		float fDomainMax  = pcTransFunc->cDomainMax.FGetValue();
 		float fHistogramMin = cHistogramMin.FGetValue();
@@ -828,26 +630,14 @@ CTfUi::_DisplayFunc()
 
 		glScalef(1.0f / (float)(fDomainMax - fDomainMin), 1.0f, 1.0f);
 		glTranslatef(-fDomainMin, 0.0f, 0.0f);
-		#endif	// MOD-BY-LEETEN 08/12/2009-END
-		// MOD-BY-TLEE 2008/08/21-END
 		
 		glBegin(GL_QUADS);
 			glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 			for(int i = 0; i < pfHistogram.num; i++)
 			{
 				float l, r, b, t;
-				#if	0	// MOD-BY-TLEE 2008/08/21-FROM:
-					l = (float)i;
-					r = (float)i + 1;
-				#else	// MOD-BY-TLEE 2008/08/21-TO:
-				#if	0	// MOD-BY-LEETEN 08/12/2009-FROM:
-					l = (float) i / (float) pfHistogram.num * (float)(fHistogramMax - fHistogramMin);
-					r = (float) (i + 1) / (float) pfHistogram.num * (float)(fHistogramMax - fHistogramMin);
-				#else	// MOD-BY-LEETEN 08/12/2009-TO:
 				l = (float) i / (float) pfHistogram.num * (float)(fHistogramMax - fHistogramMin) + fHistogramMin;
 				r = (float) (i + 1) / (float) pfHistogram.num * (float)(fHistogramMax - fHistogramMin) + fHistogramMin;
-				#endif	// MOD-BY-LEETEN 08/12/2009-END
-				#endif	// MOD-BY-TLEE 2008/08/21-END
 
 				b = 0.0f;
 				t = pfHistogram[i];
@@ -860,23 +650,9 @@ CTfUi::_DisplayFunc()
 
 		glPopMatrix();
 
-		#if	0	// MOD-BY-TLEE 2008/08/21-FROM:
-			// ADD-BY-LEETEN 2008/08/17-BEGIN
-			// plot the range
-			glColor4f(0.0f, 1.0f, 1.0f, 1.0f);
-			_DrawString(SZSprintf("%.2e", fHistogramMin), 0, 0, false);
-			_DrawString(SZSprintf("%.2e", fHistogramMax), -1, 0, true);
-			// ADD-BY-LEETEN 2008/08/17-END
-		#else	// MOD-BY-TLEE 2008/08/21-TO:
 		glColor4f(0.0f, 1.0f, 1.0f, 1.0f);
-		#if	0	// MOD-BY-LEETEN 08/12/2009-FROM:
-			_DrawString(SZSprintf("%.2e", pcTransFunc->fDomainMin), 0, 0, false);
-			_DrawString(SZSprintf("%.2e", pcTransFunc->fDomainMax), -1, 0, true);
-		#else	// MOD-BY-LEETEN 08/12/2009-TO:
 		_DrawString(SZSprintf("%.2e", pcTransFunc->cDomainMin.FGetValue()), 0, 0, false);
 		_DrawString(SZSprintf("%.2e", pcTransFunc->cDomainMax.FGetValue()), -1, 0, true);
-		#endif	// MOD-BY-LEETEN 08/12/2009-END
-		#endif	// MOD-BY-TLEE 2008/08/21-END
 
 		// plot the transfer func. as lines
 		for(int c = 0; c < CTransFunc::NR_OF_COLORS; c++)	
@@ -934,13 +710,6 @@ CTfUi::CTfUi()
 	pcEditText_Filename = NULL;
 	pcEditText_Dir = NULL;
 	// ADD-BY-LEETEN 08/15/2008-END
-
-	#if	0	// DEL-BY-LEETEN 08/12/2009-BEGIN
-		// ADD-BY-LEETEN 2008/08/17-BEGIN
-		fHistogramMin = 0.0f;
-		fHistogramMax = 1.0f;
-		// ADD-BY-LEETEN 2008/08/17-END
-	#endif	// DEL-BY-LEETEN 08/12/2009-END
 }
 
 CTfUi::~CTfUi(void)

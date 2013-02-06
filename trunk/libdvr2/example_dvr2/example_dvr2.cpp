@@ -8,10 +8,6 @@
 	#if		WITH_NRRD
 	#include "NrrdIO.h"
 	#ifdef WIN32
-		#if	0	// MOD-BY-LEETEN 04/21/2012-FROM:
-			#pragma comment (lib, "ITKNrrdIO.lib")      // link with my own library libfps
-			#pragma comment (lib, "zlib.lib")      // link with my own library libfps
-		#else		// MOD-BY-LEETEN 04/21/2012-TO:
 		#if		defined(_DEBUG)
 		#pragma comment (lib, "ITKNrrdIOd.lib")      
 		#pragma comment (lib, "zlibd.lib")      // link with my own library libfps
@@ -19,7 +15,6 @@
 		#pragma comment (lib, "ITKNrrdIO.lib")     
 		#pragma comment (lib, "zlib.lib")      // link with my own library libfps
 		#endif	// #if	defined(_DEBUG)
-		#endif		// MOD-BY-LEETEN 04/21/2012-END
 	#endif	// #ifdef	WIN32
 	#endif	// #if		WITH_NRRD
 	// ADD-By-LEETEN 10/21/2011-END
@@ -52,11 +47,7 @@
 
 					// buffer for the 3D volume
 	int iXDim, iYDim, iZDim;
-	// MOD-BY-LEETEN 07/05/2011-FROM:
-		// TBuffer3D<unsigned char> p3DubVol;
-	// TO:
 	TBuffer3D<float> p3DfVol;
-	// MOD-BY-LEETEN 07/05/2011-END
 	double dValueMin, dValueMax;
 
 					// histogram of the buffer
@@ -116,40 +107,12 @@ _ReadVolume(char* szPathFilename)
 	/* create a nrrd; at this point this is just an empty container */
 	nin = nrrdNew();
 
-	#if	0	// MOD-BY-LEETEN 01/07/2013-FROM:
-	/* tell nrrdLoad to only read the header, not the data */
-	NrrdIoState *nio = nrrdIoStateNew();
-	nrrdIoStateSet(nio, nrrdIoStateSkipData, AIR_TRUE);
-
-	/* read in the nrrd from file */
-	if (nrrdLoad(nin, szPathFilename, nio)) {
-		char *err = biffGetDone(NRRD);
-		LOG_ERROR(fprintf(stderr, "%s", err));
-		free(err);
-		return;
-	}
-
-	/* we're done with the nrrdIoState, this sets it to NULL */
-	nio = nrrdIoStateNix(nio);
-
-	LOG_VAR(nrrdElementNumber(nin));
-	LOG_VAR(nrrdElementSize(nin));
-	nin->data = calloc(nrrdElementNumber(nin), nrrdElementSize(nin));
-
 	if (nrrdLoad(nin, szPathFilename, NULL)) {
 		char *err = biffGetDone(NRRD);
 		LOG_ERROR(fprintf(stderr, "%s", err));
 		free(err);
 		return;
 	}
-	#else	// MOD-BY-LEETEN 01/07/2013-TO:
-	if (nrrdLoad(nin, szPathFilename, NULL)) {
-		char *err = biffGetDone(NRRD);
-		LOG_ERROR(fprintf(stderr, "%s", err));
-		free(err);
-		return;
-	}
-	#endif	// MOD-BY-LEETEN 01/07/2013-END
 	switch(nin->type)
 	{
 	case nrrdTypeUChar:	_BuildHistogram<unsigned char>();	break;
@@ -185,53 +148,25 @@ _ReadVolume(char* szPathFilename)
 // ADD-BY-LEETEN 10/21/2011-END
 
 void
-// MOD-BY-LEETEN 01/25/2011-FROM:
-	// _ReadVolume()
-// TO:
 _ReadVolume(char* szPathFilename)
-// MOD-BY-LEETEN 01/25/2011-END
 {
 	// read the volume from file
 	FILE *fpData;
-	// MOD-BY-LEETEN 01/25/2011-FROM:
-		// fpData = fopen("../data/hipip", "rb");		// load the hipip dataset for test
-	// TO:
 	fpData = fopen(szPathFilename, "rb");		// load the hipip dataset for test
-	// MOD-BY-LEETEN 01/25/2011-END
 
-	#if 0	// MOD-BY-LEETEN 07/05/2011-FROM:
-		assert(fpData);
-		fscanf(fpData, "%d %d %d\n", &iXDim, &iYDim, &iZDim);
-		fseek(fpData, 9, SEEK_SET);
-
-		p3DubVol.alloc(iXDim, iYDim, iZDim);
-
-		fread(&p3DubVol[0], sizeof(p3DubVol[0]), iXDim * iYDim * iZDim, fpData);
-	#else	// MOD-BY-LEETEN 07/05/2011-TO:
 	ASSERT_OR_LOG(fpData, perror(szPathFilename));
-#if	1	// TMP-MOD
 	fread(&iXDim, sizeof(iXDim), 1, fpData);
 	fread(&iYDim, sizeof(iYDim), 1, fpData);
 	fread(&iZDim, sizeof(iZDim), 1, fpData);
-#else
-	iXDim = 673;
-	iYDim = 148;
-	iZDim = 12;
-#endif
 	LOG_VAR(iXDim);
 	LOG_VAR(iYDim);
 	LOG_VAR(iZDim);
 	p3DfVol.alloc(iXDim, iYDim, iZDim);
 	fread(&p3DfVol[0], sizeof(p3DfVol[0]), iXDim * iYDim * iZDim, fpData);
-	#endif	// MOD-BY-LEETEN 07/05/2011-END
 	fclose(fpData);
 
 	// ADD-BY-TLEE 2008/08/17-BEGIN
 									// this value is for hipip only!
-	#if 0	// MOD-BY-LEETEN 07/05/2011-FROM:
-		dValueMin = 0.0;
-		dValueMax = 255.0;
-	#else	// MOD-BY-LEETEN 07/05/2011-TO:
 	dValueMin = +HUGE_VAL;
 	dValueMax = -HUGE_VAL;
 	for(int i = 0, 	z = 0; z < iZDim; z++)
@@ -264,7 +199,6 @@ _ReadVolume(char* szPathFilename)
 				double dValue = (double)p3DfVol[i];
 				p3DfVol[i] = (dValue - dValueMin)/(dValueMax - dValueMin);
 			}
-	#endif	// MOD-BY-LEETEN 07/05/2011-END
 	// ADD-BY-TLEE 2008/08/17-END
 
 	// ADD-By-LEETEN 10/21/2011-BEGIN
@@ -280,9 +214,6 @@ _BuildHistogram()
 	for(int i = 0,	z = 0; z < iZDim; z++)
 		for(int		y = 0; y < iYDim; y++)
 			for(int x = 0; x < iXDim; x++, i++)
-			// MOD-BY-LEETEN 07/05/2011-FROM:
-				// pfHist[p3DubVol[i]] += 1.0f;
-			// TO:
 			{
 				float fV = p3DfVol[i];
 				// ADD-BY-LEETEN 02/23/2012-BEGIN
@@ -293,14 +224,9 @@ _BuildHistogram()
 				iEntry = min(max(iEntry, 0), iNrOfTfEntries - 1);
 				pfHist[iEntry] += 1.0f;
 			}
-			// MOD-BY-LEETEN 07/05/2011-END
 
 	// normalize the histogram
-	// MOD-BY-LEETEN 07/05/2011-FROM:
-		// float fMaxCount = -HUGE_VAL;
-	// TO:
 	::fMaxCount = -HUGE_VAL;
-	// MOD-BY-LEETEN 07/05/2011-END
 	for(int b = 0; b < iNrOfTfEntries; b++) 
 		fMaxCount = max(fMaxCount, pfHist[b]);
 
@@ -314,16 +240,7 @@ _BuildHistogram()
 void
 _UpdateTf()
 {
-	#if	0	// MOD-BY-TLEE 08/14/2008-FROM:
-		cTfUi._CreateTransferFunc(iNrOfTfEntries, &pfTransFunc[0]);
-
-		cTfWin._SetTransferFunc(&pfTransFunc[0], iNrOfTfEntries);
-		cTfWin._Redisplay();
-	#else	// MOD-BY-TLEE 08/14/2008-TO:
-
 	cTransFunc._ExportColorMap(&pfTransFunc[0], iNrOfTfEntries);
-
-	#endif	// MOD-BY-TLEE 08/14/2008-END
 
 	// ADD-BY-TLEE 08/14/2008-BEGIN
 	float fTfDomainMin, fTfDomainMax;
@@ -352,31 +269,15 @@ main(int argn, char *argv[])
 	int iNextArg;
 	_OPTInit(true);
 
-	// MOD-BY-LEETEN 08/09/2010-FROM:
-		// assert( BOPTParse(argv, argn, 1, &iNextArg) ); 
-	// TO:
 	bool bIsOptParsed = BOPTParse(argv, argn, 1, &iNextArg);
 	assert(bIsOptParsed);
-	// MOD-BY-LEETEN 08/09/2010-END
 
 	atexit(quit);
 
 	// load the transfer func. and data set
-	#if 0	// MOD-BY-LEETEN 09/10/2010-FROM:
-		if( argn - iNextArg < 4 )
-		{
-			fprintf(stderr, "Usage: %s [<options>] <data.vol> <trasnfer_function.txt>\n", argv[0]);
-			return 0;
-		}
-
-	#else	// MOD-BY-LEETEN 09/10/2010-FROM:
 		// load the data set
-		// MOD-BY-LEETEN 01/25/2011-FROM:
-			// _ReadVolume();
-		// TO:
 		assert(iNextArg < argn);
 		_ReadVolume(argv[iNextArg]);
-		// MOD-BY-LEETEN 01/25/2011-END
 
 		// use the rainbow transfer func. for testing
 		pfTransFunc.alloc(CTransFunc::NR_OF_COLORS * iNrOfTfEntries);
@@ -385,25 +286,6 @@ main(int argn, char *argv[])
 		// ADD-BY-TLEE 08/14/2008-BEGIN
 		cTransFunc._SetTfDomain((float)dValueMin, (float)dValueMax);
 		// ADD-BY-TLEE 08/14/2008-END
-
-	#endif	// MOD-BY-LEETEN 09/10/2010-END
-
-	#if	0	// DEL-BY-LEETEN 10/21/2011-BEGIN
-		// ADD-BY-TLEE 08/13/2008-BEGIN
-		_BuildHistogram();
-		// ADD-BY-TLEE 08/13/2008-END
-	#endif	// DEL-BY-LEETEN 10/21/2011-END
-
-	#if	0		// DEL-BY-LEETEN 01/26/2011-BEGIN
-											// create the DVR window
-		cDvrWin.ICreate("Direct Volume Rendering",	false, 100, 328, 256, 256);
-			cDvrWin._SetVolume(GL_LUMINANCE, &p3DubVol[0], GL_LUMINANCE, GL_UNSIGNED_BYTE, iXDim, iYDim, iZDim);
-			cDvrWin._SetTransferFunc(&pfTransFunc[0], GL_RGBA, GL_FLOAT, iNrOfTfEntries);
-
-			cDvrWin._LoadSavedMatrix();	
-			cDvrWin._SetDataValue((float)dValueMin, (float)dValueMax);
-			cDvrWin._SetTfDomain((float)dValueMin, (float)dValueMax);
-	#endif	// DEL-BY-LEETEN 01/26/2011-END
 
 										// create the Transfer Func. window
 	// ADD-BY-TLEE 08/14/2008-BEGIN
@@ -424,20 +306,12 @@ main(int argn, char *argv[])
 	// ADD-BY-TLEE 08/14/2008-BEGIN
 	cTfUi._SetTransFunc(&cTransFunc);
 	cTfUi.ICreate("Transfer Function Editor");
-		// MOD-BY-TLEE 2008/08/17-FROM:
-			// cTfUi._SetHistogramAsBackground(iNrOfTfEntries, &pfHist[0]);
-		// TO:
 		cTfUi._SetHistogramAsBackground(&pfHist[0], iNrOfTfEntries, dValueMin, dValueMax);
-		// MOD-BY-TLEE 2008/08/17-END
 		cTfUi._SetUpdateFunc(_UpdateTf);
 	// ADD-BY-TLEE 08/13/2008-END
 
 	// ADD-BY-LEETEN 01/26/2011-BEGIN
 										// create the DVR window
-	#if 0	// MOD-BY-LEETEN 07/05/2011-FROM:
-		cDvrWin.ICreate("Direct Volume Rendering",	false, 100, 328, 256, 256);
-			cDvrWin._SetVolume(GL_LUMINANCE, &p3DubVol[0], GL_LUMINANCE, GL_UNSIGNED_BYTE, iXDim, iYDim, iZDim);
-	#else	// MOD-BY-LEETEN 07/05/2011-TO:
 	cDvrWin.ICreate("Direct Volume Rendering"); 
 	// ADD-BY-LEETEN 10/21/2011-BEGIN
 	#if 	WITH_NRRD	
@@ -453,14 +327,11 @@ main(int argn, char *argv[])
 		case nrrdTypeFloat:	iType = GL_FLOAT;			break;
 		}
 
-		// MOD-BY-LEETEN 02/04/2013-FROM:	cDvrWin._SetVolume(GL_LUMINANCE32F_ARB, nin->data, GL_LUMINANCE, iType, (int)nin->axis[0].size, (int)nin->axis[1].size, (int)nin->axis[2].size);
 		cDvrWin._SetVolume(GL_LUMINANCE32F_ARB, nin->data, iType, GL_LUMINANCE, (int)nin->axis[0].size, (int)nin->axis[1].size, (int)nin->axis[2].size);
-		// MOD-BY-LEETEN 02/04/2013-END
 	#else	// #if 	WITH_NRRD	
 	// ADD-BY-LEETEN 10/21/2011-END
 		cDvrWin._SetVolume(GL_LUMINANCE, &p3DfVol[0], GL_LUMINANCE, GL_FLOAT, iXDim, iYDim, iZDim);
 	#endif	// #if 	WITH_NRRD	// ADD-BY-LEETEN 10/21/2011
-	#endif	// MOD-BY-LEETEN 07/05/2011-END
 		cDvrWin._SetTransferFunc(&pfTransFunc[0], GL_RGBA, GL_FLOAT, iNrOfTfEntries);
 		cDvrWin._LoadSavedMatrix();		
 		cDvrWin._SetDataValue((float)dValueMin, (float)dValueMax);

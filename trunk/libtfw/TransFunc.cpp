@@ -8,22 +8,6 @@ void
 CTransFunc::_LoadRainBow()
 {
 			// setup the red channel
-	#if	0	// MOD-BY-LEETEN 03/18/2010-FROM:
-		plSplines[COLOR_R].clear();
-		plSplines[COLOR_R].push_back(CKnot(0.0f, 1.0f));
-		plSplines[COLOR_R].push_back(CKnot(1.0f, 0.0f));
-
-				// setup the green channel
-		plSplines[COLOR_G].clear();
-		plSplines[COLOR_G].push_back(CKnot(0.0f, 0.0f));
-		plSplines[COLOR_G].push_back(CKnot(0.5f, 1.0f));
-		plSplines[COLOR_G].push_back(CKnot(1.0f, 0.0f));
-
-				// setup the blue channel
-		plSplines[COLOR_B].clear();
-		plSplines[COLOR_B].push_back(CKnot(0.0f, 0.0f));
-		plSplines[COLOR_B].push_back(CKnot(1.0f, 1.0f));
-	#else	// DEL-BY-LEETEN 03/18/2010-TO:
 			// setup the blue channel
 	plSplines[COLOR_B].clear();
 	plSplines[COLOR_B].push_back(CKnot(0.0f, 1.0f));
@@ -39,31 +23,11 @@ CTransFunc::_LoadRainBow()
 	plSplines[COLOR_R].clear();
 	plSplines[COLOR_R].push_back(CKnot(0.0f, 0.0f));
 	plSplines[COLOR_R].push_back(CKnot(1.0f, 1.0f));
-	#endif	// MOD-BY-LEETEN 03/18/2010-END
 			// setup the alpha channel
 	plSplines[COLOR_A].clear();
-	#if	0	// MOD-BY-TLEE 2008/08/16-FROM:
-		plSplines[COLOR_A].push_back(CKnot(0.0f, 0.2f));
-		plSplines[COLOR_A].push_back(CKnot(1.0f, 0.2f));
-	#else	// MOD-BY-TLEE 2008/08/16-TO:
 	plSplines[COLOR_A].push_back(CKnot(0.0f, 0.5f));
 	plSplines[COLOR_A].push_back(CKnot(1.0f, 0.5f));
-	#endif	// MOD-BY-TLEE 2008/08/16-END
 }
-
-#if	0		// MOD-BY-LEETEN 08/15/2008-FROM:
-
-	void 
-	CTransFunc::_Load(char szFilename[])
-	{
-	}
-
-	void 
-	CTransFunc::_Save(char szFilename[])
-	{
-	}
-
-#else		// MOD-BY-LEETEN 08/15/2008-TO:
 
 										// this method checks the validabilty of the file
 										// if the file is valid, return TRUE else FALSE
@@ -176,25 +140,12 @@ CTransFunc::BSaveFile(const char szFilename[])
 		return false;
 	}
 
-	#if	0	// MOD-BY-LEETEN 2009/08/13-FROM:
-		// ADD-BY-LEETEN 08/12/2009-BEGIN
-		float fDomainMin, fDomainMax;
-		// ADD-BY-LEETEN 08/12/2009-END
-		fDomainMin = cDomainMin.FGetValue();
-		fDomainMax = cDomainMax.FGetValue();
-
-		// ADD-BY-TLEE 08/21/2008-BEGIN
-		fprintf(fpTf, "%f\n", fDomainMin);
-		fprintf(fpTf, "%f\n", fDomainMax);
-		// ADD-BY-TLEE 08/21/2008-END
-	#else	// MOD-BY-LEETEN 2009/08/13-TO:
 	CFloatValue cTemp;
 	cTemp._SetValue(cDomainMin.FGetValue());
 	fprintf(fpTf, "%fe%d\n", cTemp.fSignificand, (int)cTemp.fExponent);
 
 	cTemp._SetValue(cDomainMax.FGetValue());
 	fprintf(fpTf, "%fe%d\n", cTemp.fSignificand, (int)cTemp.fExponent);
-	#endif	// MOD-BY-LEETEN 2009/08/13-END
 
 	for(int c = 0; c < NR_OF_COLORS; c++)
 	{
@@ -213,8 +164,6 @@ CTransFunc::BSaveFile(const char szFilename[])
 
 	return true;
 }
-
-#endif		// MOD-BY-LEETEN 08/15/2008-END
 
 
 void 

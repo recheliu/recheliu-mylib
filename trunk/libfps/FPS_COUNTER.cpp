@@ -7,62 +7,18 @@
 //	Created:	20th July 2002
 //////////////////////////////////////////////////////////////////////////////////////////
 
-#if	0	// DEL-BY-LEETEN 01/23/2011-BEGIN
-	// ADD-BY-LEETEN-2009/06/01-BEGIN
-	#ifdef WIN32	
-	// ADD-BY-LEETEN-2009/06/01-END
-	#define WIN32_LEAN_AND_MEAN
-	#include <windows.h>
-	#include <mmsystem.h>
-	// ADD-BY-LEETEN-2009/06/01-BEGIN
-	#else
-	#include <time.h>
-	#endif
-	// ADD-BY-LEETEN-2009/06/01-END
-#endif	// DEL-BY-LEETEN 01/23/2011-END
-
 #include "FPS_COUNTER.h"
 
 void FPS_COUNTER::Update(void)
 {
 	//keep track of time passed and frame count
-	#if	0	// MOD-BY-LEETEN 01/23/2011-FROM:
-		// ADD-BY-LEETEN-2009/06/01-BEGIN
-		#ifdef WIN32
-		// ADD-BY-LEETEN-2009/06/01-END
-
-		time=timeGetTime()*0.001f;
-
-		// ADD-BY-LEETEN-2009/06/01-BEGIN
-		#else
-		time=(float)clock() * 0.001;
-		#endif
-		// ADD-BY-LEETEN-2009/06/01-END
-		++frames;
-
-		//If a second has passed
-		if(time-lastTime>1.0f)
-		{
-			fps=frames/(time-lastTime);	//update the number of frames per second
-			lastTime=time;				//set time for the start of the next count
-			frames=0;					//reset fps for this second
-		}
-	#else	// MOD-BY-LEETEN 01/23/2011-TO:
 	#ifdef WIN32
 	time = timeGetTime()/1000.0;
 	#else
 	struct timespec cTime;
-	// MOD-BY-LEETEN 01/24/2011-FROM:
-		// clock_gettime(CLOCK_REALTIME, &cTime)
-	// TO:
 		clock_gettime(CLOCK_REALTIME, &cTime);
-	// MOD-BY-LEETEN 01/24/2011-END
 	time = (double)cTime.tv_sec + (double)cTime.tv_nsec/1.0e+9;
 	#endif
-	#if	0	// MOD-BY-LEETEN 01/24/2011-FROM:
-		fps = (float)(1.0 / (time-lastTime));
-		lastTime=time;				//set time for the start of the next count
-	#else	// MOD-BY-LEETEN 01/24/2011-TO:
 	//If a second has passed
 	if(time-lastTime>1.0)
 	{
@@ -71,6 +27,4 @@ void FPS_COUNTER::Update(void)
 		frames=0;					//reset fps for this second
 	}
 	frames++;
-	#endif	// MOD-BY-LEETEN 01/24/2011-END
-	#endif		// MOD-BY-LEETEN 01/23/2011-END
 }
