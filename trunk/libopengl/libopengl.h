@@ -55,6 +55,7 @@
 			(WIDTH), (HEIGHT), 0, (FORMAT), (TYPE), (PTR));	\
 		}
 
+#if	0	// MOD-BY-LEETEN 02/05/2013-FROM:
 #define CHECK_OPENGL_ERROR(prefix, terminate)	\
 		{\
 			GLint iError = glGetError();	\
@@ -64,6 +65,19 @@
 				if( terminate )	exit(-iError);	\
 			}\
 		}
+
+#else	// MOD-BY-LEETEN 02/05/2013-TO:
+#define CHECK_OPENGL_ERROR(prefix, terminate)	\
+		{\
+			GLint iError = glGetError();	\
+			if( iError )	\
+			{\
+				fprintf(stderr, "%s@%s(%d): %s\n", __FUNCTION__, __FILE__, __LINE__, gluErrorString(iError));	\
+				if( terminate )	exit(-iError);	\
+			}\
+		}
+
+#endif	// MOD-BY-LEETEN 02/05/2013-END
 
 	// Declaration of functions
 // DEL-BY-LEETEN 2009/11/05-BEGIN
