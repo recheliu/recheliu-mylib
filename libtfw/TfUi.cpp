@@ -9,6 +9,16 @@
 
 #include "TfUi.h"
 
+// ADD-BY-LEETEN 02/06/2013-BEGIN
+void
+CTfUi::_SetReceiver(
+	CReceiver *pcReceiver
+)
+{
+	this->pcReceiver = pcReceiver;
+}
+// ADD-BY-LEETEN 02/06/2013-END
+
 void 
 CTfUi::_Undo(int c)
 {
@@ -576,6 +586,8 @@ CTfUi::_GluiFunc(unsigned short usValue)
 			_UpdateFunc();
 		else
 			_AddToLog("_UpdateFunc is not given yet.");
+
+		pcReceiver->_Receive(pcTransFunc);	// ADD-BY-LEETEN 02/06/2013
 		break;
 
 	// ADD-BY-LEETEN 08/14/2008-BEGIN
@@ -909,6 +921,7 @@ CTfUi::_DisplayFunc()
 //////////////////////////////////////////////////////////////////////////
 CTfUi::CTfUi()
 {
+	pcReceiver = &cDefaultReceiver;	// ADD-BY-LEETEN 02/06/2013
 	iEditingChannel = CTransFunc::COLOR_A;
 	pcTransFunc = NULL;
 	_UpdateFunc = NULL;

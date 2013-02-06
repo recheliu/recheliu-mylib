@@ -44,6 +44,23 @@ class CTfUi :
 {
 	///////////////////////////////////////////////
 public:
+	// ADD-BY-LEETEN 02/06/2013-BEGIN
+	class CReceiver
+	{
+	public:
+		virtual void _Receive(CTransFunc *pcTransFunc){}
+	};
+	// a default receiver. This is mainly for the compilation purpose.
+	CReceiver cDefaultReceiver;	
+
+	// pointer to the receiver.
+	CReceiver *pcReceiver;
+	
+	// a function to setup the receivier.
+	void
+	_SetReceiver(CReceiver *pcReceiver);
+	// ADD-BY-LEETEN 02/06/2013-END
+
 	enum
 	{
 		EDIT_REDO,
