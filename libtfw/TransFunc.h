@@ -37,33 +37,19 @@ using namespace std;
 class CTransFunc {
 
 // ADD-BY-TLEE 08/21/2008-BEGIN
-	// MOD-BY-LEETEN 08/12/2009-FROM:
-		// float fDomainMin, fDomainMax;
-	// TO:
 	CFloatValue cDomainMin, cDomainMax;
-	// MOD-BY-LEETEN 08/12/2009-END
 
 public:
 	void _SetTfDomain(float fMin, float fMax)
 	{
-		#if	0	// MOD-BY-LEETEN 08/12/2009-FROM:
-			fDomainMin = fMin;
-			fDomainMax = fMax;
-		#else	// MOD-BY-LEETEN 08/12/2009-TO:
 		cDomainMin._SetValue(fMin);
 		cDomainMax._SetValue(fMax);
-		#endif	// MOD-BY-LEETEN 08/12/2009-END
 	}
 
 	void _GetTfDomain(float *pfMin, float *pfMax)
 	{
-		#if	0	// MOD-BY-LEETEN 08/12/2009-FROM:
-			*pfMin = fDomainMin;
-			*pfMax = fDomainMax;
-		#else	// MOD-BY-LEETEN 08/12/2009-TO:
 		*pfMin = cDomainMin.FGetValue();
 		*pfMax = cDomainMax.FGetValue();
-		#endif	// MOD-BY-LEETEN 08/12/2009-END
 	}
 // ADD-BY-TLEE 08/21/2008-END
 
@@ -79,43 +65,14 @@ public:
 protected:
 	list<CKnot>	plSplines[NR_OF_COLORS];		// the L1 spline
 
-#if	0	// MOD-By-LEETEN 01/05/2010-FROM:
-	public:
-		CTransFunc()
-		{
-			CKnot cBegin(0.0f, 0.0f), cEnd(1.0f, 0.0f);
-			for(int c = 0; c < NR_OF_COLORS; c++)	
-			{
-				plSplines[c].push_back(cBegin);
-				plSplines[c].push_back(cEnd);
-			}
-
-			#if	0	// DEL-BY-LEETEN 08/12/2009-BEGIN
-				// ADD-BY-TLEE 08/14/2008-BEGIN
-				fDomainMin = 0.0;
-				fDomainMax = 1.0;
-				// ADD-BY-TLEE 08/14/2008-END
-			#endif	// DEL-BY-LEETEN 08/12/2009-END
-		}
-
-	public:
-		~CTransFunc()
-		{
-		}
-#else	// MOD-By-LEETEN 01/05/2010-TO:
 public:
 	CTransFunc();
 	~CTransFunc();
-#endif	// MOD-By-LEETEN 01/05/2010-END
 
 public:
 	void _LoadRainBow();
 
 										// methods about load/save files
-	#if	0	// MOD-BY-LEETEN 08/15/2008-FROM:
-		void _Load(char szFilename[]);
-		void _Save(char szFilename[]);
-	#else	// MOD-BY-LEETEN 08/15/2008-TO:
 
 										// this method checks the validabilty of the file
 										// if the file is valid, return TRUE else FALSE
@@ -146,7 +103,6 @@ public:
 										// this method write the four splines to the specified file 
 										// if true, return TRUE else FALSE
 	bool BSaveFile(const char szFilename[]);
-	#endif	// MOD-BY-LEETEN 08/15/2008-END
 
 	void _ExportColorMap(float pfColorMap[], int iNrOfEntries);
 

@@ -22,7 +22,7 @@ using namespace std;
 		#if	OPENCV_VER >= 200
 
 	// ADD-BY-LEETEN 04/05/2012-BEGIN	
-	#if WITH_STATIC_OPENCV	// MOD-BY-LEETEN 07/12/2012-FROM:	#if WITH_STATIC_LINK
+	#if WITH_STATIC_OPENCV	
 		#if defined(_DEBUG)
 			#pragma comment (lib, "libjasperd.lib")
 			#pragma comment (lib, "libjpegd.lib")
@@ -42,7 +42,7 @@ using namespace std;
 			#pragma message( OPENCV_MESSAGE  )
 			
 			// ADD-BY-LEETEN 04/05/2012-BEGIN	
-			#if defined( WITH_STATIC_OPENCV	) && defined( _DEBUG )	// MOD-BY-LEETEN 07/12/2012-:	#if defined( WITH_STATIC_LINK ) && defined( _DEBUG )
+			#if defined( WITH_STATIC_OPENCV	) && defined( _DEBUG )
 				#pragma comment (lib, OPENCV_CORE_DEBUG_LIB )      
 				#pragma comment (lib, OPENCV_HIGHGUI_DEBUG_LIB )   
 			#else	// #if defined( WITH_STATIC_LINK) && !defined( _DEBUG )
@@ -74,15 +74,11 @@ using namespace std;
 #endif	// #if	WITH_OPENCV	// ADD-BY-LEETEN 01/19/2013
 
 	#pragma comment (lib, "winmm.lib")      /* link with Windows MultiMedia lib */
-	// MOD-BY-LEETEN 08/05/2010-FROM:
-		// #pragma comment (lib, "libfps.lib")      // link with my own library libfps
-	// TO:
 	#ifdef _DEBUG
 		#pragma comment (lib, "libfps_d.lib")      // link with my own library libfps
 	#else
 		#pragma comment (lib, "libfps_r.lib")      // link with my own library libfps
 	#endif
-	// MOD-BY-LEETEN 08/05/2010-END
 
 
 	// ADD-BY-LEETEN 11/17/2008-BEGIN

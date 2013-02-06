@@ -62,11 +62,7 @@ public:
 	virtual void _EndDisplay();		
 	// ADD-BY-LEETEN 12/30/2009-BEGIN
 	virtual void 
-		// MOD-BY-LEETEN 01/24/2011-FROM:
-			// CDvrWin2::_RenderSlab(
-		// TO:
 		_RenderSlab(
-		// MOD-BY-LEETEN 01/24/2011-END
 			int iSlab, int iNrOfSlabs,
 			double pdModelviewMatrix[], double pdProjectionMatrix[], int piViewport[],
 			double dMinX, double dMaxX, 

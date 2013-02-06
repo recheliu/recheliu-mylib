@@ -41,10 +41,6 @@ _Begin();
 	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);	
 	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);	
 	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);	
-	#if	0	// MOD-BY-LEETEN 02/04/2013-FROM:
-	glTexImage3D(GL_TEXTURE_3D, 0, eInternalFormat,	
-		(GLsizei)iXDim, (GLsizei)iYDim, (GLsizei)iZDim, 0, eType, eFormat, pVol);
-	#else	// MOD-BY-LEETEN 02/04/2013-TO:
 	int iUnpackAlignment;
 	glGetIntegerv(GL_UNPACK_ALIGNMENT, &iUnpackAlignment);
 
@@ -53,7 +49,6 @@ _Begin();
 		(GLsizei)iXDim, (GLsizei)iYDim, (GLsizei)iZDim, 0, eFormat, eType, pVol);
 
 	glPixelStorei(GL_UNPACK_ALIGNMENT, iUnpackAlignment);
-	#endif	// MOD-BY-LEETEN 02/04/2013-END
 
 _End(); 
 }
@@ -136,10 +131,6 @@ CDvrWin2::_DisplayFunc()
 	_BeginDisplay();
 
 	glPushAttrib(GL_ENABLE_BIT);
-	#if	0	// DEL-BY-LEETEN 09/10/2010-BEGIN
-		glEnable( GL_DEPTH_TEST);
-		glEnable( GL_BLEND);
-	#endif	// DEL-BY-LEETEN 09/10/2010-END
 	glEnable( GL_TEXTURE_GEN_S );
 	glEnable( GL_TEXTURE_GEN_T );
 	glEnable( GL_TEXTURE_GEN_R );
@@ -214,22 +205,6 @@ CDvrWin2::_DisplayFunc()
 	glGetDoublev(GL_MODELVIEW_MATRIX, tModelviewMatrix);
 	for(int i=0; i<sizeof(pdCornerCoord)/sizeof(pdCornerCoord[0]); i++) 
 	{
-		#if	0		// MOD-BY-LEETEN 12/30/2009-FROM:
-			double dX, dY, dZ;
-			gluProject(
-				pdCornerCoord[i][0], pdCornerCoord[i][1], pdCornerCoord[i][2],
-				tModelviewMatrix, tProjectionMatrix, piViewport,
-				&dX, &dY, &dZ);
-
-			if( dX < dMinX )	dMinX = dX;
-			if( dX > dMaxX )	dMaxX = dX;
-
-			if( dY < dMinY )	dMinY = dY;
-			if( dY > dMaxY )	dMaxY = dY;
-
-			if( dZ < dMinZ )	dMinZ = dZ;
-			if( dZ > dMaxZ )	dMaxZ = dZ;
-		#else	// MOD-BY-LEETEN 12/30/2009-TO:
 		double dX_win, dY_win, dZ_win;
 		double dX_eye, dY_eye, dZ_eye;
 		gluProject(
@@ -248,7 +223,6 @@ CDvrWin2::_DisplayFunc()
 		dMaxY = max(dMaxY, dY_eye);
 		dMinZ = min(dMinZ, dZ_eye);
 		dMaxZ = max(dMaxZ, dZ_eye);
-		#endif	// MOD-BY-LEETEN 12/30/2009-END
 	}
 
 						// initialize the index for pint-pong rendering			
@@ -298,33 +272,6 @@ CDvrWin2::_DisplayFunc()
 		glBindTexture(pcSlabs[1 - iSlab].cBuffer.eTarget, pcSlabs[1 - iSlab].cBuffer.t2d);
 	
 							// rendering the quad
-		#if	0	// MOD-BY-LEETEN 12/30/2009-FROM:
-			double dX, dY, dZ;
-			double dColor = (double)z / (double)iNrOfSlices;
-
-			double dDepth = (1.0 - (double)z / (double)iNrOfSlices) * (dMaxZ - dMinZ) + dMinZ; 
-			glBegin(GL_QUADS);
-				gluUnProject(dMinX, dMinY, dDepth,
-					tModelviewMatrix, tProjectionMatrix, piViewport,
-					&dX, &dY, &dZ);
-				glVertex3d(dX, dY, dZ);
-
-				gluUnProject(dMaxX, dMinY, dDepth,
-					tModelviewMatrix, tProjectionMatrix, piViewport,
-					&dX, &dY, &dZ);
-				glVertex3d(dX, dY, dZ);
-
-				gluUnProject(dMaxX, dMaxY, dDepth,
-					tModelviewMatrix, tProjectionMatrix, piViewport,
-					&dX, &dY, &dZ);
-				glVertex3d(dX, dY, dZ);
-
-				gluUnProject(dMinX, dMaxY, dDepth,
-					tModelviewMatrix, tProjectionMatrix, piViewport,
-					&dX, &dY, &dZ);
-				glVertex3d(dX, dY, dZ);
-			glEnd();
-		#else	// MOD-BY-LEETEN 12/30/2009-TO:
 		_RenderSlab(
 			z, iNrOfSlices, 
 
@@ -333,7 +280,6 @@ CDvrWin2::_DisplayFunc()
 			dMinX, dMaxX, 
 			dMinY, dMaxY, 
 			dMinZ, dMaxZ);
-		#endif	// MOD-BY-LEETEN 12/30/2009-END
 
 							// switch the slab index for ping-pong rendering
 		iSlab = 1 - iSlab;
@@ -380,12 +326,8 @@ CDvrWin2::_ReshapeFunc(int w, int h)
 				GL_FRAMEBUFFER_EXT, GL_DEPTH_ATTACHMENT_EXT,
 				cDepth.eTarget, cDepth.t2d, 0);
 
-			// MOD-BY-LEETEN 08/05/2010-FROM:
-				// assert( GL_FRAMEBUFFER_COMPLETE_EXT == EGetFboStatus(true) );
-			// TO:
 			unsigned int iFboStatus = EGetFboStatus(true);
 			assert( GL_FRAMEBUFFER_COMPLETE_EXT == iFboStatus );
-			// MOD-BY-LEETEN 08/05/2010-END
 		}
 
 		// reset the FBO
@@ -397,11 +339,6 @@ void
 CDvrWin2::_InitFunc()
 {
 	glewInit();
-
-						// setup the blending equation for back-to-front composition
-	// DEL-BY-LEETEN 09/10/2010-BEGIN
-		// glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	// DEL-BY-LEETEN 09/10/2010-END
 
 						// initialize the default FBO
 	_InitFbo();

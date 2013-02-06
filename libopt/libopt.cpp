@@ -1,7 +1,3 @@
-#if 0	// MOD-BY-LEETEN 07/08/2008-FROM:
-#include "stdafx.h"
-#else	// MOD-BY-LEETEN 07/08/2008-TO:
-
 	#include <vector>
 	#include <iostream>	// ADD-BY-LEETEN 01/05/2011
 
@@ -19,24 +15,8 @@
 
 	#include "libopt.h"
 
-#endif	// MOD-BY-LEETEN 07/08/2008-END
-
 #define CHECK_ARGUMENT_PREFIX(szArg)	assert( szArg[0] == '-' );
 
-#if	0	// MOD-BY-LEETEN 01/05/2011-FROM:
-	#define ADD_ENTRY(arg_name, nr_of_parameters, parameter_list, opt_type)\
-		{\
-			CHECK_ARGUMENT_PREFIX(arg_name);	\
-			COptEntry cEntry;	\
-			cEntry.eType = opt_type;	\
-			cEntry.szArgName = arg_name;	\
-			cEntry.iNrOfParameters = nr_of_parameters;	\
-			cEntry.ppParameters = (void**)parameter_list;	\
-			cEntry.szComment = "";	\
-			vcOptTable.push_back(cEntry);	\
-		}
-
-#else	// MOD-BY-LEETEN 01/05/2011-TO:
 #define ADD_ENTRY(arg_name, nr_of_parameters, parameter_list, opt_type)\
 	{\
 		CHECK_ARGUMENT_PREFIX(arg_name);	\
@@ -55,29 +35,6 @@
 		}	\
 		vcOptTable.push_back(cEntry);	\
 	}
-
-#endif	// MOD-BY-LEETEN 01/05/2011-END
-
-#if	0	// MOD-BY-LEETEN 08/05/2010-FROM:
-	#define ADD_VECTOR_PARAMETERS(arg_name, addr_type, value_type, nr_of_parameters, add_entry_func)	\
-		{\
-			addr_type **parameter_list;	\
-			if( nr_of_parameters )	\
-				assert( parameter_list = (addr_type**)calloc(sizeof(addr_type*), nr_of_parameters) );	\
-			va_list ap; \
-			va_start(ap, nr_of_parameters);	\
-			for(int p=0; p<nr_of_parameters; p++) \
-			{	\
-				addr_type *parameter_addr = va_arg(ap, addr_type*);	\
-				value_type default_value = va_arg(ap, value_type);	\
-				*parameter_addr = (addr_type)default_value;	\
-				parameter_list[p] = parameter_addr;	\
-			}	\
-			va_end(ap);	\
-			add_entry_func(arg_name, nr_of_parameters, parameter_list);	\
-		}
-
-#else	// MOD-BY-LEETEN 08/05/2010-TO:
 
 	#define ADD_VECTOR_PARAMETERS(arg_name, addr_type, value_type, nr_of_parameters, add_entry_func)	\
 	{\
@@ -138,12 +95,8 @@
 
 	// ADD-BY-LEETEN 01/05/2011-END
 
-#endif	// MOD-BY-LEETEN 08/05/2010-END
-
 //////////////////////////////////////////////////////////////////////////
-// MOD-BY-LEETEN 07/02/2008-FROM:
 // typedef enum {OPT_TYPE_FLAG, OPT_TYPE_INT, OPT_TYPE_FLOAT, OPT_TYPE_STRING, OPT_TYPE_BOOL} EOptType;
-// MOD-BY-LEETEN 07/02/2008-TO:
 typedef enum {
 	OPT_TYPE_FLAG, 
 	OPT_TYPE_INT, 
@@ -152,7 +105,6 @@ typedef enum {
 	OPT_TYPE_BOOL,
 	OPT_TYPE_ENUM,
 } EOptType;
-// MOD-BY-LEETEN 07/02/2008-END
 
 // ADD-BY-LEETEN 07/02/2008-BEGIN
 typedef struct CEnumEntry 
@@ -173,12 +125,10 @@ typedef struct COptEntry
 	int *piFlagParameter;
 	int iFlagValue;
 
-	// MOD-BY-LEETEN 07/02/2008-BEGIN
 	int iNrOfEnumValues;
 	vector<CEnumEntry> vcEnumTable;
 
 	const char *szComment;
-	// MOD-BY-LEETEN 07/02/2008-END
 
 	COptEntry()
 	{
@@ -200,12 +150,8 @@ int (*strcmp_func)(const char*, const char*);
 int my_stricmp(const char* sz1, const char* sz2)
 {
 	char c1, c2;
-	// MOD-BY-LEETEN 03/31/2008-BEGIN
-	// FROM: for(const char *cp1 = sz1, *cp2 = sz2;
-	// TO:
 	const char *cp1 = sz1, *cp2 = sz2;
 	for(;
-	// MOD-BY-LEETEN 03/31/2008-END
 		*cp1 && *cp2; cp1++, cp2++) 
 	{
 		if( *cp1 == *cp2 )
@@ -225,20 +171,8 @@ int my_stricmp(const char* sz1, const char* sz2)
 				continue;
 		}
 
-		#if	0	// MOD-BY-LEETEN 03/31/2008-FROM:
-
-		if( *cp1 < *cp2 )
-			return -1;
-
-		if( *cp1 > *cp2 )
-			return 1;
-
-		#else	// MOD-BY-LEETEN 03/31/2008-TO:
-
 		if( *cp1 !=  *cp2 )
 			break;
-
-		#endif	// MOD-BY-LEETEN 03/31/2008-END
 	}
 
 	// ADD-BY-LEETEN 03/31/2008-BEGIN
@@ -277,20 +211,6 @@ _AddParamName(
 void 
 _OPTAddBoolean(const char* szArgName, int *piParameter, int iDefaultValue)
 {
-	#if 0	// MOD-BY-TLEE 07/02/2008-FROM:
-
-	CHECK_ARGUMENT_PREFIX(szArgName);
-
-	*piParameter = iDefaultValue;
-
-	int** ppiParameters = (int**)calloc(sizeof(int**), 1);
-	assert(ppiParameters);
-	ppiParameters[0] = piParameter;
-
-	ADD_ENTRY(szArgName, 1, ppiParameters, OPT_TYPE_BOOL);
-
-	#else	// MOD-BY-TLEE 07/02/2008-TO:
-
 	_OPTAddEnum(szArgName, piParameter, iDefaultValue, 
 		4,
 		"0",		OPT_FALSE,
@@ -300,8 +220,6 @@ _OPTAddBoolean(const char* szArgName, int *piParameter, int iDefaultValue)
 	);
 	vector<COptEntry>::reverse_iterator rivcOptEntry = vcOptTable.rbegin();
 	rivcOptEntry->eType = OPT_TYPE_BOOL;
-
-	#endif	// MOD-BY-TLEE 07/02/2008-END
 }
 	
 
@@ -473,17 +391,6 @@ _OPTAddEnum(const char* szArgName, int *piParameter, int iDefault, int iNrOfEnum
 	va_end(ap);	
 }
 
-#if	0	// MOD-BY-LEETEN 01/05/2011-FROM:
-	#define PRINT_OPTION_USAGE(arg_name, type_str, nr_of_elems)	\
-		fprintf(stderr, "%s ", arg_name);		\
-		for(int e = 0; e < (nr_of_elems); e++)	\
-		{										\
-			fprintf(stderr, "%s ", type_str);	\
-		}										\
-		fprintf(stderr, "\n");					\
-
-#else	// MOD-BY-LEETEN 01/05/2011-TO:
-
 template<typename T>
 void
 _PrintOptionUsage(
@@ -516,8 +423,6 @@ _PrintOptionUsage(
 	}
 }
 	
-#endif	// MOD-BY-LEETEN 01/05/2011-END
-
 void
 _OptPrintComment()
 {
@@ -525,33 +430,6 @@ _OptPrintComment()
 	{
 		switch( pvcOptEntry->eType )
 		{
-		#if	0	// MOD-BY-LEETEN 01/05/2011-FROM:
-			// ADD-BY-LEETEN 2008/11/03-BEGIN
-			case OPT_TYPE_FLAG:
-				PRINT_OPTION_USAGE(pvcOptEntry->szArgName, "", 0);
-				break;
-			// ADD-BY-LEETEN 2008/11/03-END
-			case OPT_TYPE_BOOL:
-				PRINT_OPTION_USAGE(pvcOptEntry->szArgName, "<bool>", 1);
-				break;
-
-			case OPT_TYPE_INT:	
-				PRINT_OPTION_USAGE(pvcOptEntry->szArgName, "<integer>", pvcOptEntry->iNrOfParameters);
-				break;
-
-			case OPT_TYPE_FLOAT:
-				PRINT_OPTION_USAGE(pvcOptEntry->szArgName, "<float>", pvcOptEntry->iNrOfParameters);
-				break;
-
-			case OPT_TYPE_STRING:
-				PRINT_OPTION_USAGE(pvcOptEntry->szArgName, "<string>", pvcOptEntry->iNrOfParameters);
-				break;
-
-			case OPT_TYPE_ENUM:
-				PRINT_OPTION_USAGE(pvcOptEntry->szArgName, "<enum>", 1);
-
-		#else	// MOD-BY-LEETEN 01/05/2011-TO:
-
 		case OPT_TYPE_FLAG:
 			// PRINT_OPTION_USAGE(pvcOptEntry, bool, "flag", 0, false);
 			_PrintOptionUsage<bool>(pvcOptEntry, "", false);
@@ -580,8 +458,6 @@ _OptPrintComment()
 		case OPT_TYPE_ENUM:
 			// PRINT_OPTION_USAGE(pvcOptEntry, int, "<enum>", 1, false);
 			_PrintOptionUsage<int>(pvcOptEntry, "enum", false);
-
-		#endif	// MOD-BY-LEETEN 01/05/2011-END
 
 			fprintf(stderr, "\tThe <enum> can be as follows:\n");
 			for(vector<CEnumEntry>::iterator 
@@ -678,15 +554,6 @@ bool BOPTParse(char* argv[], int argc, int iBegin, int *piEnd)
 				for(int iP=0; iP<pvcOptEntry->iNrOfParameters; iP++)
 					switch( pvcOptEntry->eType )
 					{
-					// DEL-BY-LEETEN 07/02/2008-BEGIN
-					/*
-					// ADD-BY-LEETEN 04/11/2007-BEGIN
-					case OPT_TYPE_BOOL:
-						*(int*)pvcOptEntry->ppParameters[iP] = (!strcmp_func(argv[++iA], "true"))?OPT_TRUE:OPT_FALSE;	
-						break;
-					// ADD-BY-LEETEN 04/11/2007-END
-					*/
-					// DEL-BY-LEETEN 07/02/2008-END
 					case OPT_TYPE_INT:	
 						*(int*)pvcOptEntry->ppParameters[iP] = atoi(argv[++iA]);	
 						break;

@@ -22,11 +22,7 @@ The proecduer to use this class is as below:
 #include <list>
 
 #pragma once
-// MOD-BY-LEETEN 2009/06/01-FROM:
-	// #include "glutwin.h"
-// TO:
 #include "GlutWin.h"
-// MOD-BY-LEETEN 2009/06/01-END
 
 	#include "libbuf.h"
 
@@ -88,37 +84,13 @@ protected:
 	TBuffer<float> pfHistogram;
 
 	// ADD-BY-LEETEN 2008/08/17-BEGIN
-	#if	0	// MOD-BY-LEETEN 08/12/2009-FROM:
-		float fHistogramMin;
-		float fHistogramMax;
-	#else	// MOD-BY-LEETEN 08/12/2009-TO:
 	CFloatValue cHistogramMin;
 	CFloatValue cHistogramMax;
-	#endif	// MOD-BY-LEETEN 08/12/2009-END
 	// ADD-BY-LEETEN 2008/08/17-END
 
 
 
 public:
-	#if	0	// MOD-BY-LEETEN 2008/08/17-FROM:
-		void _SetHistogramAsBackground(int iNrOfEntries, float pfHistogram[])
-		{
-			this->pfHistogram.alloc(iNrOfEntries);
-			memcpy(&this->pfHistogram[0], pfHistogram, sizeof(pfHistogram[0]) * iNrOfEntries);
-		}
-	#else	// MOD-BY-LEETEN 2008/08/17-TO:
-	#if	0	// MOD-BY-LEETEN 2008/08/21-FROM:
-		void _SetHistogramAsBackground(float pfHistogram[], int iNrOfEntries, double fHistogramMin, double fHistogramMax)
-		{
-														// store the histogram 
-			this->pfHistogram.alloc(iNrOfEntries);
-			memcpy(&this->pfHistogram[0], pfHistogram, sizeof(pfHistogram[0]) * iNrOfEntries);
-
-														// store the range
-			this->fHistogramMin = fHistogramMin;
-			this->fHistogramMax = fHistogramMax;
-		}
-	#else	// MOD-BY-LEETEN 2008/08/21-TO:
 	void _SetHistogramAsBackground(float *pfHistogram, int iNrOfEntries, double fHistogramMin, double fHistogramMax)
 	{
 		if( pfHistogram )
@@ -129,16 +101,9 @@ public:
 		}
 
 													// store the range
-		#if	0	// MOD-BY-LEETEN 08/12/2009-FROM:
-			this->fHistogramMin = fHistogramMin;
-			this->fHistogramMax = fHistogramMax;
-		#else	// MOD-BY-LEETEN 08/12/2009-TO:
 		this->cHistogramMin._SetValue(fHistogramMin);
 		this->cHistogramMax._SetValue(fHistogramMax);
-		#endif	// MOD-BY-LEETEN 08/12/2009-END
 	}
-	#endif	// MOD-BY-LEETEN 2008/08/21-END
-	#endif	// MOD-BY-LEETEN 2008/08/17-END
 
 	///////////////////////////////////////////////
 protected:
@@ -151,16 +116,7 @@ protected:
 	CTransFunc *pcTransFunc;
 
 	void 
-		// MOD-BY-TLEE 08/14/2008-FROM:
-			// CTfUi::_PlotSpline(int c, bool bPlotKnots = false);
-		// TO:
-		// MOD-BY-LEETEN 2009/06/01-FROM:
-			// CTfUi::_PlotSpline(int c, bool bEnhance = false);
-		// TO:
 		_PlotSpline(int c, bool bEnhance = false);
-		// MOD-BY-LEETEN 2009/06/01-END
-
-		// MOD-BY-TLEE 08/14/2008-END
 
 	vector<list<CKnot>::iterator>	
 		pviSelectedKnots[CTransFunc::NR_OF_COLORS];				// the iterators pointed to the selected knots
@@ -301,10 +257,6 @@ protected:
 	void (*_UpdateFunc)(void);
 
 public:
-	// DEL-BY-LEETEN 08/14/2008-BEGIN
-		// void _CreateTransferFunc(int iNrOfEntries, float pfTransferFunc[]);
-	// DEL-BY-LEETEN 08/14/2008-END
-
 	void _SetUpdateFunc(void (*_UpdateFunc)(void))	
 	{
 		this->_UpdateFunc = _UpdateFunc;

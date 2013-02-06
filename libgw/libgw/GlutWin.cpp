@@ -413,17 +413,10 @@ CGlutWin::_ReshapeCB(int w, int h)
 void 
 CGlutWin::_UpdateWinCoord(int *piX, int *piY, bool bFlipY)
 {
-	#if	0	// MOD-BY-LEETEN 02/17/2012-FROM:
-		*piX -= piViewport[0];
-		*piY -= piViewport[1];
-		if( bFlipY )
-			*piY = piViewport[3] - *piY;
-	#else	// MOD-BY-LEETEN 02/17/2012-TO:
 	*piX -= piViewport[0];
 	if( bFlipY )
 		*piY = iGlutWindowHeight - *piY;
 	*piY -= piViewport[1];
-	#endif	// MOD-BY-LEETEN 02/17/2012-END
 }
 // ADD-BY-LEETEN 08/13/2008-END
 
@@ -506,12 +499,8 @@ CGlutWin::_KeyboardCB(unsigned char key, int x, int y)
 				bIsFullScreened = !bIsFullScreened;
 				if(bIsFullScreened)
 				{
-					// MOD-BY-LEETEN 08/07/2010-FROM:
-						// memcpy(piPrevViewport, this->piViewport, sizeof(piPrevViewport));
-					// TO:
 					piPrevViewport[2] = glutGet(GLUT_WINDOW_WIDTH);
 					piPrevViewport[3] = glutGet(GLUT_WINDOW_HEIGHT);
-					// MOD-BY-LEETEN 08/07/2010-END
 					piPrevViewport[0] = glutGet(GLUT_WINDOW_X);
 					piPrevViewport[1] = glutGet(GLUT_WINDOW_Y);
 					glutFullScreen();
@@ -540,11 +529,7 @@ CGlutWin::_KeyboardCB(unsigned char key, int x, int y)
 
 		// ADD-BY-LEETEN 01/02/2010-BEGIN
 		case '1':	case '2':	case '3':
-		// MOD-BY-LEETEN 01/31/2010-FROM:
-			// case '4':	case '5':	case '6':
-		// TO:
 		case '4':				case '6':
-		// MOD-BY-LEETEN 01/31/2010-END
 		case '7':	case '8':	case '9':
 			{
 				double pdAxis[3]; 
@@ -1266,11 +1251,6 @@ _Begin();
 
 	std::vector<unsigned char> vubSnapshot;
 	vubSnapshot.resize(piViewport[2] * piViewport[3] * 4);
-	#if	0	// MOD-BY-LEETEN 01/28/2013-FROM:
-	glReadPixels(piViewport[0], piViewport[1], piViewport[2], piViewport[3], GL_RGBA, GL_UNSIGNED_BYTE, vubSnapshot.data());
-	for(size_t p = 0; p < piViewport[2] * piViewport[3]; p++)
-		vubSnapshot[4 * p + 3] = 255;
-	#else	// MOD-BY-LEETEN 01/28/2013-TO:
 	glPushAttrib(
 		GL_COLOR_BUFFER_BIT |
 		0);
@@ -1280,23 +1260,15 @@ _Begin();
 	glPopAttrib();
 		// GL_COLOR_BUFFER_BIT |
 	glReadPixels(piViewport[0], piViewport[1], piViewport[2], piViewport[3], GL_RGBA, GL_UNSIGNED_BYTE, &vubSnapshot.front());
-	#endif	// MOD-BY-LEETEN 01/28/2013-END
 
 	std::vector<unsigned char> vubFlipped;
 	vubFlipped.resize(piViewport[2] * piViewport[3] * 4);
 	for(size_t y = 0; y < piViewport[3]; y++)
-		#if	0	// MOD-BY-LEETEN 01/28/2013-FROM:
-		memcpy(
-			&vubFlipped.data()[piViewport[2] * 4 * (piViewport[3] - 1 - y)],
-			&vubSnapshot.data()[piViewport[2] * 4 * y],
-			4 * piViewport[2]);
-		#else	// MOD-BY-LEETEN 01/28/2013-TO:
 		copy(
 			vubSnapshot.begin() + piViewport[2] * 4 * y,
 			vubSnapshot.begin() + piViewport[2] * 4 * (y + 1),
 			vubFlipped.begin() + piViewport[2] * 4 * (piViewport[3] - 1 - y)
 		);
-		#endif	// MOD-BY-LEETEN 01/28/2013-END
 
 	lodepng::encode(szSnapshotFilename, vubFlipped, piViewport[2], piViewport[3]);
 	_AddToLog(SZSprintf("Snapshot %s was saved\n", szSnapshotFilename));

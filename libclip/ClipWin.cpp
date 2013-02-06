@@ -247,11 +247,7 @@ CClipWin::_InitFunc()
 
 	PCGetGluiSubwin()->add_checkbox("Plot Clipping Planes?", &ibPlotClippingPlanes);
 	PCGetGluiSubwin()->add_checkbox("Keep Update?", &ibKeepUpdate);
-	// MOD-BY-LEETEN 2009/11/04-FROM:
-		// PCGetGluiSubwin()->add_checkbox("Keep Update?", &ibDisableAll);
-	// TO:
 	PCGetGluiSubwin()->add_checkbox("Disable All?", &ibDisableAll);
-	// MOD-BY-LEETEN 2009/11/04-END
 	PCGetGluiSubwin()->add_button("Update", IAddWid(EVENT_BUTTON_UPDATE), &CGlutWin::_GluiCB_static);
 
 	PCGetGluiSubwin()->add_column();

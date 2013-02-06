@@ -13,10 +13,6 @@ CDvrSampleWin::_BeginDisplay()
 	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 
 	glPushMatrix();
-	#if	0	// DEL-BY-LEETEN 02/23/2012-BEGIN
-							// flip the Z axis
-		glScalef(1.0f, 1.0f, -1.0f);
-	#endif	// DEL-BY-LEETEN 02/23/2012-END
 
 	float fMaxDim = max(iXDim, max(iYDim, iZDim));
 	glScalef(
@@ -82,15 +78,11 @@ CDvrSampleWin::_RenderSlab(
 		double dMinY, double dMaxY, 
 		double dMinZ, double dMaxZ)
 {
-	// MOD-BY-LEETEN 09/10/2010-FROM:
-		// glPushAttrib(GL_DEPTH_BUFFER_BIT);
-	// TO:
 	glPushAttrib(
 		GL_ENABLE_BIT |
 		GL_DEPTH_BUFFER_BIT |
 		0 );
 	glEnable( GL_BLEND );
-	// MOD-BY-LEETEN 09/10/2010-END
 	glEnable(GL_DEPTH_TEST);
 
 	glUseProgramObjectARB(pidRayIntegral);

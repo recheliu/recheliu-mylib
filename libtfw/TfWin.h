@@ -13,13 +13,9 @@ class CTfWin :
 	void _DisplayFunc();
 	void _InitFunc();
 
-	// MOD-BY-TLEE 08/14/2008-FROM:
-		// GLuint iLid;
-	// TO:
 	CTransFunc *pcTransFunc;
 	TBuffer<float> pfColorMap;
 	int iNrOfEntries;
-	// MOD-BY-TLEE 08/14/2008-END
 
 	// ADD-BY-LEETEN 2009/08/16-BEGIN
 	struct CHistogram{
@@ -40,12 +36,8 @@ class CTfWin :
 	// ADD-BY-LEETEN 2009/08/16-END
 
 public:
-	// MOD-BY-TLEE 08/14/2008-FROM:
-		// void _SetTransferFunc(const float *pfTf, int iNrOfTfEntries);
-	// TO:
 	void _SetTransFunc(CTransFunc *pcTransFunc);
 	void _SetNrOfEntries(int iNrOfEntries);
-	// MOD-BY-TLEE 08/14/2008-END
 
 	// ADD-BY-LEETEN 2009/08/16-BEGIN
 	void _SetHistogram(float *pfHistogram, int iNrOfHistBins, float fMaxCount, float fMin, float fMax)

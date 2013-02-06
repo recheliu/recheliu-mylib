@@ -55,18 +55,6 @@
 			(WIDTH), (HEIGHT), 0, (FORMAT), (TYPE), (PTR));	\
 		}
 
-#if	0	// MOD-BY-LEETEN 02/05/2013-FROM:
-#define CHECK_OPENGL_ERROR(prefix, terminate)	\
-		{\
-			GLint iError = glGetError();	\
-			if( iError )	\
-			{\
-				fprintf(stderr, "%s: %s\n", prefix, gluErrorString(iError));	\
-				if( terminate )	exit(-iError);	\
-			}\
-		}
-
-#else	// MOD-BY-LEETEN 02/05/2013-TO:
 #define CHECK_OPENGL_ERROR(prefix, terminate)	\
 		{\
 			GLint iError = glGetError();	\
@@ -76,13 +64,6 @@
 				if( terminate )	exit(-iError);	\
 			}\
 		}
-
-#endif	// MOD-BY-LEETEN 02/05/2013-END
-
-	// Declaration of functions
-// DEL-BY-LEETEN 2009/11/05-BEGIN
-	// GLenum EGetFboStatus(bool bPrint=false);
-// DEL-BY-LEETEN 2009/11/05-END
 
 #endif // __LIB_OPENGL_LIB_H_
 

@@ -7,10 +7,6 @@ to create an application with three GLUT windows.
 
 **************************************************/
 
-	// DEL-BY-LEETEN 08/05/2010-BEGIN
-		// #pragma comment (lib, "libgw.lib")      // link with the library libgw
-	// DEL-BY-LEETEN 08/05/2010-END
-
 #include "../include/TestWin.h"
 
 CTestWin 

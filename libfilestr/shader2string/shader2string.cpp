@@ -47,14 +47,8 @@ main(int argn, char * argv[])
 			fputc(*pc, fpShaderHeader);
 			break;
 
-		// DEL-BY-LEETEN 2009/06/01-BEGIN
-			// #if defined(WIN32)
-		// DEL-BY-LEETEN 2009/06/01-END
 		case '\r':
 			continue;
-		// DEL-BY-LEETEN 2009/06/01-BEGIN
-		// #endif
-		// DEL-BY-LEETEN 2009/06/01-END
 
 		case '\\':
 			fputc('\\', fpShaderHeader);
