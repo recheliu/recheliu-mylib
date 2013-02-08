@@ -229,6 +229,11 @@ function(build_library libname src_subdir dst_subdir)
 			DEPENDS ${SHADER}
 			COMMAND shader2string ${SHADER_NATIVE_PATH} ${SHADER_OUTPUT_NATIVE_PATH}
 		)
+		# ADD-BY-LEETEN 02/08/2013-BEGIN
+		# Add dependecy to the shader file to force the genration of their .h in priori to the compilation
+		SET_SOURCE_FILES_PROPERTIES(${SRC_FILES} 
+			OBJECT_DEPENDS ${SHADER}.h)
+		# ADD-BY-LEETEN 02/08/2013-END
 	endforeach(SHADER)
 
 	# create the folder for the headers
@@ -341,6 +346,12 @@ foreach(LIB_NAME
 	build_library(${LIB_NAME} "/" "${LIB_NAME}/")
 endforeach(LIB_NAME)
 
+# ADD-BY-LEETEN 02/08/2013-BEGIN
+# Thid library libdvrsuite combines the volume renderer (LIBDVR2), transfer function viewer and editor (LIBTFW)
+build_library(libdvrsuite "/" "libdvrsuite")
+add_dependencies(libdvrsuite libdvr2 libtfw)
+# ADD-BY-LEETEN 02/08/2013-END
+
 add_dependencies(libclip libgw libfbow shader2string)
 add_dependencies(libtfw libgw)
 
@@ -432,6 +443,33 @@ if(NOT DEFINED WIN32)
 endif()
 
 add_test (example_dvr2 example_dvr2 "${PROJECT_SOURCE_DIR}/data/hipip")
+
+# ADD-BY-LEETEN 02/08/2013-BEGIN
+build_executable(example_dvr_suite ${PROJECT_SOURCE_DIR}/libdvrsuite/example_dvr_suite)
+add_dependencies(example_dvr_suite libdvrsuite)
+target_link_libraries (example_dvr_suite
+	libtfw
+	libdvr2
+	libdvrsuite
+	libopt
+	libshader
+	libfbo
+	libclip
+	libgw 
+	libfps 
+	) 
+if(NOT DEFINED WIN32)	
+	target_link_libraries (example_dvr2_suite
+		GLEW 
+		GL 
+		GLU 
+		glut 
+		glui 
+		)
+endif()
+
+add_test (example_dvr_suite example_dvr_suite "${PROJECT_SOURCE_DIR}/data/neghip.nhdr")
+# ADD-BY-LEETEN 02/08/2013-END
 
 endif()
 # ADD-BY-LEETEN 09/07/2011-END

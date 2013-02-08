@@ -100,7 +100,10 @@ CTfWin::_DisplayFunc()
 		glColor4f(1.0, 1.0, 1.0, 1.0);
 		for(int i = 0; i < (int)cHistogram.pfBins.USize(); i++)
 		{
+			// MOD-BY-LEETEN 02/08/2013-FROM:			glVertex2f((float)i, cHistogram.pfBins[i]);
 			glVertex2f((float)i, cHistogram.pfBins[i]);
+			glVertex2f((float)i + 1.0f, cHistogram.pfBins[i]);
+			// MOD-BY-LEETEN 02/08/2013-END
 		}
 		glEnd();
 		glPopAttrib();	// glPushAttrib(GL_LINE_BIT);
@@ -179,6 +182,8 @@ CTfWin::_InitFunc()
 	// ADD-BY-TLEE 08/14/2008-BEGIN
 	assert( pcTransFunc );
 	// ADD-BY-TLEE 08/14/2008-END
+
+	_Reshape(512, 128);	// ADD-BY-LEETEN 02/08/2013
 
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 }
