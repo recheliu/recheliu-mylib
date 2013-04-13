@@ -7,6 +7,7 @@ This file defines several important macros for CUDA.
 #ifndef __CUDA__MACRO__H__
 #define __CUDA__MACRO__H__
 
+#include <stdlib.h> // ADD-BY-LEETEN 04/11/2013
 	// ADD-BY-TLEE 2008/08/29-BEGIN
 	#include <cuda_runtime_api.h>
 	// ADD-BY-TLEE 2008/08/29-END

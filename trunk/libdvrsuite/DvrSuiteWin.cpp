@@ -58,7 +58,9 @@ CDvrSuiteWin::
 	for(size_t v = 0; v < uNrOfElements; v++)
 	{
 		size_t uBin = (size_t)floor((double)(uNrOfBins - 1) * ((double)data[v] - dValueMin) / (double)(dValueMax - dValueMin));
-		uBin = min(max(uBin, 0), uNrOfBins - 1);	
+		// MOD-BY-LEETEN 04/11/2013:		uBin = min(max(uBin, 0), uNrOfBins - 1);	
+		uBin = min(max(uBin, (size_t)0), uNrOfBins - 1);	
+		// MOD-BY-LEETEN 04/11/2013-END
 		vfHist[uBin] += 1.0f;
 	}
 

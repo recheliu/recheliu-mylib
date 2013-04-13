@@ -16,7 +16,7 @@ find_package(GLUT)
 set(THIRDPARTY_DIR "D:/lib" CACHE PATH "The path to the 3rd party libraries")
 set(FREEGLUT OFF CACHE BOOL "Flag to decide whether FREEGLUT is used")
 set(WITH_STATIC_LINK OFF CACHE BOOL "Flag to decide whether static libraries are linked")	# ADD-BY-LEETEN 04/05/2012
-# CUDA
+# CUDA
 set(CUDA_DIR "${CUDA_TOOLKIT_ROOT_DIR}")
 set(CUDA_INC_DIR "${CUDA_DIR}/include")
 set(CUDA_LIB_DIR "${CUDA_DIR}/lib")
@@ -379,13 +379,27 @@ foreach(LIBGW_TESTER_NAME example_single_win example_single_win_global example_m
 	if(NOT DEFINED WIN32)
 		target_link_libraries (${LIBGW_TESTER_NAME} 
 			libfps 
-			opencv_core 
-			opencv_highgui 
+			# DEL-BY-LEETEN 04/12/2013-BEGIN
+			# opencv_core 
+			# opencv_highgui 
+			# DEL-BY-LEETEN 04/12/2013-END
 			"GLEW" 
 			"GL" 
 			"GLU" 
 			"glut" 
 			"glui" ) 
+		      # ADD-BY-LEETEN 04/12/2013-BEGIN
+		      if(WITH_OPENCV)
+			target_link_libraries (${LIBGW_TESTER_NAME} 
+			  opencv_core
+			  opencv_highgui
+			  )
+		      else()
+			target_link_libraries (${LIBGW_TESTER_NAME} 
+			  lodepng
+			  )
+		      endif()
+		      # ADD-BY-LEETEN 04/12/2013-END
 	endif()
 	add_test (${LIBGW_TESTER_NAME} ${LIBGW_TESTER_NAME})
 endforeach(LIBGW_TESTER_NAME)
@@ -405,14 +419,28 @@ target_link_libraries (example_dvr
 	) 
 if(NOT DEFINED WIN32)	
 	target_link_libraries (example_dvr
-		opencv_core 
-		opencv_highgui 
+	  # DEL-BY-LEETEN 04/12/2013-BEGIN
+		# opencv_core 
+		# opencv_highgui 
+		# DEL-BY-LEETEN 04/12/2013-END
 		GLEW 
 		GL 
 		GLU 
 		glut 
 		glui 
 	) 
+      # ADD-BY-LEETEN 04/12/2013-BEGIN
+      if( WITH_OPENCV )
+	target_link_libraries (example_dvr
+	  opencv_core 
+	  opencv_highgui 
+	  )
+      else()
+	target_link_libraries (example_dvr
+	  lodepng
+	  )
+	endif()
+	# ADD-BY-LEETEN 04/12/2013-END
 endif()
 add_test (example_dvr example_dvr "${PROJECT_SOURCE_DIR}/data/hipip")
 
@@ -432,14 +460,31 @@ target_link_libraries (example_dvr2
 	) 
 if(NOT DEFINED WIN32)	
 	target_link_libraries (example_dvr2
-		opencv_core 
-		opencv_highgui 
+	  # DEL-BY-LEETEN 04/12/2013-BEGIN
+		# opencv_core 
+		# opencv_highgui 
+		# TEST-DEL-END
+		# DEL-BY-LEETEN 04/12/2013-END
+		ITKNrrdIO # ADD-BY-LEETEN 04/12/2013
+		z # ADD-BY-LEETEN 04/12/2013
 		GLEW 
 		GL 
 		GLU 
 		glut 
 		glui 
 		)
+      # ADD-BY-LEETEN 04/12/2013-BEGIN
+      if( WITH_OPENCV )
+	target_link_libraries (example_dvr2
+	  opencv_core 
+	  opencv_highgui 
+	  )
+      else()
+	target_link_libraries (example_dvr2
+	  lodepng
+	  )
+	endif()
+	# ADD-BY-LEETEN 04/12/2013-BEGIN
 endif()
 
 add_test (example_dvr2 example_dvr2 "${PROJECT_SOURCE_DIR}/data/hipip")
@@ -448,9 +493,10 @@ add_test (example_dvr2 example_dvr2 "${PROJECT_SOURCE_DIR}/data/hipip")
 build_executable(example_dvr_suite ${PROJECT_SOURCE_DIR}/libdvrsuite/example_dvr_suite)
 add_dependencies(example_dvr_suite libdvrsuite)
 target_link_libraries (example_dvr_suite
+	libdvrsuite # ADD-BY-LEETEN 04/12/2013
 	libtfw
 	libdvr2
-	libdvrsuite
+	# DEL-BY-LEETEN 04/12/2013: libdvrsuite
 	libopt
 	libshader
 	libfbo
@@ -459,13 +505,29 @@ target_link_libraries (example_dvr_suite
 	libfps 
 	) 
 if(NOT DEFINED WIN32)	
-	target_link_libraries (example_dvr2_suite
+  # MOD-BY-LEETEN 04/12/2013-FROM:	target_link_libraries (example_dvr2_suite
+  target_link_libraries (example_dvr_suite
+    ITKNrrdIO 
+    z
+  # MOD-BY-LEETEN 04/12/2013-END
 		GLEW 
 		GL 
 		GLU 
 		glut 
 		glui 
 		)
+      # ADD-BY-LEETEN 04/12/2013-BEGIN
+      if( WITH_OPENCV )
+	target_link_libraries (example_dvr_suite
+	  opencv_core 
+	  opencv_highgui 
+	  )
+      else()
+	target_link_libraries (example_dvr_suite
+	  lodepng
+	  )
+	endif()
+	# ADD-BY-LEETEN 04/12/2013-END
 endif()
 
 add_test (example_dvr_suite example_dvr_suite "${PROJECT_SOURCE_DIR}/data/neghip.nhdr")
