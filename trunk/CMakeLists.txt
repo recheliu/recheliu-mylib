@@ -306,6 +306,7 @@ foreach(LIB_NAME
 			libfps 
 			libgrid		# ADD-BY-LEETEN 12/03/2011
 			libfilestr	# ADD-BY-LEETEN 01/26/2013
+			contourspectrum # ADD-BY-LEETEN 04/20/2013
 	)
 	build_library(${LIB_NAME} "/" "/" false)
 endforeach(LIB_NAME)
@@ -404,135 +405,183 @@ foreach(LIBGW_TESTER_NAME example_single_win example_single_win_global example_m
 	add_test (${LIBGW_TESTER_NAME} ${LIBGW_TESTER_NAME})
 endforeach(LIBGW_TESTER_NAME)
 
+# # MOD-BY-LEETEN 04/20/2013-FROM:
 # ADD-BY-LEETEN 01/23/2011-BEGIN
-build_executable(example_dvr ${PROJECT_SOURCE_DIR}/libdvr/example_dvr)
-add_dependencies(example_dvr libgw libdvr)
+# build_executable(example_dvr ${PROJECT_SOURCE_DIR}/libdvr/example_dvr)
+# add_dependencies(example_dvr libgw libdvr)
+# target_link_libraries (example_dvr 
+	# libtfw
+	# libdvr
+	# libopt
+	# libshader
+	# libfbo	
+	# libgw 
+	# libfps 
+	# ) 
+# if(NOT DEFINED WIN32)	
+	# target_link_libraries (example_dvr
+	  # # DEL-BY-LEETEN 04/12/2013-BEGIN
+		# # opencv_core 
+		# # opencv_highgui 
+		# # DEL-BY-LEETEN 04/12/2013-END
+		# GLEW 
+		# GL 
+		# GLU 
+		# glut 
+		# glui 
+	# ) 
+      # # ADD-BY-LEETEN 04/12/2013-BEGIN
+      # if( WITH_OPENCV )
+	# target_link_libraries (example_dvr
+	  # opencv_core 
+	  # opencv_highgui 
+	  # )
+      # else()
+	# target_link_libraries (example_dvr
+	  # lodepng
+	  # )
+	# endif()
+	# # ADD-BY-LEETEN 04/12/2013-END
+# endif()
+# add_test (example_dvr example_dvr "${PROJECT_SOURCE_DIR}/data/hipip")
 
-target_link_libraries (example_dvr 
-	libtfw
-	libdvr
-	libopt
-	libshader
-	libfbo	
-	libgw 
-	libfps 
-	) 
-if(NOT DEFINED WIN32)	
-	target_link_libraries (example_dvr
-	  # DEL-BY-LEETEN 04/12/2013-BEGIN
-		# opencv_core 
-		# opencv_highgui 
-		# DEL-BY-LEETEN 04/12/2013-END
-		GLEW 
-		GL 
-		GLU 
-		glut 
-		glui 
-	) 
-      # ADD-BY-LEETEN 04/12/2013-BEGIN
-      if( WITH_OPENCV )
-	target_link_libraries (example_dvr
-	  opencv_core 
-	  opencv_highgui 
-	  )
-      else()
-	target_link_libraries (example_dvr
-	  lodepng
-	  )
-	endif()
-	# ADD-BY-LEETEN 04/12/2013-END
-endif()
-add_test (example_dvr example_dvr "${PROJECT_SOURCE_DIR}/data/hipip")
+# build_executable(example_dvr2 ${PROJECT_SOURCE_DIR}/libdvr2/example_dvr2)
+# add_dependencies(example_dvr2 libgw libdvr2)
+# target_link_libraries (example_dvr2
+	# libtfw
+	# libdvr2
+	# libopt
+	# libshader
+	# libfbo
+	# libclip
+	# libgw 
+	# # ADD-BY-LEETEN 01/28/2011-BEGIN
+	# libfps 
+	# # ADD-BY-LEETEN 01/28/2011-END
+	# ) 
+# if(NOT DEFINED WIN32)	
+	# target_link_libraries (example_dvr2
+	  # # DEL-BY-LEETEN 04/12/2013-BEGIN
+		# # opencv_core 
+		# # opencv_highgui 
+		# # TEST-DEL-END
+		# # DEL-BY-LEETEN 04/12/2013-END
+		# ITKNrrdIO # ADD-BY-LEETEN 04/12/2013
+		# z # ADD-BY-LEETEN 04/12/2013
+		# GLEW 
+		# GL 
+		# GLU 
+		# glut 
+		# glui 
+		# )
+      # # ADD-BY-LEETEN 04/12/2013-BEGIN
+      # if( WITH_OPENCV )
+	# target_link_libraries (example_dvr2
+	  # opencv_core 
+	  # opencv_highgui 
+	  # )
+      # else()
+	# target_link_libraries (example_dvr2
+	  # lodepng
+	  # )
+	# endif()
+	# # ADD-BY-LEETEN 04/12/2013-BEGIN
+# endif()
+# add_test (example_dvr2 example_dvr2 "${PROJECT_SOURCE_DIR}/data/hipip")
 
-build_executable(example_dvr2 ${PROJECT_SOURCE_DIR}/libdvr2/example_dvr2)
-add_dependencies(example_dvr2 libgw libdvr2)
-target_link_libraries (example_dvr2
-	libtfw
-	libdvr2
-	libopt
-	libshader
-	libfbo
-	libclip
-	libgw 
-	# ADD-BY-LEETEN 01/28/2011-BEGIN
-	libfps 
-	# ADD-BY-LEETEN 01/28/2011-END
-	) 
-if(NOT DEFINED WIN32)	
-	target_link_libraries (example_dvr2
-	  # DEL-BY-LEETEN 04/12/2013-BEGIN
-		# opencv_core 
-		# opencv_highgui 
-		# TEST-DEL-END
-		# DEL-BY-LEETEN 04/12/2013-END
-		ITKNrrdIO # ADD-BY-LEETEN 04/12/2013
-		z # ADD-BY-LEETEN 04/12/2013
-		GLEW 
-		GL 
-		GLU 
-		glut 
-		glui 
-		)
-      # ADD-BY-LEETEN 04/12/2013-BEGIN
-      if( WITH_OPENCV )
-	target_link_libraries (example_dvr2
-	  opencv_core 
-	  opencv_highgui 
-	  )
-      else()
-	target_link_libraries (example_dvr2
-	  lodepng
-	  )
-	endif()
-	# ADD-BY-LEETEN 04/12/2013-BEGIN
-endif()
-
-add_test (example_dvr2 example_dvr2 "${PROJECT_SOURCE_DIR}/data/hipip")
-
-# ADD-BY-LEETEN 02/08/2013-BEGIN
-build_executable(example_dvr_suite ${PROJECT_SOURCE_DIR}/libdvrsuite/example_dvr_suite)
-add_dependencies(example_dvr_suite libdvrsuite)
-target_link_libraries (example_dvr_suite
-	libdvrsuite # ADD-BY-LEETEN 04/12/2013
-	libtfw
-	libdvr2
-	# DEL-BY-LEETEN 04/12/2013: libdvrsuite
-	libopt
-	libshader
-	libfbo
-	libclip
-	libgw 
-	libfps 
-	) 
-if(NOT DEFINED WIN32)	
-  # MOD-BY-LEETEN 04/12/2013-FROM:	target_link_libraries (example_dvr2_suite
-  target_link_libraries (example_dvr_suite
-    ITKNrrdIO 
-    z
-  # MOD-BY-LEETEN 04/12/2013-END
-		GLEW 
-		GL 
-		GLU 
-		glut 
-		glui 
-		)
-      # ADD-BY-LEETEN 04/12/2013-BEGIN
-      if( WITH_OPENCV )
-	target_link_libraries (example_dvr_suite
-	  opencv_core 
-	  opencv_highgui 
-	  )
-      else()
-	target_link_libraries (example_dvr_suite
-	  lodepng
-	  )
-	endif()
-	# ADD-BY-LEETEN 04/12/2013-END
-endif()
-
-add_test (example_dvr_suite example_dvr_suite "${PROJECT_SOURCE_DIR}/data/neghip.nhdr")
+# # ADD-BY-LEETEN 02/08/2013-BEGIN
+# build_executable(example_dvr_suite ${PROJECT_SOURCE_DIR}/libdvrsuite/example_dvr_suite)
+# add_dependencies(example_dvr_suite libdvrsuite)
+# target_link_libraries (example_dvr_suite
+	# libdvrsuite # ADD-BY-LEETEN 04/12/2013
+	# libtfw
+	# libdvr2
+	# # DEL-BY-LEETEN 04/12/2013: libdvrsuite
+	# libopt
+	# libshader
+	# libfbo
+	# libclip
+	# libgw 
+	# libfps 
+	# ) 
+# if(NOT DEFINED WIN32)	
+  # # MOD-BY-LEETEN 04/12/2013-FROM:	target_link_libraries (example_dvr2_suite
+  # target_link_libraries (example_dvr_suite
+    # ITKNrrdIO 
+    # z
+  # # MOD-BY-LEETEN 04/12/2013-END
+		# GLEW 
+		# GL 
+		# GLU 
+		# glut 
+		# glui 
+		# )
+      # # ADD-BY-LEETEN 04/12/2013-BEGIN
+      # if( WITH_OPENCV )
+	# target_link_libraries (example_dvr_suite
+	  # opencv_core 
+	  # opencv_highgui 
+	  # )
+      # else()
+	# target_link_libraries (example_dvr_suite
+	  # lodepng
+	  # )
+	# endif()
+	# # ADD-BY-LEETEN 04/12/2013-END
+# endif()
+# add_test (example_dvr_suite example_dvr_suite "${PROJECT_SOURCE_DIR}/data/neghip.nhdr")
 # ADD-BY-LEETEN 02/08/2013-END
+# # MOD-BY-LEETEN 04/20/2013-TO:
+	function(build_dvr dvrprj dvrsrc dvrlibs testargs)
+		build_executable(${dvrprj} ${dvrsrc})
+		foreach(dvrlib ${dvrlibs})
+			add_dependencies(${dvrprj} ${dvrlib})
+			target_link_libraries (${dvrprj}
+				${dvrlib}
+			)
+		endforeach(dvrlib)		
+		target_link_libraries (${dvrprj}
+			libtfw
+			libopt
+			libshader
+			libfbo
+			libclip
+			libgw 
+			libfps 
+			) 
+		if(NOT DEFINED WIN32)	
+			target_link_libraries (${dvrprj}
+				ITKNrrdIO 
+				z
+				GLEW 
+				GL 
+				GLU 
+				glut 
+				glui 
+				)
+			if( WITH_OPENCV )
+				target_link_libraries (${dvrprj}
+					opencv_core 
+					opencv_highgui 
+				)
+			else()
+				target_link_libraries (${dvrprj}
+					lodepng
+				)
+			endif()
+		endif()
 
+		add_test (${dvrprj} ${dvrprj} ${testargs})
+	endfunction (build_dvr)
+	
+	build_dvr(example_dvr 		${PROJECT_SOURCE_DIR}/libdvr/example_dvr 			libdvr		"${PROJECT_SOURCE_DIR}/data/hipip")
+	if( WITH_NRRD )
+		build_dvr(example_dvr2 	${PROJECT_SOURCE_DIR}/libdvr2/example_dvr2			libdvr2		"${PROJECT_SOURCE_DIR}/data/neghip.nhdr")
+	else()
+		build_dvr(example_dvr2 	${PROJECT_SOURCE_DIR}/libdvr2/example_dvr2			libdvr2		"${PROJECT_SOURCE_DIR}/data/hipip")
+	endif()
+	build_dvr(example_dvr_suite ${PROJECT_SOURCE_DIR}/libdvrsuite/example_dvr_suite	"libdvr2;libdvrsuite"	"${PROJECT_SOURCE_DIR}/data/neghip.nhdr")
+# # MOD-BY-LEETEN 04/20/2013-END
 endif()
 # ADD-BY-LEETEN 09/07/2011-END
   
