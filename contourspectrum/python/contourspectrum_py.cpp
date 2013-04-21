@@ -12,8 +12,13 @@ using namespace std;
 // Ref: http://stackoverflow.com/questions/10651912/pass-python-list-to-c-extension-using-boost-python
 
 vector<double> vdBinEdges;
+#if	0	// MOD-BY-LEETEN 04/21/2013-FROM:
 vector<double> vdSpectrum;
 vector<double> vdTetraSpectrum;
+#else	// MOD-BY-LEETEN 04/21/2013-TO:
+unordered_map<size_t, double> hashSpectrum;
+unordered_map<size_t, double> hashTetraSpectrum;
+#endif	// MOD-BY-LEETEN 04/21/2013-END
 void set_spectrum
 (
 	boost::python::list& bin_edges
@@ -27,7 +32,9 @@ void set_spectrum
 	}
 	
 	size_t uNrOfBin = uNrOfBinEdges - 1;
-	vdSpectrum.assign(uNrOfBin, 0.0);
+	// MOD-BY-LEETEN 04/21/2013-FROM:	vdSpectrum.assign(uNrOfBin, 0.0);
+	hashSpectrum.clear();
+	// MOD-BY-LEETEN 04/21/2013-END
 }
 
 void get_spectrum
@@ -35,8 +42,16 @@ void get_spectrum
 	boost::python::list& spectrum
 )
 {
+	#if	0	// MOD-BY-LEETEN 04/21/2013-FROM:
 	for(size_t b = 0; b < (size_t)boost::python::len(spectrum); b++)
 		spectrum[b] = vdSpectrum[b];	// boost::python::to_python_value< double >(vdSpectrum[b]);
+	#else	// MOD-BY-LEETEN 04/21/2013-TO:
+	for(unordered_map<size_t, double>::iterator
+			ihashSpectrum = hashSpectrum.begin();
+		ihashSpectrum != hashSpectrum.end();
+		ihashSpectrum++)
+		spectrum[ihashSpectrum->first] = ihashSpectrum->second;	// boost::python::to_python_value< double >(vdSpectrum[b]);
+	#endif	// MOD-BY-LEETEN 04/21/2013-END
 }
 
 void add_tetra
@@ -63,10 +78,25 @@ void add_tetra
 			vVertices[vi].second[ci] = boost::python::extract< double >(ldCoord[ci]);
 	}
 
+	#if 0 	// MOD-BY-LEETEN 04/21/2013-FROM:
 	ContourSpectrum::_Compute(vdBinEdges, vVertices, vdTetraSpectrum);
 
 	for(size_t b = 0; b < vdSpectrum.size(); b++)
 		vdSpectrum[b] += vdTetraSpectrum[b];
+	#else	// MOD-BY-LEETEN 04/21/2013-TO:
+	ContourSpectrum::_Compute(vdBinEdges, vVertices, hashTetraSpectrum);
+	for(unordered_map<size_t, double>::iterator
+			ihashTetra = hashTetraSpectrum.begin();
+		ihashTetra != hashTetraSpectrum.end();
+		ihashTetra++)
+	{
+		unordered_map<size_t, double>::iterator ihashSpectrum = hashSpectrum.find(ihashTetra->first);
+		if( ihashSpectrum == hashSpectrum.end() )
+			hashSpectrum.insert(*ihashTetra);
+		else
+			ihashSpectrum->second += ihashTetra->second;
+	}
+	#endif	// MOD-BY-LEETEN 04/21/2013-END
 }
 
 BOOST_PYTHON_MODULE(contourspectrum)
