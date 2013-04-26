@@ -36,16 +36,26 @@ namespace ContourSpectrum
 	_Compute(
 		const vector<double>& vdBinEdges,
 		vector<pair<double, glm::dvec4>>& vVertices,
+		#if	0	// MOD-BY-LEETEN 04/26/2013-FROM:
 		// MOD-BY-LEETEN 04/21/2013-FROM:			vector<double>& vdHistogram,
 		unordered_map<size_t, double>& hashHistogram,
 		// MOD-BY-LEETEN 04/21/2013-END
+		#else	// MOD-BY-LEETEN 04/26/2013-TO:
+		size_t& uFirstBin,
+		vector<double>& vdHistogram,
+		#endif	// MOD-BY-LEETEN 04/26/2013-END
 		void *_Reserved = NULL
 	)
 	{
 		size_t uNrOfBins = vdBinEdges.size() - 1;
+		#if	0	// MOD-BY-LEETEN 04/26/2013-FROM:
 		// MOD-BY-LEETEN 04/21/2013-FROM:			vdHistogram.assign(uNrOfBins, 0.0);
 		hashHistogram.clear();
 		// MOD-BY-LEETEN 04/21/2013-END
+		#else	// MOD-BY-LEETEN 04/26/2013-TO:
+		vdHistogram.assign(uNrOfBins, 0.0);
+		uFirstBin = uNrOfBins;
+		#endif	// MOD-BY-LEETEN 04/26/2013-END
 
 		size_t uNrOfVertices = vVertices.size();
 		size_t uNrOfDims = uNrOfVertices - 1;
@@ -84,9 +94,14 @@ namespace ContourSpectrum
 			for(size_t b = 0; b < uNrOfBins; b++)
 				if( vdBinEdges[b] <= vVertices[0].first && vVertices[0].first < vdBinEdges[b+1] )
 				{
+					#if	0	// MOD-BY-LEETEN 04/26/2013-FROM:
 					// MOD-BY-LEETEN 04/21/2013-FROM:						vdHistogram[b] += dVol;
 					hashHistogram.insert(make_pair<size_t, double>(b, dVol));
 					// MOD-BY-LEETEN 04/21/2013-END
+					#else	// MOD-BY-LEETEN 04/26/2013-TO:
+					vdHistogram[b] += dVol;
+					uFirstBin = b;
+					#endif	// MOD-BY-LEETEN 04/26/2013-END
 					break;
 				}
 			return;
@@ -97,9 +112,14 @@ namespace ContourSpectrum
 		{
 			glm::dvec4 vMiddle = (vVertices[1].second + vVertices[2].second)/2.0;
 			double dMiddle = (vVertices[1].first + vVertices[2].first)/2.0;
+			#if	0	// MOD-BY-LEETEN 04/26/2013-FROM:
 			// MOD-BY-LEETEN 04/21/2013-FROM:				vector<double> pvdHistograms[2];
 			unordered_map<size_t, double> phashHistograms[2];
 			// MOD-BY-LEETEN 04/21/2013-END
+			#else	// MOD-BY-LEETEN 04/26/2013-TO:
+			size_t puFirstBins[2];
+			vector<double> pvdHistograms[2];
+			#endif	// MOD-BY-LEETEN 04/26/2013-END
 			vector< pair<double, glm::dvec4> > pvVertices[2];
 
 			pvVertices[0].assign(vVertices.begin(), vVertices.end());
@@ -108,9 +128,14 @@ namespace ContourSpectrum
 			_Compute(
 				vdBinEdges,
 				pvVertices[0],
+				#if	0	// MOD-BY-LEETEN 04/26/2013-FROM:
 				// MOD-BY-LEETEN 04/21/2013-FROM:					pvdHistograms[0]
 				phashHistograms[0]
 				// MOD-BY-LEETEN 04/21/2013-END
+				#else	// MOD-BY-LEETEN 04/26/2013-TO:
+				puFirstBins[0],
+				pvdHistograms[0]
+				#endif	// MOD-BY-LEETEN 04/26/2013-END
 			);
 
 			pvVertices[1].assign(vVertices.begin(), vVertices.end());
@@ -119,11 +144,17 @@ namespace ContourSpectrum
 			_Compute(
 				vdBinEdges,
 				pvVertices[1],
+				#if	0	// MOD-BY-LEETEN 04/26/2013-FROM:
 				// MOD-BY-LEETEN 04/21/2013-FROM:					pvdHistograms[1]
 				phashHistograms[1]
 				// MOD-BY-LEETEN 04/21/2013-END
+				#else	// MOD-BY-LEETEN 04/26/2013-TO:
+				puFirstBins[1],
+				pvdHistograms[1]
+				#endif	// MOD-BY-LEETEN 04/26/2013-END
 			);
 
+			#if	0	// MOD-BY-LEETEN 04/26/2013-FROM:
 			#if	0	// MOD-BY-LEETEN 04/21/2013-FROM:	
 			for(size_t b = 0; b < uNrOfBins; b++)
 				vdHistogram[b] = pvdHistograms[0][b] + pvdHistograms[1][b]; 
@@ -143,6 +174,16 @@ namespace ContourSpectrum
 				}
 			}
 			#endif	// MOD-BY-LEETEN 04/21/2013-END
+			#else	// MOD-BY-LEETEN 04/26/2013-TO:
+
+			uFirstBin = min(puFirstBins[0], puFirstBins[1]);
+			for(size_t b = uFirstBin; b < uNrOfBins; b++)
+			{
+				vdHistogram[b] = pvdHistograms[0][b] + pvdHistograms[1][b]; 
+				if( !vdHistogram[b] )
+					break;
+			}
+			#endif	// MOD-BY-LEETEN 04/26/2013-END
 			return;
 		}
 
@@ -315,6 +356,7 @@ namespace ContourSpectrum
 						dNewContrib = Integral0 - Integral1;
 					}
 				}
+				#if	0	// MOD-BY-LEETEN 04/26/2013-FROM:
 				// MOD-BY-LEETEN 04/21/2013-FROM:					vdHistogram[b] += dNewContrib;
 				unordered_map<size_t, double>::iterator ihashDst = hashHistogram.find(b);
 				if( ihashDst != hashHistogram.end() )
@@ -322,6 +364,10 @@ namespace ContourSpectrum
 				else
 					hashHistogram.insert(make_pair<size_t, double>(b, dNewContrib));
 				// MOD-BY-LEETEN 04/21/2013-END
+				#else	// MOD-BY-LEETEN 04/26/2013-TO:
+				vdHistogram[b] += dNewContrib;
+				uFirstBin = min(uFirstBin, b);
+				#endif	// MOD-BY-LEETEN 04/26/2013-END
 			}
 		}
 	}
@@ -331,9 +377,14 @@ namespace ContourSpectrum
 	(
 		const vector<double>& vdBinEdges,
 		const vector<pair<double, glm::dvec4> >& vCorners,
+		#if	0	// MOD-BY-LEETEN 04/26/2013-FROM:
 		// MOD-BY-LEETEN 04/21/2013-FROM:			vector<double>& vdHistogram,
 		unordered_map<size_t, double>& hashHistogram,
 		// MOD-BY-LEETEN 04/21/2013-END
+		#else	// MOD-BY-LEETEN 04/26/2013-TO:
+		size_t& uFirstBin,
+		vector<double>& vdHistogram,
+		#endif	// MOD-BY-LEETEN 04/26/2013-END
 		size_t uTetraOrientation,
 		void *_Reserved = NULL
 	)
@@ -359,19 +410,31 @@ namespace ContourSpectrum
 		vector<pair<double, glm::dvec4> > vVertices;
 		vVertices.resize(4);
 
+		#if	0	// MOD-BY-LEETEN 04/26/2013-FROM:
 		// MOD-BY-LEETEN 04/21/2013-FROM:			vdHistogram.assign(vdBinEdges.size()-1, 0.0);
 		hashHistogram.clear();
 		// MOD-BY-LEETEN 04/21/2013-END
+		#else	// MOD-BY-LEETEN 04/26/2013-TO:
+		vdHistogram.assign(vdBinEdges.size()-1, 0.0);
+		uFirstBin = vdHistogram.size();
+		#endif	// MOD-BY-LEETEN 04/26/2013-END
 		for(size_t t = 0; t < 5; t++)
 		{
+			#if	0	// MOD-BY-LEETEN 04/26/2013-FROM:
 			#if	0	// MOD-BY-LEETEN 04/21/2013-FROM:	
 			vector<double> vdTetraHistogram;
 			vdTetraHistogram.assign(vdBinEdges.size()-1, 0.0);
 			#else	// MOD-BY-LEETEN 04/21/2013-TO:	
 			unordered_map<size_t, double> hashTetraHistogram;
 			#endif	// MOD-BY-LEETEN 04/21/2013-END
+			#else	// MOD-BY-LEETEN 04/26/2013-TO:
+			size_t uFirstTetraBin;
+			vector<double> vdTetraHistogram;
+			vdTetraHistogram.assign(vdBinEdges.size()-1, 0.0);
+			#endif	// MOD-BY-LEETEN 04/26/2013-END
 			for(size_t p = 0; p < 4; p++)
 				vVertices[p] = vCorners[pppuTetrahedraIndices[uTetraOrientation][t][p]];
+			#if	0	// MOD-BY-LEETEN 04/26/2013-FROM:
 			#if	0	// MOD-BY-LEETEN 04/21/2013-FROM:	
 			_Compute(
 				vdBinEdges,
@@ -397,7 +460,97 @@ namespace ContourSpectrum
 					hashHistogram.insert(*ihashTetra);
 			}
 			#endif	// MOD-BY-LEETEN 04/21/2013-END
+			#else	// MOD-BY-LEETEN 04/26/2013-TO:
+			_Compute(
+				vdBinEdges,
+				vVertices,
+				uFirstTetraBin,
+				vdTetraHistogram);
+			for(size_t b = uFirstTetraBin; b < vdTetraHistogram.size(); b++)
+			{
+				if(0.0 == vdTetraHistogram[b])
+					break;
+				vdHistogram[b] += vdTetraHistogram[b];
+			}
+			uFirstBin = min(uFirstBin, uFirstTetraBin);
+			#endif	// MOD-BY-LEETEN 04/26/2013-END
 		}
 	}
+	// ADD-BY-LEETEN 04/21/2013-BEGIN
+	void
+	_ComputeFor2DCell
+	(
+		const vector<double>& vdBinEdges,
+		const vector<pair<double, glm::dvec4> >& vCorners,
+		// MOD-BY-LEETEN 04/26/2013-FROM:		unordered_map<size_t, double>& hashHistogram,
+		size_t& uFirstBin,
+		vector<double>& vdHistogram,
+		// MOD-BY-LEETEN 04/26/2013-END
+		size_t uOrientation,
+		void *_Reserved = NULL
+	)
+	{
+		const static size_t pppuSimplexIndices[2][2][3] = 
+		{
+			{
+				{0, 1, 2},
+				{1, 3, 2}
+			},
+			{
+				{0, 1, 3},
+				{0, 3, 2}
+			}
+		};
+
+		vector<pair<double, glm::dvec4> > vVertices;
+		vVertices.resize(3);
+
+		// MOD-BY-LEETEN 04/26/2013-FROM:		hashHistogram.clear();
+		vdHistogram.assign(vdBinEdges.size()-1, 0.0);
+		uFirstBin = vdHistogram.size();
+		// MOD-BY-LEETEN 04/26/2013-END
+		for(size_t t = 0; t < 2; t++)
+		{
+			// MOD-BY-LEETEN 04/26/2013-FROM:			unordered_map<size_t, double> hashTetraHistogram;
+			size_t uFirstTetraBin;
+			vector<double> vdTetraHistogram;
+			vdTetraHistogram.assign(vdBinEdges.size()-1, 0.0);
+			// MOD-BY-LEETEN 04/26/2013-END
+			for(size_t p = 0; p < 3; p++)
+				vVertices[p] = vCorners[pppuSimplexIndices[uOrientation][t][p]];
+			#if	0	// MOD-BY-LEETEN 04/26/2013-FROM:
+			_Compute(
+				vdBinEdges,
+				vVertices,
+				hashTetraHistogram);
+			for(unordered_map<size_t, double>::iterator 
+					ihashTetra = hashTetraHistogram.begin();
+				ihashTetra != hashTetraHistogram.end();
+				ihashTetra++)
+			{
+				unordered_map<size_t, double>::iterator 
+					ihashDst = hashHistogram.find(ihashTetra->first);
+				if( ihashDst != hashHistogram.end() )
+					ihashDst->second += ihashTetra->second;
+				else
+					hashHistogram.insert(*ihashTetra);
+			}
+			#else	// MOD-BY-LEETEN 04/26/2013-TO:
+			_Compute(
+				vdBinEdges,
+				vVertices,
+				uFirstTetraBin,
+				vdTetraHistogram);
+			for(size_t b = uFirstTetraBin; b < vdTetraHistogram.size(); b++)
+			{
+				if(0.0 == vdTetraHistogram[b])
+					break;
+				vdHistogram[b] += vdTetraHistogram[b];
+			}
+			uFirstBin = min(uFirstBin, uFirstTetraBin);
+			#endif	// MOD-BY-LEETEN 04/26/2013-END
+		}
+	}
+	// ADD-BY-LEETEN 04/21/2013-END
 };
 

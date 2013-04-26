@@ -12,6 +12,7 @@ using namespace std;
 // Ref: http://stackoverflow.com/questions/10651912/pass-python-list-to-c-extension-using-boost-python
 
 vector<double> vdBinEdges;
+#if 0	// MOD-BY-LEETEN 04/26/2013-FROM:
 #if	0	// MOD-BY-LEETEN 04/21/2013-FROM:
 vector<double> vdSpectrum;
 vector<double> vdTetraSpectrum;
@@ -19,6 +20,11 @@ vector<double> vdTetraSpectrum;
 unordered_map<size_t, double> hashSpectrum;
 unordered_map<size_t, double> hashTetraSpectrum;
 #endif	// MOD-BY-LEETEN 04/21/2013-END
+#else	// MOD-BY-LEETEN 04/26/2013-TO:
+vector<double> vdSpectrum;
+size_t uFirstTetraSpectrumBin;
+vector<double> vdTetraSpectrum;
+#endif	// MOD-BY-LEETEN 04/26/2013-END
 void set_spectrum
 (
 	boost::python::list& bin_edges
@@ -32,9 +38,13 @@ void set_spectrum
 	}
 	
 	size_t uNrOfBin = uNrOfBinEdges - 1;
+	#if	0	// TEST-MOD
 	// MOD-BY-LEETEN 04/21/2013-FROM:	vdSpectrum.assign(uNrOfBin, 0.0);
 	hashSpectrum.clear();
 	// MOD-BY-LEETEN 04/21/2013-END
+	#else
+	vdSpectrum.assign(uNrOfBin, 0.0);
+	#endif
 }
 
 void get_spectrum
@@ -42,6 +52,7 @@ void get_spectrum
 	boost::python::list& spectrum
 )
 {
+	#if	0	// MOD-BY-LEETEN 04/26/2013-FROM:
 	#if	0	// MOD-BY-LEETEN 04/21/2013-FROM:
 	for(size_t b = 0; b < (size_t)boost::python::len(spectrum); b++)
 		spectrum[b] = vdSpectrum[b];	// boost::python::to_python_value< double >(vdSpectrum[b]);
@@ -52,6 +63,10 @@ void get_spectrum
 		ihashSpectrum++)
 		spectrum[ihashSpectrum->first] = ihashSpectrum->second;	// boost::python::to_python_value< double >(vdSpectrum[b]);
 	#endif	// MOD-BY-LEETEN 04/21/2013-END
+	#else	// MOD-BY-LEETEN 04/26/2013-TO:
+	for(size_t b = 0; b < (size_t)boost::python::len(spectrum); b++)
+		spectrum[b] = vdSpectrum[b];	// boost::python::to_python_value< double >(vdSpectrum[b]);
+	#endif	// MOD-BY-LEETEN 04/26/2013-END
 }
 
 void add_tetra
@@ -78,6 +93,7 @@ void add_tetra
 			vVertices[vi].second[ci] = boost::python::extract< double >(ldCoord[ci]);
 	}
 
+	#if	0	// MOD-BY-LEETEN 04/26/2013-FROM:
 	#if 0 	// MOD-BY-LEETEN 04/21/2013-FROM:
 	ContourSpectrum::_Compute(vdBinEdges, vVertices, vdTetraSpectrum);
 
@@ -97,6 +113,16 @@ void add_tetra
 			ihashSpectrum->second += ihashTetra->second;
 	}
 	#endif	// MOD-BY-LEETEN 04/21/2013-END
+	#else	// MOD-BY-LEETEN 04/26/2013-TO:
+	ContourSpectrum::_Compute(vdBinEdges, vVertices, uFirstTetraSpectrumBin, vdTetraSpectrum);
+
+	for(size_t b = uFirstTetraSpectrumBin; b < vdSpectrum.size(); b++)
+	{
+		if( !vdTetraSpectrum[b] )
+			break;
+		vdSpectrum[b] += vdTetraSpectrum[b];
+	}
+	#endif	// MOD-BY-LEETEN 04/26/2013-END
 }
 
 BOOST_PYTHON_MODULE(contourspectrum)
