@@ -13,7 +13,7 @@ find_package(OpenGL)
 find_package(GLUT)
 
 # The required variables
-set(THIRDPARTY_DIR "D:/lib" CACHE PATH "The path to the 3rd party libraries")
+# DEL-BY-LEETEN 2013/08/18:	set(THIRDPARTY_DIR "D:/lib" CACHE PATH "The path to the 3rd party libraries")
 set(FREEGLUT OFF CACHE BOOL "Flag to decide whether FREEGLUT is used")
 set(WITH_STATIC_LINK OFF CACHE BOOL "Flag to decide whether static libraries are linked")	# ADD-BY-LEETEN 04/05/2012
 # CUDA
@@ -27,8 +27,12 @@ set(CUDASDK_INC_DIR "${CUDASDK_DIR}/inc")
 set(CUDASDK_LIB_DIR "${CUDASDK_DIR}/lib")
 
 # 3rd party lib
-set(THIRDPARTY_INC_DIR "${THIRDPARTY_DIR}/include")
-set(THIRDPARTY_LIB_DIR "${THIRDPARTY_DIR}/lib")
+# # MOD-BY-LEETEN 2013/08/18-FROM:
+# set(THIRDPARTY_INC_DIR "${THIRDPARTY_DIR}/include")
+# set(THIRDPARTY_LIB_DIR "${THIRDPARTY_DIR}/lib")
+# # MOD-BY-LEETEN 2013/08/18-TO:
+find_package(ThirdPartyLib)
+# MOD-BY-LEETEN 2013/08/18-END
 
 # OpenCV
 # ADD-BY-LEETEN 01/19/2013-BEGIN
@@ -95,7 +99,7 @@ set(MYLIB_LIB_DIR_RELEASE "${MYLIB_LIB_DIR}/release")
 include_directories (
 	"${CUDA_INC_DIR}"
 	"${CUDASDK_INC_DIR}"
-	"${THIRDPARTY_INC_DIR}"
+	# DEL-BY-LEETEN 2013/08/18:	"${THIRDPARTY_INC_DIR}"
 	"${CMAKE_SOURCE_DIR}"
 	)
 
@@ -103,7 +107,7 @@ include_directories (
 list(APPEND LIB_DIRS
 	"${CUDA_LIB_DIR}"
 	"${CUDASDK_LIB_DIR}"
-	"${THIRDPARTY_LIB_DIR}"
+	# DEL-BY-LEETEN 2013/08/18:	"${THIRDPARTY_LIB_DIR}"
 	)
 
 link_directories(
@@ -273,6 +277,9 @@ function(build_executable exename src_dir)
 		${HEADER_FILES} 
 		${SHADER_FILES}
 		)
+		
+	target_link_libraries(${exename}	${ThirdPartyLib_LIBRARIES})	# ADD-BY-LEETEN 2013/08/18
+		
 
 	# convert all GLSL shaders to .h
 	foreach(SHADER ${SHADER_FILES})
@@ -304,9 +311,8 @@ foreach(LIB_NAME
 			liblog 
 			libopt 
 			libfps 
-			libgrid		# ADD-BY-LEETEN 12/03/2011
 			libfilestr	# ADD-BY-LEETEN 01/26/2013
-			contourspectrum # ADD-BY-LEETEN 04/20/2013
+			# DEL-BY-LEETEN 2013/08/18:	contourspectrum # ADD-BY-LEETEN 04/20/2013
 	)
 	build_library(${LIB_NAME} "/" "/" false)
 endforeach(LIB_NAME)
@@ -598,6 +604,16 @@ install(
 	TARGETS shader2string 
 	DESTINATION "${CMAKE_INSTALL_PREFIX}/bin")
 endif() # if( WITH_OPENGL ) # ADD-BY-LEETEN 09/07/2011
+
+# ADD-BY-LEETEN 2013/08/18-BEGIN
+add_subdirectory(contourspectrum)
+
+################################################################
+if( WITH_NRRD) 
+	add_subdirectory(libnrrd)
+endif()
+# ADD-BY-LEETEN 2013/08/18-END
+
 
 #
 # $Log: not supported by cvs2svn $

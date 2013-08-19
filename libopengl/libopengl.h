@@ -5,7 +5,7 @@
 	#include "libbuf.h"
 
 						// incldue the CUDA's vector types
-	#include <vector_types.h>
+	// DEL-BY-LEETEN 2013/07/31:	#include <vector_types.h>
 
 	template<typename VT, typename CT, typename TT>
 	struct CVectorArray {
