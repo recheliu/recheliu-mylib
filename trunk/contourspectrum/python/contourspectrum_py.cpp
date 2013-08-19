@@ -7,7 +7,9 @@ using namespace std;
 #include <boost/python/list.hpp>
 #include <boost/python/extract.hpp>
 #include <boost/python/to_python_value.hpp>
-#include "contourspectrum.h"
+// MOD-BY-LEETEN 2013/08/18-FROM:	#include "contourspectrum.h"
+#include "contourspectrum/contourspectrum.h"
+// MOD-BY-LEETEN 2013/08/18-END
 
 // Ref: http://stackoverflow.com/questions/10651912/pass-python-list-to-c-extension-using-boost-python
 

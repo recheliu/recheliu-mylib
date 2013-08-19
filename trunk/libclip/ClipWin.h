@@ -1,5 +1,7 @@
 #pragma once
 
+	#include <vector_types.h>	// ADD-BY-LEETEN 2013/07/31
+
 	#include "GlutWin.h"
 	#include "ClipPlanes.h"
 
