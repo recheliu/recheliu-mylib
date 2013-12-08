@@ -34,17 +34,17 @@ if( WITH_OPENCV )
 	set(WITH_STATIC_OPENCV	OFF CACHE BOOL "Flag to decide whether the static version of OpenCV is linked")
 	set(OPENCV_DIR "C:/OpenCV2.1" CACHE PATH "The installed path of OpenCV")
 	set(OPENCV_VER "210" CACHE STRING "The Version of OpenCV")
-set(OPENCV_INC_DIR "${OPENCV_DIR}/include")
-set(OPENCV_LIB_DIR "${OPENCV_DIR}/lib")
-set(OPENCV_MESSAGE		"\"OpenCV Ver. ${OPENCV_VER} will be used."\")
-set(OPENCV_CORE_LIB		"\"opencv_core${OPENCV_VER}.lib\"")
-set(OPENCV_HIGHGUI_LIB	"\"opencv_highgui${OPENCV_VER}.lib\"")
-set(OPENCV_CORE_DEBUG_LIB		"\"opencv_core${OPENCV_VER}d.lib\"")
-set(OPENCV_HIGHGUI_DEBUG_LIB	"\"opencv_highgui${OPENCV_VER}d.lib\"")
-configure_file (
-  "${PROJECT_SOURCE_DIR}/libgw/libgw/GlutWin_config.h.in"
-  "${PROJECT_SOURCE_DIR}/libgw/libgw/GlutWin_config.h"
-)  
+	set(OPENCV_INC_DIR "${OPENCV_DIR}/include")
+	set(OPENCV_LIB_DIR "${OPENCV_DIR}/lib")
+	set(OPENCV_MESSAGE		"\"OpenCV Ver. ${OPENCV_VER} will be used."\")
+	set(OPENCV_CORE_LIB		"\"opencv_core${OPENCV_VER}.lib\"")
+	set(OPENCV_HIGHGUI_LIB	"\"opencv_highgui${OPENCV_VER}.lib\"")
+	set(OPENCV_CORE_DEBUG_LIB		"\"opencv_core${OPENCV_VER}d.lib\"")
+	set(OPENCV_HIGHGUI_DEBUG_LIB	"\"opencv_highgui${OPENCV_VER}d.lib\"")
+	configure_file (
+	  "${PROJECT_SOURCE_DIR}/libgw/libgw/GlutWin_config.h.in"
+	  "${PROJECT_SOURCE_DIR}/libgw/libgw/GlutWin_config.h"
+	)  
 	include_directories (
 		"${OPENCV_INC_DIR}"
 		"${OPENCV_INC_DIR}/opencv"	
@@ -346,16 +346,16 @@ foreach(LIBGW_TESTER_NAME example_single_win example_single_win_global example_m
 			"GLU" 
 			"glut" 
 			"glui" ) 
-		      if(WITH_OPENCV)
+		if(WITH_OPENCV)
 			target_link_libraries (${LIBGW_TESTER_NAME} 
 			  opencv_core
 			  opencv_highgui
 			  )
-		      else()
+		else()
 			target_link_libraries (${LIBGW_TESTER_NAME} 
 			  lodepng
 			  )
-		      endif()
+		endif()
 	endif()
 	add_test (${LIBGW_TESTER_NAME} ${LIBGW_TESTER_NAME})
 endforeach(LIBGW_TESTER_NAME)
