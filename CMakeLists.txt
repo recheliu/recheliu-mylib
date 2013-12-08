@@ -13,9 +13,8 @@ find_package(OpenGL)
 find_package(GLUT)
 
 # The required variables
-# DEL-BY-LEETEN 2013/08/18:	set(THIRDPARTY_DIR "D:/lib" CACHE PATH "The path to the 3rd party libraries")
 set(FREEGLUT OFF CACHE BOOL "Flag to decide whether FREEGLUT is used")
-set(WITH_STATIC_LINK OFF CACHE BOOL "Flag to decide whether static libraries are linked")	# ADD-BY-LEETEN 04/05/2012
+set(WITH_STATIC_LINK OFF CACHE BOOL "Flag to decide whether static libraries are linked")	
 # CUDA
 set(CUDA_DIR "${CUDA_TOOLKIT_ROOT_DIR}")
 set(CUDA_INC_DIR "${CUDA_DIR}/include")
@@ -27,37 +26,25 @@ set(CUDASDK_INC_DIR "${CUDASDK_DIR}/inc")
 set(CUDASDK_LIB_DIR "${CUDASDK_DIR}/lib")
 
 # 3rd party lib
-# # MOD-BY-LEETEN 2013/08/18-FROM:
-# set(THIRDPARTY_INC_DIR "${THIRDPARTY_DIR}/include")
-# set(THIRDPARTY_LIB_DIR "${THIRDPARTY_DIR}/lib")
-# # MOD-BY-LEETEN 2013/08/18-TO:
 find_package(ThirdPartyLib)
-# MOD-BY-LEETEN 2013/08/18-END
 
 # OpenCV
-# ADD-BY-LEETEN 01/19/2013-BEGIN
 set(WITH_OPENCV OFF CACHE BOOL "Flag to decide whether FREEGLUT is used")
 if( WITH_OPENCV )
 	set(WITH_STATIC_OPENCV	OFF CACHE BOOL "Flag to decide whether the static version of OpenCV is linked")
 	set(OPENCV_DIR "C:/OpenCV2.1" CACHE PATH "The installed path of OpenCV")
 	set(OPENCV_VER "210" CACHE STRING "The Version of OpenCV")
-# ADD-BY-LEETEN 01/19/2013-END
 set(OPENCV_INC_DIR "${OPENCV_DIR}/include")
 set(OPENCV_LIB_DIR "${OPENCV_DIR}/lib")
-# ADD-BY-LEETEN 10/14/2011-BEGIN
 set(OPENCV_MESSAGE		"\"OpenCV Ver. ${OPENCV_VER} will be used."\")
 set(OPENCV_CORE_LIB		"\"opencv_core${OPENCV_VER}.lib\"")
 set(OPENCV_HIGHGUI_LIB	"\"opencv_highgui${OPENCV_VER}.lib\"")
-# ADD-BY-LEETEN 04/05/2012-BEGIN
 set(OPENCV_CORE_DEBUG_LIB		"\"opencv_core${OPENCV_VER}d.lib\"")
 set(OPENCV_HIGHGUI_DEBUG_LIB	"\"opencv_highgui${OPENCV_VER}d.lib\"")
-# ADD-BY-LEETEN 04/05/2012-END
 configure_file (
   "${PROJECT_SOURCE_DIR}/libgw/libgw/GlutWin_config.h.in"
   "${PROJECT_SOURCE_DIR}/libgw/libgw/GlutWin_config.h"
 )  
-# ADD-BY-LEETEN 10/14/2011-END
-# ADD-BY-LEETEN 01/19/2013-BEGIN
 	include_directories (
 		"${OPENCV_INC_DIR}"
 		"${OPENCV_INC_DIR}/opencv"	
@@ -72,21 +59,16 @@ configure_file (
 		-DOPENCV_VER=${OPENCV_VER}
 	)
 endif() 
-# ADD-BY-LEETEN 01/19/2013-END
 
-# ADD-BY-LEETEN 10/21/2011-BEGIN
 set(WITH_NRRD OFF CACHE BOOL "Flag to decide whether NRRD is used")
 if( ${WITH_NRRD} )
 	add_definitions(
 		-DWITH_NRRD=1
 	)
 endif()
-# ADD-BY-LEETEN 10/21/2011-END
 
-# ADD-BY-LEETEN 09/07/2011-BEGIN
 set(WITH_OPENGL OFF CACHE BOOL "Flag to decide whether OpenGL is used")
 set(WITH_CUDA   OFF CACHE BOOL "Flag to decide whether CUDA is used")
-# ADD-BY-LEETEN 09/07/2011-END
 
 # mylib
 set(MYLIB_BIN_DIR "${PROJECT_BINARY_DIR}/bin")
@@ -99,7 +81,6 @@ set(MYLIB_LIB_DIR_RELEASE "${MYLIB_LIB_DIR}/release")
 include_directories (
 	"${CUDA_INC_DIR}"
 	"${CUDASDK_INC_DIR}"
-	# DEL-BY-LEETEN 2013/08/18:	"${THIRDPARTY_INC_DIR}"
 	"${CMAKE_SOURCE_DIR}"
 	)
 
@@ -107,7 +88,6 @@ include_directories (
 list(APPEND LIB_DIRS
 	"${CUDA_LIB_DIR}"
 	"${CUDASDK_LIB_DIR}"
-	# DEL-BY-LEETEN 2013/08/18:	"${THIRDPARTY_LIB_DIR}"
 	)
 
 link_directories(
@@ -115,7 +95,6 @@ link_directories(
 )
 
 set(CMAKE_LIBRARY_PATH ${LIB_DIRS})
-# ADD-BY-LEETEN 04/05/2012-BEGIN
 if( WITH_STATIC_LINK )
 	message(WARNING "To link static libraries in lib/ for VC projects, please add '/NODEFAULTLIB:LIBCMT' to CMAKE_EXE_LINKER_FLAGS.")
 
@@ -124,9 +103,7 @@ if( WITH_STATIC_LINK )
 		-DWITH_STATIC_LINK
 	)	
 endif()
-# ADD-BY-LEETEN 04/05/2012-END
 
-# ADD-BY-LEETEN 07/12/2012-BEGIN
 if( WITH_STATIC_OPENCV )
 	message(WARNING "To link static libraries in lib/ for VC projects, please add '/NODEFAULTLIB:LIBCMT' to CMAKE_EXE_LINKER_FLAGS.")
 	
@@ -138,7 +115,6 @@ if( WITH_STATIC_OPENCV )
 		-DWITH_STATIC_OPENCV
 	)	
 endif()
-# ADD-BY-LEETEN 07/12/2012-BEGIN
 
 
 if( FREEGLUT )
@@ -148,13 +124,11 @@ if( FREEGLUT )
 	add_definitions(
 		-DUSE_FREEGLUT
 	)
-	# ADD-BY-LEETEN 04/05/2012-BEGIN
 	if( WITH_STATIC_LINK )
 		add_definitions(
 			-DFREEGLUT_STATIC
 		)	
 	endif()
-	# ADD-BY-LEETEN 04/05/2012-END
 endif()
 
 add_definitions(
@@ -165,11 +139,9 @@ add_definitions(
 function(build_library libname src_subdir dst_subdir)
 	set(SRC_DIR "${PROJECT_SOURCE_DIR}/${libname}/${src_subdir}/")
 
-	# ADD-BY-LEETEN 09/02/2011-BEGIN
 	include_directories (
 		"${SRC_DIR}"
 	)
-	# ADD-BY-LEETEN 09/02/2011-END
 	
 	AUX_SOURCE_DIRECTORY ("${SRC_DIR}" 	SRC_FILES)
 	file(GLOB HEADER_FILES "${SRC_DIR}/*.h" )
@@ -205,21 +177,17 @@ function(build_library libname src_subdir dst_subdir)
 		)
 	else()
 		add_library ( ${libname} 
-			# ADD-BY-LEETEN 05/15/2011-BEGIN
 			${SHADER_FILES}
 			${HEADER_FILES}
-			# ADD-BY-LEETEN 05/15/2011-END
 			${SRC_FILES}
 			 )
 		set_target_properties(${libname} PROPERTIES 
 			DEBUG_OUTPUT_NAME "${libname}_d"
 			RELEASE_OUTPUT_NAME "${libname}_r"
 		)
-		# ADD-BY-LEETEN 09/02/2011-BEGIN
 		install(
 			TARGETS ${libname}
 			DESTINATION lib	)	
-		# ADD-BY-LEETEN 09/02/2011-END
 		
 	endif()
 
@@ -233,11 +201,9 @@ function(build_library libname src_subdir dst_subdir)
 			DEPENDS ${SHADER}
 			COMMAND shader2string ${SHADER_NATIVE_PATH} ${SHADER_OUTPUT_NATIVE_PATH}
 		)
-		# ADD-BY-LEETEN 02/08/2013-BEGIN
 		# Add dependecy to the shader file to force the genration of their .h in priori to the compilation
 		SET_SOURCE_FILES_PROPERTIES(${SRC_FILES} 
 			OBJECT_DEPENDS ${SHADER}.h)
-		# ADD-BY-LEETEN 02/08/2013-END
 	endforeach(SHADER)
 
 	# create the folder for the headers
@@ -246,7 +212,6 @@ function(build_library libname src_subdir dst_subdir)
 		DESTINATION "include/${dst_subdir}")
 endfunction (build_library)
 
-# ADD-BY-LEETEN 01/23/2011-BEGIN
 function(build_executable exename src_dir)
 	AUX_SOURCE_DIRECTORY ("${src_dir}" 	SRC_FILES)
 	file(GLOB HEADER_FILES "${src_dir}/*.h" )
@@ -278,7 +243,7 @@ function(build_executable exename src_dir)
 		${SHADER_FILES}
 		)
 		
-	target_link_libraries(${exename}	${ThirdPartyLib_LIBRARIES})	# ADD-BY-LEETEN 2013/08/18
+	target_link_libraries(${exename}	${ThirdPartyLib_LIBRARIES})	
 		
 
 	# convert all GLSL shaders to .h
@@ -293,14 +258,12 @@ function(build_executable exename src_dir)
 		)
 	endforeach(SHADER)
 	
-	# ADD-BY-LEETEN 09/02/2011-BEGIN
 	install(
 		TARGETS ${exename}
 		DESTINATION bin	)	
-	# ADD-BY-LEETEN 09/02/2011-END
+
 endfunction (build_executable)
 
-# ADD-BY-LEETEN 01/23/2011-END
  
 build_executable(shader2string ${PROJECT_SOURCE_DIR}/libfilestr/shader2string)
 
@@ -311,13 +274,11 @@ foreach(LIB_NAME
 			liblog 
 			libopt 
 			libfps 
-			libfilestr	# ADD-BY-LEETEN 01/26/2013
-			# DEL-BY-LEETEN 2013/08/18:	contourspectrum # ADD-BY-LEETEN 04/20/2013
+			libfilestr	
 	)
 	build_library(${LIB_NAME} "/" "/" false)
 endforeach(LIB_NAME)
 
-# ADD-BY-LEETEN 09/07/2011-BEGIN
 if( WITH_CUDA )
 	foreach(LIB_NAME 
 			libcuda 
@@ -353,18 +314,14 @@ foreach(LIB_NAME
 	build_library(${LIB_NAME} "/" "${LIB_NAME}/")
 endforeach(LIB_NAME)
 
-# ADD-BY-LEETEN 02/08/2013-BEGIN
 # Thid library libdvrsuite combines the volume renderer (LIBDVR2), transfer function viewer and editor (LIBTFW)
 build_library(libdvrsuite "/" "libdvrsuite")
 add_dependencies(libdvrsuite libdvr2 libtfw)
-# ADD-BY-LEETEN 02/08/2013-END
 
 add_dependencies(libclip libgw libfbow shader2string)
 add_dependencies(libtfw libgw)
 
-# ADD-BY-LEETEN 01/28/2011-BEGIN
 add_dependencies(libfbow libfbo)
-# ADD-BY-LEETEN 01/28/2011-END
 add_dependencies(libfbo libopengl)
 add_dependencies(libopengl libbuf)
 
@@ -378,24 +335,17 @@ foreach(LIBGW_TESTER_NAME example_single_win example_single_win_global example_m
 	build_executable(${LIBGW_TESTER_NAME} ${PROJECT_SOURCE_DIR}/libgw/examples/${LIBGW_TESTER_NAME})
 	add_dependencies(${LIBGW_TESTER_NAME} libgw liblog libbuf libfbow libfps)
 	target_link_libraries (${LIBGW_TESTER_NAME} libgw)
-	# ADD-BY-LEETEN 09/02/2011-BEGIN
 	target_link_libraries (${LIBGW_TESTER_NAME} 
 		libfps 
 	)
-	# ADD-BY-LEETEN 09/02/2011-END
 	if(NOT DEFINED WIN32)
 		target_link_libraries (${LIBGW_TESTER_NAME} 
 			libfps 
-			# DEL-BY-LEETEN 04/12/2013-BEGIN
-			# opencv_core 
-			# opencv_highgui 
-			# DEL-BY-LEETEN 04/12/2013-END
 			"GLEW" 
 			"GL" 
 			"GLU" 
 			"glut" 
 			"glui" ) 
-		      # ADD-BY-LEETEN 04/12/2013-BEGIN
 		      if(WITH_OPENCV)
 			target_link_libraries (${LIBGW_TESTER_NAME} 
 			  opencv_core
@@ -406,138 +356,10 @@ foreach(LIBGW_TESTER_NAME example_single_win example_single_win_global example_m
 			  lodepng
 			  )
 		      endif()
-		      # ADD-BY-LEETEN 04/12/2013-END
 	endif()
 	add_test (${LIBGW_TESTER_NAME} ${LIBGW_TESTER_NAME})
 endforeach(LIBGW_TESTER_NAME)
 
-# # MOD-BY-LEETEN 04/20/2013-FROM:
-# ADD-BY-LEETEN 01/23/2011-BEGIN
-# build_executable(example_dvr ${PROJECT_SOURCE_DIR}/libdvr/example_dvr)
-# add_dependencies(example_dvr libgw libdvr)
-# target_link_libraries (example_dvr 
-	# libtfw
-	# libdvr
-	# libopt
-	# libshader
-	# libfbo	
-	# libgw 
-	# libfps 
-	# ) 
-# if(NOT DEFINED WIN32)	
-	# target_link_libraries (example_dvr
-	  # # DEL-BY-LEETEN 04/12/2013-BEGIN
-		# # opencv_core 
-		# # opencv_highgui 
-		# # DEL-BY-LEETEN 04/12/2013-END
-		# GLEW 
-		# GL 
-		# GLU 
-		# glut 
-		# glui 
-	# ) 
-      # # ADD-BY-LEETEN 04/12/2013-BEGIN
-      # if( WITH_OPENCV )
-	# target_link_libraries (example_dvr
-	  # opencv_core 
-	  # opencv_highgui 
-	  # )
-      # else()
-	# target_link_libraries (example_dvr
-	  # lodepng
-	  # )
-	# endif()
-	# # ADD-BY-LEETEN 04/12/2013-END
-# endif()
-# add_test (example_dvr example_dvr "${PROJECT_SOURCE_DIR}/data/hipip")
-
-# build_executable(example_dvr2 ${PROJECT_SOURCE_DIR}/libdvr2/example_dvr2)
-# add_dependencies(example_dvr2 libgw libdvr2)
-# target_link_libraries (example_dvr2
-	# libtfw
-	# libdvr2
-	# libopt
-	# libshader
-	# libfbo
-	# libclip
-	# libgw 
-	# # ADD-BY-LEETEN 01/28/2011-BEGIN
-	# libfps 
-	# # ADD-BY-LEETEN 01/28/2011-END
-	# ) 
-# if(NOT DEFINED WIN32)	
-	# target_link_libraries (example_dvr2
-	  # # DEL-BY-LEETEN 04/12/2013-BEGIN
-		# # opencv_core 
-		# # opencv_highgui 
-		# # TEST-DEL-END
-		# # DEL-BY-LEETEN 04/12/2013-END
-		# ITKNrrdIO # ADD-BY-LEETEN 04/12/2013
-		# z # ADD-BY-LEETEN 04/12/2013
-		# GLEW 
-		# GL 
-		# GLU 
-		# glut 
-		# glui 
-		# )
-      # # ADD-BY-LEETEN 04/12/2013-BEGIN
-      # if( WITH_OPENCV )
-	# target_link_libraries (example_dvr2
-	  # opencv_core 
-	  # opencv_highgui 
-	  # )
-      # else()
-	# target_link_libraries (example_dvr2
-	  # lodepng
-	  # )
-	# endif()
-	# # ADD-BY-LEETEN 04/12/2013-BEGIN
-# endif()
-# add_test (example_dvr2 example_dvr2 "${PROJECT_SOURCE_DIR}/data/hipip")
-
-# # ADD-BY-LEETEN 02/08/2013-BEGIN
-# build_executable(example_dvr_suite ${PROJECT_SOURCE_DIR}/libdvrsuite/example_dvr_suite)
-# add_dependencies(example_dvr_suite libdvrsuite)
-# target_link_libraries (example_dvr_suite
-	# libdvrsuite # ADD-BY-LEETEN 04/12/2013
-	# libtfw
-	# libdvr2
-	# # DEL-BY-LEETEN 04/12/2013: libdvrsuite
-	# libopt
-	# libshader
-	# libfbo
-	# libclip
-	# libgw 
-	# libfps 
-	# ) 
-# if(NOT DEFINED WIN32)	
-  # # MOD-BY-LEETEN 04/12/2013-FROM:	target_link_libraries (example_dvr2_suite
-  # target_link_libraries (example_dvr_suite
-    # ITKNrrdIO 
-    # z
-  # # MOD-BY-LEETEN 04/12/2013-END
-		# GLEW 
-		# GL 
-		# GLU 
-		# glut 
-		# glui 
-		# )
-      # # ADD-BY-LEETEN 04/12/2013-BEGIN
-      # if( WITH_OPENCV )
-	# target_link_libraries (example_dvr_suite
-	  # opencv_core 
-	  # opencv_highgui 
-	  # )
-      # else()
-	# target_link_libraries (example_dvr_suite
-	  # lodepng
-	  # )
-	# endif()
-	# # ADD-BY-LEETEN 04/12/2013-END
-# endif()
-# add_test (example_dvr_suite example_dvr_suite "${PROJECT_SOURCE_DIR}/data/neghip.nhdr")
-# ADD-BY-LEETEN 02/08/2013-END
-# # MOD-BY-LEETEN 04/20/2013-TO:
 	function(build_dvr dvrprj dvrsrc dvrlibs testargs)
 		build_executable(${dvrprj} ${dvrsrc})
 		foreach(dvrlib ${dvrlibs})
@@ -587,9 +409,7 @@ endforeach(LIBGW_TESTER_NAME)
 		build_dvr(example_dvr2 	${PROJECT_SOURCE_DIR}/libdvr2/example_dvr2			libdvr2		"${PROJECT_SOURCE_DIR}/data/hipip")
 	endif()
 	build_dvr(example_dvr_suite ${PROJECT_SOURCE_DIR}/libdvrsuite/example_dvr_suite	"libdvr2;libdvrsuite"	"${PROJECT_SOURCE_DIR}/data/neghip.nhdr")
-# # MOD-BY-LEETEN 04/20/2013-END
 endif()
-# ADD-BY-LEETEN 09/07/2011-END
   
 ##############################################################
 # create the header for the makefile
@@ -599,20 +419,18 @@ configure_file (
 )
 
 ##############################################################
-if( WITH_OPENGL ) # ADD-BY-LEETEN 09/07/2011
+if( WITH_OPENGL ) 
 install(
 	TARGETS shader2string 
 	DESTINATION "${CMAKE_INSTALL_PREFIX}/bin")
-endif() # if( WITH_OPENGL ) # ADD-BY-LEETEN 09/07/2011
+endif() # if( WITH_OPENGL ) 
 
-# ADD-BY-LEETEN 2013/08/18-BEGIN
 add_subdirectory(contourspectrum)
 
 ################################################################
 if( WITH_NRRD) 
 	add_subdirectory(libnrrd)
 endif()
-# ADD-BY-LEETEN 2013/08/18-END
 
 
 #
