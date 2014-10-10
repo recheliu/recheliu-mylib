@@ -236,6 +236,31 @@ struct CBuffer2D
 	*/
 };
 
+// ADD-BY-LEETEN 2014/10/09-BEGIN
+template<typename T>
+struct CBufferPitch: public cudaPitchedPtr
+{
+	size_t uWidthInBytes;
+	size_t uPitchInWords;
+	size_t uSize;
+
+	void* PAlloc(size_t w, size_t h)	
+	{ 
+		xsize = w;
+		ysize = h;
+		uWidthInBytes = w * sizeof(T);
+		CUDA_SAFE_CALL_NO_SYNC(
+			cudaMallocPitch(
+				(void**)&ptr, &pitch,
+				uWidthInBytes, ysize)	);
+		uPitchInWords = pitch / sizeof(T);
+		uSize = pitch * ysize;
+
+		return ptr;
+	}
+};
+// ADD-BY-LEETEN 2014/10/09-END
+
 #endif	// __CUDA__MACRO__H__
 
 /*
