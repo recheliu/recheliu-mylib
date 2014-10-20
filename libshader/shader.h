@@ -122,6 +122,24 @@ void _LinkPrograms(GLhandleARB hProgramHandle);
 
 // ADD-BY-LEETY 09/15/2006-END
 
+// ADD-BY-LEETEN 2014/10/19-BEGIN
+#define SET_MAT4FV_VALUE_BY_LOC(LOC, LEN, TRANSPOSE, PVALUES)	\
+	{	\
+		if( (LOC) < 0 )	\
+			PRINT_WARNING_INVALID_LOC(LOC)	\
+		else	\
+			glUniformMatrix4fvARB(LOC, LEN, TRANSPOSE, PVALUES);	\
+	}
+	
+#define SET_MAT4FV_VALUE_BY_NAME(SHADER, NAME, LEN, TRANSPOSE, PVALUES)	\
+	{	\
+		int iLoc;	\
+		GET_LOC(SHADER, NAME, iLoc);	\
+		SET_MAT4FV_VALUE_BY_LOC(iLoc, LEN, TRANSPOSE, PVALUES);	\
+	}
+
+// ADD-BY-LEETEN 2014/10/19-END
+
 #endif	// __SHADER__H__
 
 /*

@@ -7,6 +7,11 @@ This file defines several important macros for CUDA.
 #ifndef __CUDA__MACRO__H__
 #define __CUDA__MACRO__H__
 
+// ADD-BY-LEETEN 2014/10/19-BEGIN
+#include <vector>
+using namespace std;
+// ADD-BY-LEETEN 2014/10/19-END
+
 #include <stdlib.h> // ADD-BY-LEETEN 04/11/2013
 	// ADD-BY-TLEE 2008/08/29-BEGIN
 	#include <cuda_runtime_api.h>
@@ -151,6 +156,7 @@ This file defines several important macros for CUDA.
 #define FREE_MEMORY(p)	FREE_KERNEL_MEMORY(p, cudaFree)
 #define FREE_MEMORY_ON_HOST(p)	FREE_KERNEL_MEMORY(p, cudaFreeHost)
 
+#if	0	// MOD-BY-LEETEN 2014/10/19-FROM:
 #define CLOCK_INIT(flag, header)									\
 	{														\
 		static unsigned int _uTimer = 0;					\
@@ -192,6 +198,53 @@ This file defines several important macros for CUDA.
 			printf("%.2f\n", fTotalTime);					\
 		}													\
 	}
+
+#else	// MOD-BY-LEETEN 2014/10/19-TO:
+
+#define GPUCLOCK_INIT(flag, header)									\
+	{														\
+		const char* szHeader = header;								\
+		vector<pair<char*, float>> timers;							\
+		cudaEvent_t _start, _stop;							\
+		cudaEventCreate(&_start);							\
+		cudaEventCreate(&_stop); 
+
+
+#define GPUCLOCK_BEGIN(flag, name)								\
+	if( (flag)	)										\
+	{													\
+		timers.push_back(make_pair<char*, float>(name, 0.0f));	\
+		cudaEventRecord(_start, 0);						\
+	}
+
+#define GPUCLOCK_END(flag)							\
+	if( (flag)	)										\
+	{													\
+		cudaEventRecord(_stop, 0);						\
+		cudaEventSynchronize(_stop);						\
+		cudaEventElapsedTime(&timers.rbegin()->second, _start, _stop);	\
+	}
+
+#define GPUCLOCK_PRINT(flag)									\
+		if( (flag)	)										\
+		{													\
+			printf("%s( ", szHeader);								\
+			for(vector<pair<char*, float>>::iterator itimer = timers.begin(); itimer != timers.end(); itimer++)	\
+			{												\
+				printf("%s,", itimer->first);				\
+			}												\
+			printf("):  ");									\
+			float fTotalTime  = 0.0f;								\
+			for(vector<pair<char*, float>>::iterator itimers = timers.begin(); itimers != timers.end(); itimers++)	\
+			{												\
+				fTotalTime += itimers->second;					\
+				printf("%.2f,", itimers->second);				\
+			}												\
+			printf("%.2f\n", fTotalTime);					\
+		}													\
+	}
+
+#endif	// MOD-BY-LEETEN 2014/10/19-END
 
 template<typename T>
 struct CBuffer2D 
