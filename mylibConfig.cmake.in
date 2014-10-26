@@ -27,3 +27,10 @@ if( WITH_FREEGLUT )
 	endif()
 endif() 
 
+# ADD-BY-LEETEN 2014/10/26-BEGIN
+LIST(APPEND mylib_INCLUDE_DIRS	"${mylib_DIR}/include")
+LIST(APPEND mylib_LIBRARY_DIRS	"${mylib_DIR}/lib")
+
+include_directories(${mylib_INCLUDE_DIRS})
+link_directories(${mylib_LIBRARY_DIRS})
+# ADD-BY-LEETEN 2014/10/26-END
