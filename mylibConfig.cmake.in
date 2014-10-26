@@ -1,0 +1,29 @@
+set(WITH_OPENCV			OFF 			CACHE BOOL "With CUDA?")
+if( WITH_OPENCV ) 
+	add_definitions(
+		-DWITH_OPENCV
+	)
+endif() 
+
+set(WITH_STATIC_LINK	@WITH_STATIC_LINK@)
+if( WITH_STATIC_LINK ) 
+	add_definitions(
+		-DWITH_STATIC_LINK
+	)
+endif() 
+
+set(WITH_FREEGLUT		@FREEGLUT@)
+if( WITH_FREEGLUT ) 
+	add_definitions(
+		-DUSE_FREEGLUT
+	)
+	add_definitions(
+		-DFREEGLUT_LIB_PRAGMAS=0
+	)
+	if( WITH_STATIC_LINK )
+		add_definitions(
+			-DFREEGLUT_STATIC
+		)	
+	endif()
+endif() 
+
