@@ -116,7 +116,6 @@ if( WITH_STATIC_OPENCV )
 	)	
 endif()
 
-
 if( FREEGLUT )
 	add_definitions(
 		-DFREEGLUT_LIB_PRAGMAS=0
@@ -431,6 +430,18 @@ add_subdirectory(contourspectrum)
 if( WITH_NRRD) 
 	add_subdirectory(libnrrd)
 endif()
+
+# ADD-BY-LEETEN 2014/12/25-BEGIN
+configure_file (
+  "${PROJECT_SOURCE_DIR}/${PROJECT_NAME}Config.cmake.in"
+  "${PROJECT_BINARY_DIR}/${PROJECT_NAME}Config.cmake"
+  @ONLY
+  )
+  
+install(
+	FILES "${PROJECT_BINARY_DIR}/${PROJECT_NAME}Config.cmake"
+	DESTINATION ".")
+# ADD-BY-LEETEN 2014/12/25-END
 
 
 #
