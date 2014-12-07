@@ -273,7 +273,7 @@ foreach(LIB_NAME
 			liblog 
 			libopt 
 			libfps 
-			libfilestr	
+			libfilestr
 	)
 	build_library(${LIB_NAME} "/" "/" false)
 endforeach(LIB_NAME)
@@ -425,6 +425,9 @@ install(
 endif() # if( WITH_OPENGL ) 
 
 add_subdirectory(contourspectrum)
+# ADD-BY-LEETEN 2014/12/05-BEGIN
+add_subdirectory(liboptpp)
+# ADD-BY-LEETEN 2014/12/05-END
 
 ################################################################
 if( WITH_NRRD) 
