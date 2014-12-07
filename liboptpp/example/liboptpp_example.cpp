@@ -53,6 +53,30 @@ main(int argc, char* argv[])
 			)
 		);
 
+	// ADD-BY-LEETEN 2014/12/06-BEGIN
+	float fFloat = 0.0f;
+	cOptParser._AddOptEntry(new COptFloatVector("--float", 1, &fFloat, fFloat));
+
+	float pfFloats[3];
+	cOptParser._AddOptEntry(new COptFloatVector("--float-vec", sizeof(pfFloats)/sizeof(pfFloats[0]), 
+			&pfFloats[0], 0.1f,
+			&pfFloats[1], 0.2f,
+			&pfFloats[2], 0.3f
+			)
+		);
+
+	double dDouble = 0.0;
+	cOptParser._AddOptEntry(new COptPrimitiveTypeVector<double>("--double", 1, &dDouble, dDouble));
+
+	double pdDoubles[3];
+	cOptParser._AddOptEntry(new COptPrimitiveTypeVector<double>("--double-vec", sizeof(pdDoubles)/sizeof(pdDoubles[0]), 
+			&pdDoubles[0], 0.2,
+			&pdDoubles[1], 0.4,
+			&pdDoubles[2], 0.8
+			)
+		);
+	// ADD-BY-LEETEN 2014/12/06-END
+
 	// Now string is supported.
 	string pszStrings[3];
 	cOptParser._AddOptEntry(new COptStringVector("--string-vec", sizeof(pszStrings)/sizeof(pszStrings[0]), 
@@ -90,6 +114,19 @@ main(int argc, char* argv[])
 	{
 		LOG_VAR(pszStrings[i]);
 	}
+
+	// ADD-BY-LEETEN 2014/12/06-BEGIN
+	LOG_VAR(fFloat);
+	for(size_t i = 0; i < sizeof(pfFloats)/sizeof(pfFloats[0]); i++) 
+	{
+		LOG_VAR(pfFloats[i]);
+	}
+	LOG_VAR(dDouble);
+	for(size_t i = 0; i < sizeof(pdDoubles)/sizeof(pdDoubles[0]); i++) 
+	{
+		LOG_VAR(pdDoubles[i]);
+	}
+	// ADD-BY-LEETEN 2014/12/06-END
 
 	return 0;
 }
