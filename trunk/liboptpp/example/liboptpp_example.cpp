@@ -54,16 +54,34 @@ main(int argc, char* argv[])
 		);
 
 	// ADD-BY-LEETEN 2014/12/06-BEGIN
+	int iIntRequired= 0;
+	cOptParser._AddOptEntry(new COptIntVector("--int-required", 1, &iIntRequired, iIntRequired));
+	cOptParser._SetRequired("--int-required", true);
+	// ADD-BY-LEETEN 2014/12/06-END
+
+	// ADD-BY-LEETEN 2014/12/06-BEGIN
 	float fFloat = 0.0f;
 	cOptParser._AddOptEntry(new COptFloatVector("--float", 1, &fFloat, fFloat));
 
 	float pfFloats[3];
+	// MOD-BY-LEETEN 2014/12/06-FROM:
+	/*
 	cOptParser._AddOptEntry(new COptFloatVector("--float-vec", sizeof(pfFloats)/sizeof(pfFloats[0]), 
 			&pfFloats[0], 0.1f,
 			&pfFloats[1], 0.2f,
 			&pfFloats[2], 0.3f
 			)
 		);
+	*/
+	// MOD-BY-LEETEN 2014/12/06-TO:
+	cOptParser._AddOptEntry( (new COptFloatVector("--float-vec", sizeof(pfFloats)/sizeof(pfFloats[0]), 
+			&pfFloats[0], 0.1f,
+			&pfFloats[1], 0.2f,
+			&pfFloats[2], 0.3f
+			))
+			->withDescription("A vector of floating-point values.") 
+		);
+	// MOD-BY-LEETEN 2014/12/06-END
 
 	double dDouble = 0.0;
 	cOptParser._AddOptEntry(new COptPrimitiveTypeVector<double>("--double", 1, &dDouble, dDouble));
@@ -80,9 +98,17 @@ main(int argc, char* argv[])
 	// Now string is supported.
 	string pszStrings[3];
 	cOptParser._AddOptEntry(new COptStringVector("--string-vec", sizeof(pszStrings)/sizeof(pszStrings[0]), 
+			#if	0	// MOD-BY-LEETEN 2014/12/06-FROM:
 			&pszStrings[0], "str0",
 			&pszStrings[1], "str1",
 			&pszStrings[2], "str2"
+			#else	// MOD-BY-LEETEN 2014/12/06-TO:
+			// string cannot be initialized by NULL.
+			// A workaround is used empty ("").
+			&pszStrings[0], "",
+			&pszStrings[1], "str1",
+			&pszStrings[2], "str2"
+			#endif	// MOD-BY-LEETEN 2014/12/06-END
 			)
 		);
 
@@ -91,13 +117,19 @@ main(int argc, char* argv[])
 	// In the long run, chart* should be deprecated.
 	const char* pszCharPtrs[3];
 	cOptParser._AddOptEntry(new COptCharPtrVector("--char-ptr-vec", sizeof(pszCharPtrs)/sizeof(pszCharPtrs[0]), 
+			#if	0	// MOD-BY-LEETEN 2014/12/06-FROM:
 			&pszCharPtrs[0], "char_ptr0",
+			#else	// MOD-BY-LEETEN 2014/12/06-TO:
+			&pszCharPtrs[0], NULL,
+			#endif	// MOD-BY-LEETEN 2014/12/06-END
 			&pszCharPtrs[1], "char_ptr1",
 			&pszCharPtrs[2], "char_ptr2"
 			)
 		);
 
-	cOptParser.BOPTParse(argc, argv, 1);
+	// MOD-BY-LEETEN 2014/12/06:	cOptParser.BOPTParse(argc, argv, 1);
+	ASSERT_OR_LOG( cOptParser.BOPTParse(argc, argv, 1), "");
+	// MOD-BY-LEETEN 2014/12/06-END
 
 	LOG_VAR(bBool);
 	LOG_VAR(iEnum);
@@ -108,7 +140,18 @@ main(int argc, char* argv[])
 	}
 	for(size_t i = 0; i < sizeof(pszCharPtrs)/sizeof(pszCharPtrs[0]); i++) 
 	{
+		#if	0	// MOD-BY-LEETEN 2014/12/06-FROM:
 		LOG_VAR(pszCharPtrs[i]);
+		#else	// MOD-BY-LEETEN 2014/12/06-TO:
+		// const char* can be NULL,
+		// and thus require additional check.
+		if( pszCharPtrs[i] )
+		{
+			LOG_VAR(pszCharPtrs[i]);
+		} else {
+			LOG(cerr<<"pszCharPtrs[i] is NULL");
+		}
+		#endif	// MOD-BY-LEETEN 2014/12/06-END
 	}
 	for(size_t i = 0; i < sizeof(pszStrings)/sizeof(pszStrings[0]); i++) 
 	{
