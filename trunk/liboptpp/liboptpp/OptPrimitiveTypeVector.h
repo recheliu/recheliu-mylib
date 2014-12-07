@@ -20,13 +20,8 @@ using namespace std;
 #include "OptValueVector.h"
 
 namespace OptExt {
-	#if	0	// MOD-BY-LEETEN 2014/12/06-FROM:	
-	template<class DT>
-	struct COptPrimitiveTypeVector: public COptValueVector<DT>
-	#else	// MOD-BY-LEETEN 2014/12/06-TO:
 	template<class DT, class VT=DT>
 	struct COptPrimitiveTypeVector: public COptValueVector<DT, VT>
-	#endif	// MOD-BY-LEETEN 2014/12/06-END
 	{
 		virtual void _ParseValue(const char* szArg, DT& Dest) 
 		{
@@ -35,11 +30,7 @@ namespace OptExt {
 			is >> Dest;
 		}
 
-		#if	0	// MOD-BY-LEETEN 2014/12/06-FROM:
-		COptPrimitiveTypeVector(const char* szArgName, size_t uNrOfDests, ...):
-		#else	// MOD-BY-LEETEN 2014/12/06-TO:
 		COptPrimitiveTypeVector(const string& szArgName, size_t uNrOfDests, ...):
-		#endif	// MOD-BY-LEETEN 2014/12/06-END
 			COptValueVector(szArgName)
 		{
 			va_list vaDests;	
@@ -50,9 +41,7 @@ namespace OptExt {
 	};
 
 	typedef COptPrimitiveTypeVector<int> COptIntVector;
-	// MOD-BY-LEETEN 2014/12/06:	typedef COptPrimitiveTypeVector<float> COptFloatVector;
 	typedef COptPrimitiveTypeVector<float, double> COptFloatVector;
-	// MOD-BY-LEETEN 2014/12/06-END
 	typedef COptPrimitiveTypeVector<double> COptDoubleVector;
 }
 

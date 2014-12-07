@@ -22,23 +22,11 @@ using namespace std;
 namespace OptExt {
 	struct COptParser 
 	{
-		// MOD-BY-LEETEN 2014/12/06:	unordered_map<string, COptEntry*> mapNameOpt;
 		map<string, COptEntry*> mapNameOpt;
-		// MOD-BY-LEETEN 2014/12/06-END
 
-		// MOD-BY-LEETEN 2014/12/06-FROM:
-		/*
-		void 
-		_AddOptEntry(COptEntry *pcEntry) 
-		{
-			mapNameOpt[pcEntry->szArgName] = pcEntry;
-		}
-		*/
-		// MOD-BY-LEETEN 2014/12/06-TO:
 		//! The entries to release by the constructor.
 		list<COptEntry*> lpEntryToRelease;
 
-		// ADD-BY-LEETEN 2014/12/06-BEGIN
 		unordered_map<string, bool> umapRequiredArgs;
 
 		void
@@ -57,12 +45,9 @@ namespace OptExt {
 				}
 			}
 		}
-		// ADD-BY-LEETEN 2014/12/06-END
 
 		void 
-		// MOD-BY-LEETEN 2014/12/06:	_AddOptEntry(COptEntry *pcEntry, bool bNotToRelease = false) 
 		_AddOptEntry(COptEntry *pcEntry, bool bIsRequired=false, bool bNotToRelease = false) 
-		// MOD-BY-LEETEN 2014/12/06-END
 		{
 			mapNameOpt[pcEntry->szArgName] = pcEntry;
 			if( !bNotToRelease ) 
@@ -70,14 +55,11 @@ namespace OptExt {
 				lpEntryToRelease.push_back(pcEntry);
 			}
 		}
-		// MOD-BY-LEETEN 2014/12/06-END
 
 		void
 		_OptPrintComment()
 		{
-			// MOD-BY-LEETEN 2014/12/06:	for(unordered_map<string, COptEntry*>::iterator 
 			for(map<string, COptEntry*>::iterator 
-			// MOD-BY-LEETEN 2014/12/06-END
 					imapNameOpt = mapNameOpt.begin(); 
 				imapNameOpt != mapNameOpt.end(); 
 				imapNameOpt++) 
@@ -103,9 +85,7 @@ namespace OptExt {
 			bResult = true;
 			for(iA = iBegin; iA < argc; iA++)
 			{
-				// MOD-BY-LEETEN 2014/12/06:	unordered_map<string, COptEntry*>::iterator imapNameOpt = mapNameOpt.find(string(argv[iA]));
 				map<string, COptEntry*>::iterator imapNameOpt = mapNameOpt.find(string(argv[iA]));
-				// MOD-BY-LEETEN 2014/12/06-END
 				if( mapNameOpt.end() == imapNameOpt ) 
 				{
 					// Stop if found a unknown argument.
@@ -113,16 +93,13 @@ namespace OptExt {
 				}
 				COptEntry *pcOptEntry = imapNameOpt->second;
 				pcOptEntry->_Parse(argc, argv, &iA);
-				// ADD-BY-LEETEN 2014/12/06-BEGIN
 				unordered_map<string, bool>::iterator iumapRequiredArg = umapRequiredArgs.find(pcOptEntry->szArgName);
 				if( iumapRequiredArg != umapRequiredArgs.end() ) 
 				{
 					iumapRequiredArg->second = true;
 				}
-				// ADD-BY-LEETEN 2014/12/06-END
 			}
 
-			// ADD-BY-LEETEN 2014/12/06-BEGIN
 			size_t uNrOfMissedArguments = 0;
 			for(unordered_map<string, bool>::iterator 
 					iumapRequiredArg = umapRequiredArgs.begin();
@@ -140,7 +117,6 @@ namespace OptExt {
 				bResult = false;
 			}
 
-			// ADD-BY-LEETEN 2014/12/06-END
 
 			if( piEnd )
 				*piEnd = iA;
@@ -150,16 +126,6 @@ namespace OptExt {
 		
 		virtual ~COptParser() 
 		{
-			/*
-			for(unordered_map<string, COptEntry*>::iterator 
-					imapNameOpt = mapNameOpt.begin();
-				imapNameOpt != mapNameOpt.end();
-				imapNameOpt++)
-			{
-				delete imapNameOpt->second;
-			}
-			*/
-			// ADD-BY-LEETEN 2014/12/06-BEGIN
 			for(list<COptEntry*>::iterator 
 					ilpEntry = lpEntryToRelease.begin();
 				ilpEntry != lpEntryToRelease.end();
@@ -168,8 +134,6 @@ namespace OptExt {
 				delete *ilpEntry;
 			}
 			lpEntryToRelease.clear();
-			// ADD-BY-LEETEN 2014/12/06-END
-
 		}
 	};
 }
