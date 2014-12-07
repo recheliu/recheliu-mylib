@@ -38,7 +38,9 @@ namespace OptExt {
 					return imapNameValue->first;
 				}
 			}
-			throw new invalid_argument("Cannot find the name for value " + iValue);
+			// MOD-BY-LEETEN 2014/12/06:	throw new invalid_argument("Cannot find the name for value " + iValue);
+			ASSERT_OR_LOG(false, cerr<<"Cannot find the name for value "<<iValue);
+			// MOD-BY-LEETEN 2014/12/06-END
 		}
 
 		COptEnum(string szArgName, DT* piDest, DT iDefaultValue, size_t uNrOfNames, ...):
@@ -83,10 +85,16 @@ namespace OptExt {
 			// set the parameters
 			string strName(argv[++*piStart]);
 			unordered_map<string, DT>::iterator iumapNameValue = umapNameValue.find(strName);
+			// MOD-BY-LEETEN 2014/12/06-FROM:
+			/*
 			if( iumapNameValue == umapNameValue.end() ) 
 			{
 				throw new invalid_argument("Unknown value " + strName + " for " + this->szArgName);
 			}
+			*/
+			// MOD-BY-LEETEN 2014/12/06-TO:
+			ASSERT_OR_LOG( iumapNameValue != umapNameValue.end(), cerr<<"Unknown value " + strName + " for " + this->szArgName );
+			// MOD-BY-LEETEN 2014/12/06-END
 			*this->piDest = iumapNameValue->second;
 		}
 

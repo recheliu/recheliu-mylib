@@ -24,11 +24,28 @@ namespace OptExt {
 	{
 		unordered_map<string, COptEntry*> mapNameOpt;
 
+		// MOD-BY-LEETEN 2014/12/06-FROM:
+		/*
 		void 
 		_AddOptEntry(COptEntry *pcEntry) 
 		{
 			mapNameOpt[pcEntry->szArgName] = pcEntry;
 		}
+		*/
+		// MOD-BY-LEETEN 2014/12/06-TO:
+		//! The entries to release by the constructor.
+		list<COptEntry*> lpEntryToRelease;
+
+		void 
+		_AddOptEntry(COptEntry *pcEntry, bool bNotToRelease = false) 
+		{
+			mapNameOpt[pcEntry->szArgName] = pcEntry;
+			if( !bNotToRelease ) 
+			{
+				lpEntryToRelease.push_back(pcEntry);
+			}
+		}
+		// MOD-BY-LEETEN 2014/12/06-END
 
 		void
 		_OptPrintComment()
@@ -86,6 +103,17 @@ namespace OptExt {
 				delete imapNameOpt->second;
 			}
 			*/
+			// ADD-BY-LEETEN 2014/12/06-BEGIN
+			for(list<COptEntry*>::iterator 
+					ilpEntry = lpEntryToRelease.begin();
+				ilpEntry != lpEntryToRelease.end();
+				ilpEntry++)
+			{
+				delete *ilpEntry;
+			}
+			lpEntryToRelease.clear();
+			// ADD-BY-LEETEN 2014/12/06-END
+
 		}
 	};
 }
