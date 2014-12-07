@@ -25,9 +25,17 @@ namespace OptExt {
 	{
 		typedef string DT;
 
+		#if	0	// MOD-BY-LEETEN 2014/12/06-FROM:
 		virtual void _Print(string szName, void* pDest) const 
+		#else	// MOD-BY-LEETEN 2014/12/06-TO:
+		virtual void _Print(const string& szName, void* pDest) const 
+		#endif	// MOD-BY-LEETEN 2014/12/06-END
 		{
-			cerr<<"\tstring "<<szName<<" = \""<<*(string*)pDest<<"\""<<endl;
+			// MOD-BY-LEETEN 2014/12/06:	cerr<<"\tstring "<<szName<<" = \""<<*(string*)pDest<<"\""<<endl;
+			ostringstream os;
+			os<<"\""<<*(string*)pDest<<"\"";
+			_PrintVarValue("string", szName, os.str());
+			// MOD-BY-LEETEN 2014/12/06-END
 		}
 
 		virtual void _ParseValue(const char* szArg, DT& Dest) 
@@ -35,7 +43,11 @@ namespace OptExt {
 			Dest = DT(szArg);
 		}
 
+		#if	0	// MOD-BY-LEETEN 2014/12/06-FROM:
 		COptStringVector(const char* szArgName, size_t uNrOfDests, ...):
+		#else	// MOD-BY-LEETEN 2014/12/06-TO:
+		COptStringVector(const string& szArgName, size_t uNrOfDests, ...):
+		#endif	// MOD-BY-LEETEN 2014/12/06-END
 			COptValueVector(szArgName)
 		{
 			va_list vaDests;	

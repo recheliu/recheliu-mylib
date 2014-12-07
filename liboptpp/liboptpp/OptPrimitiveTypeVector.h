@@ -35,7 +35,11 @@ namespace OptExt {
 			is >> Dest;
 		}
 
+		#if	0	// MOD-BY-LEETEN 2014/12/06-FROM:
 		COptPrimitiveTypeVector(const char* szArgName, size_t uNrOfDests, ...):
+		#else	// MOD-BY-LEETEN 2014/12/06-TO:
+		COptPrimitiveTypeVector(const string& szArgName, size_t uNrOfDests, ...):
+		#endif	// MOD-BY-LEETEN 2014/12/06-END
 			COptValueVector(szArgName)
 		{
 			va_list vaDests;	
