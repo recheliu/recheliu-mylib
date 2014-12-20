@@ -428,6 +428,9 @@ add_subdirectory(contourspectrum)
 # ADD-BY-LEETEN 2014/12/05-BEGIN
 add_subdirectory(liboptpp)
 # ADD-BY-LEETEN 2014/12/05-END
+# ADD-BY-LEETEN 2014/12/20-BEGIN
+add_subdirectory(libtimer)
+# ADD-BY-LEETEN 2014/12/20-END
 
 ################################################################
 if( WITH_NRRD) 
