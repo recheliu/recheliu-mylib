@@ -1,6 +1,14 @@
 #ifndef __LIB_OPENGL_LIB_H_
 #define __LIB_OPENGL_LIB_H_
 
+// ADD-BY-LEETEN 2014-12/20-BEGIN
+#if	defined(USE_FREEGLUT)
+#include <GL/freeglut.h>
+#else
+#include <GL/glut.h>
+#endif
+// ADD-BY-LEETEN 2014-12/20-END
+
 // ADD-BY-LEETEN 2009/01/18-BEGIN
 	#include "libbuf.h"
 
@@ -64,6 +72,26 @@
 				if( terminate )	exit(-iError);	\
 			}\
 		}
+
+// ADD-BY-LEETEN 2014-12/20-BEGIN
+namespace GlHelper {
+	inline 
+	void 
+	_DrawString3D(const char *szString, float fX, float fY, float fZ)		
+	{
+		glPushMatrix();
+
+		// normalize the coordinate to be window coordinate
+		glTranslatef(fX, fY, fZ);
+
+		glRasterPos3f(0.0, 0.0, 0.0);
+		for(const char *pc = szString; *pc; pc++)
+			glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, *pc);
+
+		glPopMatrix();
+	}
+};
+// ADD-BY-LEETEN 2014-12/20-END
 
 #endif // __LIB_OPENGL_LIB_H_
 

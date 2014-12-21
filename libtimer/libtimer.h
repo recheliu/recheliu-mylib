@@ -44,7 +44,7 @@ class CTimer
 	{
 		*pClock = timeGetTime();
 	}
-
+	#if	0		// MOD-BY-LEETEN 2014-12/20-FROM:
 	size_t
 	UGetMsec
 	(
@@ -53,6 +53,16 @@ class CTimer
 	{
 		return (size_t)time;
 	}
+	#else	// MOD-BY-LEETEN 2014-12/20-TO:
+	double
+	DGetMsec
+	(
+		const CLOCK& time
+	)
+	{
+		return (double)time;
+	}
+	#endif	// MOD-BY-LEETEN 2014-12/20-END
 #else	// #if	defined(WIN32)
 	typedef timespec CLOCK;
 	void _GetTime(CLOCK *pClock)
@@ -60,6 +70,7 @@ class CTimer
 		clock_gettime(CLOCK_REALTIME, pClock);
 	}
 
+	#if	0	// MOD-BY-LEETEN 2014-12/20-FROM:
 	size_t
 	UGetMsec
 	(
@@ -68,6 +79,16 @@ class CTimer
 	{
 		return (size_t)((double)clock.tv_sec * 1.0e+3 + (double)clock.tv_nsec/1.0e+6);
 	}
+	#else	// MOD-BY-LEETEN 2014-12/20-TO:
+	double
+	DGetMsec
+	(
+		const CLOCK& clock
+	)
+	{
+		return ((double)clock.tv_sec * 1.0e+3 + (double)clock.tv_nsec/1.0e+6);
+	}
+	#endif	// MOD-BY-LEETEN 2014-12/20-END
 #endif	// #if	defined(WIN32)
 
     vector<pair<string, CLOCK>> vpairTimes;
@@ -117,14 +138,25 @@ public:
 	{
 		ostringstream osLabels;
 		ostringstream osTimes;
+		// ADD-BY-LEETEN 2014-12/20-BEGIN
+		double dSum = 0.0;
+		// ADD-BY-LEETEN 2014-12/20-END
 		for(vector<pair<string, CLOCK>>::iterator 
 				ivpairTime = vpairTimes.begin();
 			ivpairTime != vpairTimes.end();
 			ivpairTime ++ )
 		{
 			osLabels<< ivpairTime->first<<",";
-			osTimes<< UGetMsec(ivpairTime->second)<<",";
+			// MOD-BY-LEETEN 2014-12/20:	osTimes<< UGetMsec(ivpairTime->second)<<",";
+			double dTime = DGetMsec(ivpairTime->second);
+			osTimes<< dTime<< ",";
+			dSum += dTime;
+			// MOD-BY-LEETEN 2014-12/20-END
 		}
+		// ADD-BY-LEETEN 2014-12/20-BEGIN
+		osLabels<<"TOTAL";
+		osTimes<<dSum;
+		// ADD-BY-LEETEN 2014-12/20-END
 		ostringstream osList;
 		osList<< strName<< "("<< osLabels.str()<< "): "<< osTimes.str();
 		return osList.str();
