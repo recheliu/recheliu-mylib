@@ -248,6 +248,15 @@ CGlutWin::IGetWin(int iWid)
 // ADD-BY-LEETEN 08/12/2008-BEGIN
 bool CGlutWin::bSwapBuffer = false;
 
+// ADD-BY-LEETEN 2014/12/25-BEGIN
+#if	defined(USE_FREEGLUT)
+void CGlutWin::WarningFunc( const char *fmt, va_list ap )
+{
+	// Ignore warnings.
+}
+#endif	// #if	defined(USE_FREEGLUT)
+// ADD-BY-LEETEN 2014/12/25-END
+
 void 
 CGlutWin::_Init(
 	int *argcp, 
@@ -256,6 +265,11 @@ CGlutWin::_Init(
 )
 {
 	glutInit(argcp, argv);
+	// ADD-BY-LEETEN 2014/12/25-BEGIN
+	#if	defined(USE_FREEGLUT)
+	glutInitWarningFunc( CGlutWin::WarningFunc );
+	#endif	// #if	defined(USE_FREEGLUT)
+	// ADD-BY-LEETEN 2014/12/25-END
 	glutInitDisplayMode(mode);
 
 	if( mode & GLUT_DOUBLE )

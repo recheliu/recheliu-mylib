@@ -509,6 +509,12 @@ public:
 		return IGetId() * 0x010000 + (int)usValue;
 	}
 
+	// ADD-BY-LEETEN 2014/12/25-BEGIN
+	#if	defined(USE_FREEGLUT)
+	static void WarningFunc( const char *fmt, va_list ap );
+	#endif	// #if	defined(USE_FREEGLUT)
+	// ADD-BY-LEETEN 2014/12/25-END
+
 	// ADD-BY-LEETEN 08/14/2008-BEGIN
 	static void _IdleCB_static();
 	// ADD-BY-LEETEN 08/14/2008-END
