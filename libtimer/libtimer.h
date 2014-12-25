@@ -5,7 +5,7 @@
 using namespace std;
 
 #if defined(WIN32)
-	#define WIN32_LEAN_AND_MEAN
+	// DEL-BY-LEETEN 2014/12/25:	#define WIN32_LEAN_AND_MEAN
 	#include <windows.h>
 	#include <mmsystem.h>
 	#pragma comment (lib, "winmm.lib")      
@@ -37,9 +37,15 @@ using namespace std;
 
 class CTimer
 {
+// ADD-BY-LEETEN 2014/12/25-BEGIN
+public:
+// ADD-BY-LEETEN 2014/12/25-END
 #if defined(WIN32)
 	typedef DWORD CLOCK;
 
+	// ADD-BY-LEETEN 2014/12/25-BEGIN
+	static
+	// ADD-BY-LEETEN 2014/12/25-END
 	void _GetTime(CLOCK *pClock)
 	{
 		*pClock = timeGetTime();
@@ -54,6 +60,9 @@ class CTimer
 		return (size_t)time;
 	}
 	#else	// MOD-BY-LEETEN 2014-12/20-TO:
+	// ADD-BY-LEETEN 2014/12/25-BEGIN
+	static
+	// ADD-BY-LEETEN 2014/12/25-END
 	double
 	DGetMsec
 	(
@@ -65,6 +74,9 @@ class CTimer
 	#endif	// MOD-BY-LEETEN 2014-12/20-END
 #else	// #if	defined(WIN32)
 	typedef timespec CLOCK;
+	// ADD-BY-LEETEN 2014/12/25-BEGIN
+	static
+	// ADD-BY-LEETEN 2014/12/25-END
 	void _GetTime(CLOCK *pClock)
 	{
 		clock_gettime(CLOCK_REALTIME, pClock);
@@ -80,6 +92,9 @@ class CTimer
 		return (size_t)((double)clock.tv_sec * 1.0e+3 + (double)clock.tv_nsec/1.0e+6);
 	}
 	#else	// MOD-BY-LEETEN 2014-12/20-TO:
+	// ADD-BY-LEETEN 2014/12/25-BEGIN
+	static
+	// ADD-BY-LEETEN 2014/12/25-END
 	double
 	DGetMsec
 	(
@@ -91,6 +106,9 @@ class CTimer
 	#endif	// MOD-BY-LEETEN 2014-12/20-END
 #endif	// #if	defined(WIN32)
 
+// ADD-BY-LEETEN 2014/12/25-BEGIN
+protected:
+// ADD-BY-LEETEN 2014/12/25-END
     vector<pair<string, CLOCK>> vpairTimes;
 	string strName;
 

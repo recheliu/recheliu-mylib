@@ -12,7 +12,7 @@
 
 // ADD-BY-LEETEN 01/23/2011-BEGIN
 #ifdef WIN32
-	#define WIN32_LEAN_AND_MEAN
+	// DEL-BY-LEETEN 2014/12/25:	#define WIN32_LEAN_AND_MEAN
 	#include <windows.h>
 	#include <mmsystem.h>
 	#pragma comment (lib, "winmm.lib")      // link with my own library libfps
