@@ -134,6 +134,15 @@ add_definitions(
 	-DGLUT_BUILDING_LIB
 )
 
+# ADD-BY-LEETEN 2014/12/25-BEGIN
+add_subdirectory(contourspectrum)
+add_subdirectory(libarray)
+include_directories(libarray)
+add_subdirectory(liboptpp)
+include_directories(liboptpp)
+add_subdirectory(libtimer)
+# ADD-BY-LEETEN 2014/12/25-END
+
 ##############################################################
 function(build_library libname src_subdir dst_subdir)
 	set(SRC_DIR "${PROJECT_SOURCE_DIR}/${libname}/${src_subdir}/")
@@ -424,16 +433,18 @@ install(
 	DESTINATION "${CMAKE_INSTALL_PREFIX}/bin")
 endif() # if( WITH_OPENGL ) 
 
-add_subdirectory(contourspectrum)
-# ADD-BY-LETEN 2014/12/25-BEGIN
-add_subdirectory(libarray)
-# ADD-BY-LETEN 2014/12/25-END
-# ADD-BY-LEETEN 2014/12/05-BEGIN
-add_subdirectory(liboptpp)
-# ADD-BY-LEETEN 2014/12/05-END
-# ADD-BY-LEETEN 2014/12/20-BEGIN
-add_subdirectory(libtimer)
-# ADD-BY-LEETEN 2014/12/20-END
+# # DEL-BY-LEETEN 2014/12/25-BEGIN
+# add_subdirectory(contourspectrum)
+# # ADD-BY-LETEN 2014/12/25-BEGIN
+# add_subdirectory(libarray)
+# # ADD-BY-LETEN 2014/12/25-END
+# # ADD-BY-LEETEN 2014/12/05-BEGIN
+# add_subdirectory(liboptpp)
+# # ADD-BY-LEETEN 2014/12/05-END
+# # ADD-BY-LEETEN 2014/12/20-BEGIN
+# add_subdirectory(libtimer)
+# # ADD-BY-LEETEN 2014/12/20-END
+# # DEL-BY-LEETEN 2014/12/25-END
 
 ################################################################
 if( WITH_NRRD) 
