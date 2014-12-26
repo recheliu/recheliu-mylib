@@ -21,22 +21,17 @@ frend class called CTfUi.
 #include <list>
 using namespace std;
 
-// ADD-BY-LEETEN 01/28/2011-BEGIN
 #include <stdio.h>
 #include <string.h>
-// ADD-BY-LEETEN 01/28/2011-END
 
 #pragma once
 
 	#include "knot.h"
 
-	// ADD-BY-LEETEN 08/12/2009-BEGIN
 	#include "FloatValue.h"
-	// ADD-BY-LEETEN 08/12/2009-END
 
 class CTransFunc {
 
-// ADD-BY-TLEE 08/21/2008-BEGIN
 	CFloatValue cDomainMin, cDomainMax;
 
 public:
@@ -51,7 +46,6 @@ public:
 		*pfMin = cDomainMin.FGetValue();
 		*pfMax = cDomainMax.FGetValue();
 	}
-// ADD-BY-TLEE 08/21/2008-END
 
 public:
 	enum {
@@ -111,36 +105,3 @@ public:
 
 };
 
-/*
-
-$Log: not supported by cvs2svn $
-Revision 1.5  2010/01/06 16:43:58  leeten
-
-[01/06/2010]
-1. [DEL] Move the constructor and destructor to the file TransFunc.cpp.
-
-Revision 1.4  2009/08/12 22:11:48  leeten
-
-[2009/08/12]
-1. [MOD] Change the range of transfer function's domain and the data's domain from floating point numbers to the structure CFloatValue.
-
-Revision 1.3  2008/08/21 14:49:36  leeten
-
-[2008/08/21]
-1. [ADD] Define variables fDomainMin/fDomainMax as the support.
-2. [ADD] Define methods _GetDomain/_SetDomain to get/set the domain.
-
-Revision 1.2  2008/08/15 14:54:11  leeten
-
-[2008/08/15]
-1. [ADD] Declare new methods BOpenFile/BSaveFile to open/save the TF as files.
-2. [ADD] Declare a new methods BCheckFile to check the validabilty of a file. It is used to prevent from loading wrong TF and destroying the current TF because calling another method BOpenFile can immediately destroy the TF.
-3. [ADD] Define a new method BCheckFilenameExt to check if the file extension is '.TF.'
-
-Revision 1.1.1.1  2008/08/14 14:44:02  leeten
-
-[2008/08/14]
-1. [FIRST TIME CHECKIN]. This library defines classes for trasnfer functions, including editing and displaying.
-
-
-*/

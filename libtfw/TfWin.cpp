@@ -47,7 +47,6 @@ CTfWin::_DisplayFunc()
 	glPushMatrix();
 		glLoadIdentity();
 
-	// ADD-BY-LEETEN 2009/08/16-BEGIN
 	if( cHistogram.pfBins.BIsAllocated() )
 	{
 		// normalize the coordinate
@@ -100,10 +99,8 @@ CTfWin::_DisplayFunc()
 		glColor4f(1.0, 1.0, 1.0, 1.0);
 		for(int i = 0; i < (int)cHistogram.pfBins.USize(); i++)
 		{
-			// MOD-BY-LEETEN 02/08/2013-FROM:			glVertex2f((float)i, cHistogram.pfBins[i]);
 			glVertex2f((float)i, cHistogram.pfBins[i]);
 			glVertex2f((float)i + 1.0f, cHistogram.pfBins[i]);
-			// MOD-BY-LEETEN 02/08/2013-END
 		}
 		glEnd();
 		glPopAttrib();	// glPushAttrib(GL_LINE_BIT);
@@ -115,7 +112,6 @@ CTfWin::_DisplayFunc()
 	}
 	else
 	{
-	// ADD-BY-LEETEN 2009/08/16-END
 
 		// normalize the coordinate
 		glTranslatef(-1.0f, -1.0f, -1.0f);
@@ -159,15 +155,11 @@ CTfWin::_DisplayFunc()
 			glEnd();
 		}
 
-		// ADD-BY-TLEE 2008/08/21-BEGIN
 		glColor4f(0.0f, 1.0f, 1.0f, 1.0f);
 		_DrawString(SZSprintf("%.2e", pcTransFunc->cDomainMin.FGetValue()), 0, 0, false);
 		_DrawString(SZSprintf("%.2e", pcTransFunc->cDomainMax.FGetValue()), -1, 0, true);
-		// ADD-BY-TLEE 2008/08/21-END
 
-	// ADD-BY-LEETEN 2009/08/16-BEGIN
 	}
-	// ADD-BY-LEETEN 2009/08/16-END
 
 	glMatrixMode(GL_PROJECTION);
 	glPopMatrix();
@@ -179,16 +171,13 @@ CTfWin::_DisplayFunc()
 void 
 CTfWin::_InitFunc()
 {
-	// ADD-BY-TLEE 08/14/2008-BEGIN
 	assert( pcTransFunc );
-	// ADD-BY-TLEE 08/14/2008-END
 
-	_Reshape(512, 128);	// ADD-BY-LEETEN 02/08/2013
+	_Reshape(512, 128);	
 
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 }
 
-// ADD-BY-TLEE 08/14/2008-BEGIN
 void 
 CTfWin::_SetTransFunc(CTransFunc* pcTransFunc)
 {
@@ -202,36 +191,4 @@ CTfWin::_SetNrOfEntries(int iNrOfEntries)
 	this->iNrOfEntries = iNrOfEntries;
 	pfColorMap.alloc(iNrOfEntries * CTransFunc::NR_OF_COLORS);
 }
-// ADD-BY-TLEE 08/14/2008-END
-
-/*
-
-$Log: not supported by cvs2svn $
-Revision 1.3  2009/08/12 22:11:48  leeten
-
-[2009/08/12]
-1. [MOD] Change the range of transfer function's domain and the data's domain from floating point numbers to the structure CFloatValue.
-
-Revision 1.2  2008/08/21 14:50:47  leeten
-
-[2008/08/21]
-1. [ADD] Indicate the domain in _DisplayFunc().
-
-Revision 1.1.1.1  2008/08/14 14:44:02  leeten
-
-[2008/08/14]
-1. [FIRST TIME CHECKIN]. This library defines classes for trasnfer functions, including editing and displaying.
-
-Revision 1.2  2008/08/13 21:16:37  leeten
-
-[2008/08/13]
-1. [DEL] Remove glutSwapBuffers();
-
-Revision 1.1.1.1  2008/08/12 16:58:49  leeten
-
-[2008/08/12]
-1. First time checkin. This is my DVR renderer for 3D regular volume. For testing, the dataset HIPIP is checkin too.
-
-
-*/
 

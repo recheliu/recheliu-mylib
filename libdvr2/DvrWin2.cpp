@@ -13,7 +13,6 @@ CDvrWin2::_EndDisplay()
 {
 }
 
-// ADD-BY-LEETEN 04/06/2010-BEGIN
 void 
 CDvrWin2::_SetVolume(
 	GLenum eInternalFormat,
@@ -75,9 +74,7 @@ _Begin();
 
 _End();
 }
-// ADD-BY-LEETEN 04/06/2010-END
 
-// ADD-BY-LEETEN 12/30/2009-BEGIN
 void 
 CDvrWin2::_RenderSlab(
 	int iSlab, int iNrOfSlabs,
@@ -119,7 +116,6 @@ CDvrWin2::_RenderSlab(
 		glVertex3d(		dX, dY, dZ);
 	glEnd();
 }
-// ADD-BY-LEETEN 12/30/2009-END
 
 
 //////////////////////////////////////////////////////
@@ -189,7 +185,6 @@ CDvrWin2::_DisplayFunc()
 	double dMaxX, dMaxY, dMaxZ;
 	TMatrix tModelviewMatrix;
 
-	// ADD-BY-LEETEN 12/30/2009-BEGIN
 	TMatrix tIdentityMatrix = 
 	{
 		1.0, 0.0, 0.0, 0.0,
@@ -197,8 +192,6 @@ CDvrWin2::_DisplayFunc()
 		0.0, 0.0, 1.0, 0.0,
 		0.0, 0.0, 0.0, 1.0,
 	};
-	// ADD-BY-LEETEN 12/30/2009-END
-
 
 	dMinX = dMinY = dMinZ = HUGE_VAL;
 	dMaxX = dMaxY = dMaxZ = -HUGE_VAL;
@@ -354,42 +347,13 @@ CDvrWin2::_InitFunc()
 //////////////////////////////////////////////////////
 CDvrWin2::CDvrWin2(void)
 {
-	// ADD-BY-LEETEN 04/06/2010-BEGIN
 	t1dTf = 0;
 	t3dVol = 0;
 	iNrOfSlices = 128;
 	fThicknessGain = 1.0f;
-	// ADD-BY-LEETEN 04/06/2010-END
 }
 
 CDvrWin2::~CDvrWin2(void)
 {
 }
 
-/*
-
-$Log: not supported by cvs2svn $
-Revision 1.4  2010/08/05 19:15:59  leeten
-
-[08/05/2010]
-1. [MOD] Change the usage of assert.
-
-Revision 1.3  2010/04/06 19:55:23  leeten
-
-[04/06/2010]
-1. [ADD] Define a new method _SetVolume to upload the specified volume as a 3D texture.
-2. [ADD] Define a new method _SetTransferFunc to specify the transfer function.
-
-Revision 1.2  2009/12/31 01:43:14  leeten
-
-[12/30/2009]
-1. [ADD] Define a new method _RenderSlab() to render a slab. This method can be redfined by the inherited classes.
-2. [MOD] Change the space to do slicing from ndc to eye space.
-
-Revision 1.1  2009/10/27 14:04:07  leeten
-
-[2009/10/27]
-1. [1ST] First time checkin. This library defined DvrWin2, a new class for volume rendering. This class already supports buildit-in ping-pong rendering.
-
-
-*/

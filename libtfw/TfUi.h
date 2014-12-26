@@ -26,21 +26,16 @@ The proecduer to use this class is as below:
 
 	#include "libbuf.h"
 
-	// ADD-BY-LEETEN 08/14/2008-BEGIN
 	#include "knot.h"
 	#include "TransFunc.h"
-	// ADD-BY-LEETEN 08/14/2008-END
 
-	// ADD-BY-LEETEN 08/12/2009-BEGIN
 	#include "FloatValue.h"
-	// ADD-BY-LEETEN 08/12/2009-END
 
 class CTfUi :
 	public CGlutWin
 {
 	///////////////////////////////////////////////
 public:
-	// ADD-BY-LEETEN 02/06/2013-BEGIN
 	class CReceiver
 	{
 	public:
@@ -55,7 +50,6 @@ public:
 	// a function to setup the receivier.
 	void
 	_SetReceiver(CReceiver *pcReceiver);
-	// ADD-BY-LEETEN 02/06/2013-END
 
 	enum
 	{
@@ -64,17 +58,13 @@ public:
 		EDIT_CLEAR,		// clear the spline
 		EDIT_RESTORE,
 		EDIT_UPDATE,
-		// ADD-BY-LEETEN 2008/08/17-BEGIN
 		EDIT_DELETE,
-		// ADD-BY-LEETEN 2008/08/17-END
 
 						// define new constants
-		// ADD-BY-LEETEN 2008/08/15-BEGIN
 		FILE_OPEN,		// open file of the TF
 		FILE_SAVE,		// save file of the TF
 		FILE_DIR,		// specify the dir. of the TF
 		FILE_FILENAME,	// specify the filename of the TF
-		// ADD-BY-LEETEN 2008/08/15-END
 
 		EDIT_EXIT
 	};
@@ -83,10 +73,8 @@ public:
 protected:
 	TBuffer<float> pfHistogram;
 
-	// ADD-BY-LEETEN 2008/08/17-BEGIN
 	CFloatValue cHistogramMin;
 	CFloatValue cHistogramMax;
-	// ADD-BY-LEETEN 2008/08/17-END
 
 
 
@@ -138,9 +126,7 @@ public:
 		this->pcTransFunc = pcTransFunc;
 	}
 
-	// ADD-BY-LEETEN 2008/08/14-BEGIN
 	void _ClearChannel(int channel);
-	// ADD-BY-LEETEN 2008/08/14-END
 
 	///////////////////////////////////////////////
 protected:						
@@ -167,14 +153,12 @@ protected:
 		}
 
 											// thie method clear the history and reset the pointer to current action
-		// ADD-BY-LEETEN 08/15/2008-BEGIN
 		void
 		_Clear()
 		{
 			lcEditActions.clear();
 			liCurrentAction = lcEditActions.end();
 		}
-		// ADD-BY-LEETEN 08/15/2008-BEGIN
 
 		void 
 		_AddMarker()
@@ -263,7 +247,6 @@ public:
 	}
 
 									// variables and methods for specifying the path of the TF
-// ADD-BY-LEETEN 08/15/2008-BEGIN
 
 protected:						
 	char szFilename[1024+1];		// a buffer for the EditText control to define the filename
@@ -312,7 +295,6 @@ public:
 			_AddToLog("pcEditText_Filename hasn't been created yet.");
 		}
 	}
-// ADD-BY-LEETEN 08/15/2008-END
 
 public:						// callbacks
 	void _InitFunc();
@@ -335,44 +317,3 @@ public:
 	virtual ~CTfUi(void);
 };
 
-/*
-
-$Log: not supported by cvs2svn $
-Revision 1.5  2009/06/01 21:29:05  leeten
-
-[2009/06/01]
-1. [DEL] Remove CTfUi:: in the declaration of PlotSpline().
-2. [MOD] Change glutwin.h to GlutWin.h
-
-Revision 1.4  2008/08/21 14:52:33  leeten
-
-[2008/08/21]
-1. [ADD] Add variable fHistogramMin/fHistogramMax as the range of the data value.
-2. [CHANGE] Modify method _SetHistogramAsBackground: if pfHistogram is NULL, only the histogram range will be set.
-
-Revision 1.3  2008/08/17 23:54:20  leeten
-
-[2008/08/17]
-1. [ADD] Add a button to delete selected knots. To handle this event, a new event index EDIT_DELETE is defined.
-2. [CHANGE] Use rollouts other than panels to group user control.
-3. [ADD] When plot the histogram, also display the range of the histogram. Two variables fHistogramMin and fHistogramMax are thus defined. To do this, the method _SetHistogramAsBackground is redefined by adding two parameters to indicate the range.
-
-Revision 1.2  2008/08/15 14:49:45  leeten
-
-[2008/08/15]
-1. [ADD] Add new functionalities to open/save the TF as files. The use can specify the dir. and path of the file via edit texts, and tow button are added to load/save the TF.
-2. [ADD] Define new methods _SetDir and _SetFilename to specify the dir/filename in the edit texts.
-3. [ADD] Define new a new method _Clear in CEditHistory to clear the history.
-
-Revision 1.1.1.1  2008/08/14 14:44:02  leeten
-
-[2008/08/14]
-1. [FIRST TIME CHECKIN]. This library defines classes for trasnfer functions, including editing and displaying.
-
-Revision 1.1  2008/08/13 21:17:21  leeten
-
-[2008/08/13]
-1. First time checkin. This class can create a GLUT window for editing transfer function.
-
-
-*/
