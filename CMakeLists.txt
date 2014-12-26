@@ -425,6 +425,9 @@ install(
 endif() # if( WITH_OPENGL ) 
 
 add_subdirectory(contourspectrum)
+# ADD-BY-LETEN 2014/12/25-BEGIN
+add_subdirectory(libarray)
+# ADD-BY-LETEN 2014/12/25-END
 # ADD-BY-LEETEN 2014/12/05-BEGIN
 add_subdirectory(liboptpp)
 # ADD-BY-LEETEN 2014/12/05-END

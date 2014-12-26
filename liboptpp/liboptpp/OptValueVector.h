@@ -71,7 +71,9 @@ namespace OptExt {
 
 		void _SetDests(size_t uNrOfDests, va_list vaDests)
 		{
-			for(int d = 0; d < uNrOfDests; d++) 
+			// MOD-BY-LETEN 2014/12/25:	for(int d = 0; d < uNrOfDests; d++) 
+			for(size_t d = 0; d < uNrOfDests; d++) 
+			// MOD-BY-LETEN 2014/12/25-END
 			{	
 				DT *pDest = va_arg(vaDests, DT*);	
 				VT default_value = va_arg(vaDests, VT);	
