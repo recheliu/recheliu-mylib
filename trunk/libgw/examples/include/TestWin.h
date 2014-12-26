@@ -31,7 +31,6 @@ public:
 		this->a = a;
 	}
 
-	// ADD-BY-LEETEN 2009/01/16-BEGIN
 	void 
 	_PrintEvent(unsigned int uiCbId, va_list vaArgs)
 	{
@@ -92,22 +91,6 @@ public:
 			;
 		}
 	}
-	// ADD-BY-LEETEN 2009/01/16-END
 };
 
 
-/*
-
-$Log: not supported by cvs2svn $
-Revision 1.2  2009/01/16 14:35:17  leeten
-
-[2009/01/16]
-1. [ADD] Define a function _PrintEvent to print out the passed events.
-
-Revision 1.1.1.1  2008/08/16 16:26:16  leeten
-
-[2008/08/16]
-1. [FIRST TIME CHECKIN].
-
-
-*/

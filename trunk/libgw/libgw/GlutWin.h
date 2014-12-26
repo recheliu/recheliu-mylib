@@ -1,18 +1,15 @@
 #ifndef		__GLUT_WINDOW_H__
 #define		__GLUT_WINDOW_H__
 
-#if				WITH_OPENCV	// ADD-BY-LEETEN 01/19/2013
-#include "GlutWin_config.h"	// ADD-BY-LEETEN 10/14/2011
-#endif	// #if	WITH_OPENCV	// ADD-BY-LEETEN 01/19/2013
+#if				WITH_OPENCV	
+#include "GlutWin_config.h"	
+#endif	// #if	WITH_OPENCV	
 
-// ADD-BY-LEETEN 08/09/2008-BEGIN
 #include <vector>
 #include <stack>
 using namespace std;
-// ADD-BY-LEETEN 08/09/2008-END
 
-#if				WITH_OPENCV	// ADD-BY-LEETEN 01/19/2013
-	// ADD-BY-LEETEN 08/25/2008-BEGIN
+#if				WITH_OPENCV	
 	#include "cxcore.h"
 	#include "highgui.h"
 
@@ -21,7 +18,6 @@ using namespace std;
 	#else
 		#if	OPENCV_VER >= 200
 
-	// ADD-BY-LEETEN 04/05/2012-BEGIN	
 	#if WITH_STATIC_OPENCV	
 		#if defined(_DEBUG)
 			#pragma comment (lib, "libjasperd.lib")
@@ -37,20 +33,17 @@ using namespace std;
 			#pragma comment (lib, "zlib.lib")
 		#endif	// #if defined(_DEBUG)
 	#endif	// #if WITH_STATIC_LINK
-	// ADD-BY-LEETEN 04/05/2012-END
 
 			#pragma message( OPENCV_MESSAGE  )
 			
-			// ADD-BY-LEETEN 04/05/2012-BEGIN	
 			#if defined( WITH_STATIC_OPENCV	) && defined( _DEBUG )
 				#pragma comment (lib, OPENCV_CORE_DEBUG_LIB )      
 				#pragma comment (lib, OPENCV_HIGHGUI_DEBUG_LIB )   
 			#else	// #if defined( WITH_STATIC_LINK) && !defined( _DEBUG )
-			// ADD-BY-LEETEN 04/05/2012-END
 
 			#pragma comment (lib, OPENCV_CORE_LIB )      
 			#pragma comment (lib, OPENCV_HIGHGUI_LIB )   
-			#endif	// #if defined( WITH_STATIC_LINK) && !defined( _DEBUG )	// ADD-BY-LEETEN 04/05/2012
+			#endif	// #if defined( WITH_STATIC_LINK) && !defined( _DEBUG )	
 		#elif OPENCV_VER >= 100
 			#pragma message( OPENCV_MESSAGE  )
 			#pragma comment (lib, "cv.lib")      
@@ -61,8 +54,6 @@ using namespace std;
 			#pragma error( "Unsupported OpenCV version" )
 		#endif
 	#endif
-	// ADD-BY-LEETEN 08/25/2008-END
-// ADD-BY-LEETEN 01/26/2008-BEGIN
 #else	// #if	WITH_OPENCV	
 	#include "lodepng.h"
 	#if defined(_DEBUG)
@@ -70,8 +61,7 @@ using namespace std;
 	#else	// #if defined(_DEBUG)
 	#pragma comment (lib, "lodepng.lib")
 	#endif	// #if defined(_DEBUG)
-// ADD-BY-LEETEN 01/26/2008-END
-#endif	// #if	WITH_OPENCV	// ADD-BY-LEETEN 01/19/2013
+#endif	// #if	WITH_OPENCV	
 
 	#pragma comment (lib, "winmm.lib")      /* link with Windows MultiMedia lib */
 	#ifdef _DEBUG
@@ -81,35 +71,28 @@ using namespace std;
 	#endif
 
 
-	// ADD-BY-LEETEN 11/17/2008-BEGIN
 	#pragma comment (lib, "opengl32.lib")      /* link with Windows MultiMedia lib */
 	#pragma comment (lib, "glu32.lib")      /* link with Windows MultiMedia lib */
 	#ifdef USE_FREEGLUT
 		#define GLUI_FREEGLUT
 
-	// ADD-BY-LEETEN 04/05/2012-BEGIN
 	#if	defined(WITH_STATIC_LINK)
 		#pragma comment (lib, "freeglut_static.lib")
 	#else	// #if	defined(WITH_STATIC_LINK)	
-	// ADD-BY-LEETEN 04/05/2012-END
 		#pragma comment (lib, "freeglut.lib")      
-	#endif	// #if	defined(WITH_STATIC_LINKP)	// ADD-BY-LEETEN 04/05/2012
+	#endif	// #if	defined(WITH_STATIC_LINKP)	
 	#else
 		#pragma comment (lib, "glut32.lib")      /* link with Windows MultiMedia lib */
 	#endif
-	// ADD-BY-LEETEN 11/17/2008-END
 
-	#if	!defined(WITH_STATIC_LINK)		// ADD-BY-LEETEN 04/05/2012
+	#if	!defined(WITH_STATIC_LINK)		
 	#define GLUIDLL 
-	#endif	// #if	!defined(WITH_STATIC_LINK)	// ADD-BY-LEETEN 04/05/2012
+	#endif	// #if	!defined(WITH_STATIC_LINK)	
 
-	// ADD-BY-LEETEN 08/11/2008-BEGIN
 	// combine w/ GLUI
-	// ADD-BY-LEETEN 08/07/2010-BEGIN
 	#ifdef USE_FREEGLUT
 		#pragma message( "Use GLUI w/ FREEGLUT" )
 
-		// ADD-BY-LEETEN 04/05/2012-BEGIN
 		#if	defined(WITH_STATIC_LINK)
 			#if	defined(_DEBUG)
 				#pragma comment (lib, "glui32d_freeglut.lib")
@@ -117,32 +100,25 @@ using namespace std;
 				#pragma comment (lib, "glui32_freeglut.lib")
 			#endif	// #if	defined(_DEBUG)
 		#else	// #if	defined(WITH_STATIC_LINK)	
-		// ADD-BY-LEETEN 04/05/2012-END
 		#pragma comment (lib, "glui32dll_freeglut.lib")
 
-		#endif	// #if	defined(WITH_STATIC_LINK)	// ADD-BY-LEETEN 04/05/2012
+		#endif	// #if	defined(WITH_STATIC_LINK)	
 	#else
 		#pragma message( "Use GLUI w/o FREEGLUT" )
 		#pragma comment (lib, "glui32dll.lib")
 	#endif
 	#define GLUI_NO_LIB_PRAGMA
-	// ADD-BY-LEETEN 08/07/2010-EBD
 
 	#include <GL/glui.h>
-	// ADD-BY-LEETEN 08/11/2008-END
 
 	#include <stdlib.h>
 	#include <stdio.h>
 	#include <string.h>
 	#include <memory.h>
-	// ADD-BY-LEETEN 02/16/2010-BEGIN
 	#define _USE_MATH_DEFINES
-	// ADD-BY-LEETEN 02/16/2010-END
 	#include <math.h>
 
- 	// ADD-BY-LEETEN 08/12/2008-BEGIN
 	#include <stdarg.h>	
-	// ADD-BY-LEETEN 08/12/2008-END
 
 #ifdef NDEBUG
 	#undef assert
@@ -162,13 +138,10 @@ using namespace std;
 
 #include "libopengl.h"
 
-// ADD-BY-LEETEN 08/12/2008-BEGIN
 #include "libfps.h"
-// ADD-BY-LEETEN 08/12/2008-END
 
 class CGlutWin {
 
-	// ADD-BY-LEETEN 2009/01/15-BEGIN
 	// a function pointer to the function that handle all windows events (e.g. window display and resize/ and GLUI events)
 	// the meaning of the paramters: 
 	//	iGlutWid:	the GLUT window id
@@ -186,26 +159,17 @@ public:
 		CB_KEYBOARD,
 		CB_SPECIAL,
 		CB_MOTION,
-		// ADD-BY-LEETEN 2009/03/04-BEGIN
 		CB_PASSIVE_MOTION,
-		// ADD-BY-LEETEN 2009/03/04-END
 		CB_MOUSE,
 		CB_TIMER,
 		CB_GLUI,	// used to indicate GLUI control event
-		// ADD-BY-LEETEN 2009/01/22-BEGIN
 		CB_MANUAL,	// user-defined events
-		// ADD-BY-LEETEN 2009/01/22-END
 	};
-	// ADD-BY-LEETEN 2009/01/15-END
 
-	// ADD-BY-LEETEN 08/19/2008-BEGIN
 protected:
 
-	// ADD-BY-LEETEN 12/05/2008-BEGIN
 	int iSnapshotIndex;
-	// ADD-BY-LEETEN 12/05/2008-END
 
-	// ADD-BY-TLEE 2008/08/20-BEGIN
 	struct CViewFrustrum
 	{
 		float fAngle_degree;
@@ -219,7 +183,6 @@ protected:
 			fFar	= 1000.0f;
 		}
 	} cViewFrustrum;
-	// ADD-BY-TLEE 2008/08/20-END
 
 	struct CMouseEvent {
 		int iButton;
@@ -228,9 +191,6 @@ protected:
 		int iY;
 	};
 	vector<CMouseEvent> vcMouseEvents;
-	// ADD-BY-LEETEN 08/19/2008-END
-
-	// ADD-BY-LEETEN 08/12/2008-BEGIN
 				// variables and method for displaying FPS
 protected:
 	FPS_COUNTER cFps;
@@ -246,10 +206,8 @@ public:
 	void _DrawString(char *szString, int iX = 0, int iY = 0, bool bAlignToRight = false);		// draw a string on the screen
 	void _AddToLog(char *szString, FILE* fpOutput = stderr);			// print out a string on the console as the log
 
-	// ADD-BY-LEETEN 2008/12/21-BEGIN
 				// draw a string in the origin of current 3D coordinate
 	void _DrawString3D(char *szString, float fX = 0.0f, float fY = 0.0f, float fZ = 0.0f);		
-	// ADD-BY-LEETEN 2008/12/21-END
 
 				// variables and method for deciding if the screen should be keep updating
 protected:
@@ -259,13 +217,8 @@ public:
 	void _KeepUpdateOn();
 	void _KeepUpdateOff();
 
-	// ADD-BY-LEETEN 08/12/2008-END
-
-	// ADD-BY-LEETEN 11/17/2008-BEGIN
 	void _DisableVerticalSync();
-	// ADD-BY-LEETEN 11/1/7/2008-END
 
-// ADD-BY-LEETEN 08/11/2008-BEGIN
 
 protected:
 						// store the GLUI option to add a GLUI win and/or a GLUI subwin
@@ -280,9 +233,7 @@ protected:
 						// location of the sub-window
 	int iSubwinPosistion;
 
-	// ADD-BY-LEETEN 08/13/2008-BEGIN
 	void _UpdateWinCoord(int *px, int *py, bool bFlipY = true);
-	// ADD-BY-LEETEN 08/13/2008-END
 public:
 						// define the option of GLUI windows as enum
 	typedef enum {
@@ -302,7 +253,6 @@ public:
 
 						// return the pointer to the GLUI sub-window
 	GLUI *PCGetGluiSubwin();
-// ADD-BY-LEETEN 08/11/2008-END
 
 protected:
 	typedef GLdouble TMatrix[16];
@@ -310,9 +260,7 @@ protected:
 						// the window id
 	int iId;
 
-	// ADD-BY-TLEE 2008/08/20-BEGIN
 	char szMatrixFilename[1024+1];
-	// ADD-BY-TLEE 2008/08/20-END
 
 						// title
 	char szTitle[1024+1];
@@ -323,10 +271,8 @@ protected:
 						// the viewport
 	int piViewport[4];
 
-	// ADD-BY-LEETEN 02/17/2012-BEGIN
 	int iGlutWindowWidth;
 	int iGlutWindowHeight;
-	// ADD-BY-LEETEN 02/17/2012-END
 
 						// the model, view, and projection matrices
 	TMatrix tViewMatrix, tInitViewMatrix;
@@ -346,10 +292,8 @@ protected:
 	GLenum eModifier;
 	bool bMoving;
 
-	// ADD-BY-LEETEN 2009/03/04-BEGIN
 	int iPassiveCursorX;
 	int iPassiveCursorY;
-	// ADD-BY-LEETEN 2009/03/04-END
 
 	double pdOldCoord[3], pdNewCoord[3];
 	double pdCurPos[3], pdBeginPos[3];
@@ -374,48 +318,36 @@ protected:
 	virtual void _SpecialFunc(int, int, int);
 	virtual void _IdleFunc();
 
-	// ADD-BY-LEETEN 2009/01/22-BEGIN
 	virtual void _MotionFunc(int x, int y);
 	virtual void _MouseFunc(int button, int state, int x, int y);
-	// ADD-BY-LEETEN 2009/01/22-END
 
-	// ADD-BY-LEETEN 2009/03/04-BEGIN
 	virtual void _PassiveMotionFunc(int x, int y);
-	// ADD-BY-LEETEN 2009/03/04-END
 
 	virtual void _InitFunc();
 
-	// ADD-BY-LEETEN 08/11/2008-BEGIN
 	virtual void _TimerFunc(unsigned short value);
-	// ADD-BY-LEETEN 08/11/2008-END
 
-	// ADD-BY-LEETEN 08/16/2008-BEGIN
 							// because the window can be created via the method ICreate,
 							// this purposes of _AddWin are only to register callbacks
 							// and add the window to the list, which can be hidden from 
 							// the caller. Hence it is declared as protected.
 	static void _AddWin(
 		CGlutWin *win); 
-	// ADD-BY-LEETEN 08/16/2008-END
 
-	#if				WITH_OPENCV	// ADD-BY-LEETEN 01/19/2013
-	// ADD-BY-LEETEN 08/25/2008-BEGIN
+	#if				WITH_OPENCV	
 	IplImage *pcSnapshot;
-	#endif	//	#if	WITH_OPENCV	// ADD-BY-LEETEN 01/19/2013
+	#endif	//	#if	WITH_OPENCV	
 
 public:
 
 							// save the current snapshot to an file
 	void _SaveSnapshot(char *szSnapshotFilename = NULL);
-	// ADD-BY-LEETEN 08/25/2008-END
 
 public:
 
-	// ADD-BY-TLEE 2008/08/20-BEGIN
 	void _SaveMatrix(char *szMatrixFilename);
 	void _OpenMatrix(char *szMatrixFilename);
 	void _LoadSavedMatrix(char *szMatrixFilename = NULL);
-	// ADD-BY-TLEE 2008/08/20-END
 
 	virtual void _DisplayCB();
 	virtual void _ReshapeCB(int w, int h);
@@ -425,18 +357,12 @@ public:
 	virtual void _MouseCB(int button, int state, int x, int y);
 	virtual void _IdleCB();
 
-	// ADD-BY-LEETEN 2009/03/04-BEGIN
 	virtual void _PassiveMotionCB(int x, int y);
-	// ADD-BY-LEETEN 2009/03/04-END
 
-	// ADD-BY-LEETEN 08/11/2008-BEGIN
 	virtual void _TimerCB(unsigned short value);
-	// ADD-BY-LEETEN 08/11/2008-END
 
-	// ADD-BY-LEETEN 08/11/2008-BEGIN
 	void _AddTimer(unsigned int msecs, unsigned short value = 0);	// add a timer event
 	void _Redisplay();										// trigger a display event
-	// ADD-BY-LEETEN 08/11/2008-END
 
 	int IGetId();			// return the window ID	
 
@@ -448,7 +374,6 @@ public:
 	CGlutWin();
 	virtual ~CGlutWin();
 
-	// ADD-BY-LEETEN 08/12/2008-BEGIN
 	void _Push();			// push current window
 	void _Pop();			// pop this window
 
@@ -509,188 +434,15 @@ public:
 		return IGetId() * 0x010000 + (int)usValue;
 	}
 
-	// ADD-BY-LEETEN 2014/12/25-BEGIN
 	#if	defined(USE_FREEGLUT)
 	static void WarningFunc( const char *fmt, va_list ap );
 	#endif	// #if	defined(USE_FREEGLUT)
-	// ADD-BY-LEETEN 2014/12/25-END
 
-	// ADD-BY-LEETEN 08/14/2008-BEGIN
 	static void _IdleCB_static();
-	// ADD-BY-LEETEN 08/14/2008-END
 
-	// ADD-BY-LEETEN 2008/08/15-BEGIN
 											// declare a static method as the GLUI callbacks
 	static void _GluiCB_static(int iIdValue);
-	// ADD-BY-LEETEN 2008/08/15-END
 };
 
 #endif	//	__GLUT_WINDOW_H__
 
-/*
-
-$Log: not supported by cvs2svn $
-Revision 1.26  2011-01-24 02:54:58  leeten
-
-[01/23/2011]
-1. [MOD] Automatically link the OpenCV libraries for different versions. current only 2.10 and 2.20 are supported.
-
-Revision 1.25  2010/08/07 12:06:02  leeten
-
-[08/07/2010]
-1. [MOD] When preprocessor USE_FREEGLUT is defined,  use the glui that supports freeglut.
-
-Revision 1.24  2010/08/06 20:22:13  leeten
-
-[08/06/2010]
-1. [ADD] Use freeglut when USE_FREEGLUT is defined.
-2. [ADD] Link the libraries from OpenCV 2.1.
-
-Revision 1.23  2010/08/06 15:33:33  leeten
-
-[08/06/2010]
-1. [MOD] Remvoe the preprocessor GLUT_BUILDING_LIB and define a preprocessor GLUIDLL.
-
-Revision 1.22  2010/08/05 19:17:32  leeten
-
-[08/05/2010]
-1. [MOD] Change the linkage of library.
-
-Revision 1.21  2010/02/16 20:03:16  leeten
-
-[02/16/2010]
-1. [ADD] Define the preprocessor _USE_MATH_DEFINES in order to use the constants in math.h
-2. [DEL] Remove manually defined M_PI and M_PI_2.
-
-Revision 1.20  2009/06/01 21:35:55  leeten
-
-[2009/06/01]
-1. [MOD] Only define the preprocessor M_PI and M_PI_2 when they are not available.
-
-Revision 1.19  2009/03/04 22:21:04  leeten
-
-[2009/03/04]
-1. [ADD] Support the handling of the passive mouse motion. The cursor coordinates will be stored in two variabel iPassiveCursorX and iPassiveCursorY. The subclass of CGlutWin can overload the callback _PassiveMotionFunc() (recommended) or _PassiveMotionCB().
-
-Revision 1.18  2009/02/22 22:09:19  leeten
-
-[2009/02/22]
-1. [DEBUG] Change the offset for the windows from 8 bits to 16 bits.
-
-Revision 1.17  2009/01/22 17:13:49  leeten
-
-[2009/01/22]
-1. [ADD] Define a new constant CB_MANUAL for user-defined events.
-2. [ADD] Define new methods _MouseFunc and _MotionFunc to track the location of trhe cursor.
-
-Revision 1.16  2009/01/16 14:30:56  leeten
-
-[2009/01/16]
-1. [ADD] Allow the passing of events to a global function. The global function can be registered via _RegisterGlobalFunc().
-
-Revision 1.15  2008/12/21 22:00:13  leeten
-
-[2008/12/21]
-1. [ADD] Declare a new method _DrawString3D() to draw a string in the local coordinate.
-
-Revision 1.14  2008/12/06 21:36:19  leeten
-
-[2008/12/05]
-1. [ADD] Declare a member variabel iSnapshotIndex.
-
-Revision 1.13  2008/11/30 04:18:40  leeten
-
-[2008/11/29]
-1. [ADD] Implicitly Include the opengl32.lib, glu32.lib and glut32.lib.
-2. [ADD] Declare a new method _DisableVerticalSync().
-
-Revision 1.12  2008/08/25 20:39:12  leeten
-
-[2008/08/25]
-1. [ADD] Add a new method _SaveSnapshot() to save current frame.
-2. [DEL] Remove old deleted codes.
-
-Revision 1.11  2008/08/21 14:43:17  leeten
-
-[2008/08/21]
-1. [ADD] Add variables szMatrixFilename and methods to open/save the modelview matrixs
-
-Revision 1.10  2008/08/20 19:35:14  leeten
-
-[2008/08/20]
-1. [ADD] Declare three variables fAngle_degree, fNear and fFar to specify the view frustrum.
-2. [ADD] Define a new structure CMouseEvent to record the events of mouse.
-3. [DEL] Remove the method _AddButton() and related methods
-
-Revision 1.9  2008/08/17 23:58:04  leeten
-
-[2008/08/17]
-1. [CHANGE] Redefine the method _DrawString such that the user can control the position of the string.
-
-Revision 1.8  2008/08/16 21:21:05  leeten
-
-[2008/08/16]
-1. [CHANGE] Change the type of the value for timer event from int to unsigned short.
-
-Revision 1.7  2008/08/16 16:01:38  leeten
-
-[2008/08/16]
-1. [ADD] link with the library libfps.lib
-2. [CHANGE] Declare the static method _AddWin as private since its usage is reduced to add a window to the window list, other than the function to create the windows.
-3. [ADD] Define a new method _Reshape(w, h) to control the size of the window.
-
-Revision 1.6  2008/08/15 14:39:13  leeten
-
-[2008/08/15]
-1. [DEL] Remove old deleted code.
-2. [DEL] Remove the pragmas  to link libraries in mylib.
-3. [ADD] Add a new method IAddWid to combien the window's ID with a unsigned short value.
-4. [ADD] Add a new paramter to _AddButton to specify the panel.
-5. [ADD] Declared a new static method _GluiCB_static as the callback to handle GLUI callbacks.
-
-Revision 1.5  2008/08/14 14:46:31  leeten
-
-[2008/08/18]
-1. [ADD] Declare a new static method _IdleCB_static to bypass the idle event to all windows.
-
-Revision 1.4  2008/08/13 21:00:24  leeten
-
-[2008/08/13]
-1. [ADD] Declare a new method SZSprint to format string. Hence stdarg.h is included
-2. [ADD] Declare a new method _DrawString() to draw a string in the left bottom corner.
-3. [ADD] Declare a new method _AddToLog to add a string to specifed file (by default STDERR). When printing this string, a prefix will be added to indicate which window display this string, and a new line will be automatically appended at the end.
-4. [ADD] Declare methods _DisplayFpsOn()/_DisplayFpsOff(); Hence libfps.h is included
-5. [ADD] Declare new methods _KeepUpdateOn()/_KeepUpdateOff()  to decide if the screen should be keeping up to date
-6. [ADD] Declare a new callback _GluiCB() to handle event from GLUI control. It will call another method _GluiFunc().
-7. [ADD] Declare a new method _AddButton() to add a button to the GLUI windows/subwindows.
-8. [ADD] Declare a new static method _AddButton() to add a button to a given window.
-9. [ADD] Add a new static method _Init to replace the glutInit. If GLUT_DOUBLE is specifed, a new static flag bSwapBuffer will be true.
-
-Revision 1.3  2008/08/12 16:36:59  leeten
-
-[2008/08/12]
-1. [DEL] Remvoe the checking of FREEGLUT since it will be done in GLUI.
-2. [ADD] Support the timer event. To trigger a timer event, the application can call a static method _AddTimer(). to process the timer event, a new callback _TimerCB() is defined. This callback will invoke another method _TimerFunc().
-3. [ADD] Define methods to avoid the misorder of active windows since the timer event can shuffle the order among the GLUT windows.
-4. [ADD] Define new methods to similar GLUT APIs: _Push(), _Pop() and _Redisplay().
-5. [ADD] Define a new method _GetWin() to conver a GLUT window ID to the order in the vector vcWins.
-
-Revision 1.2  2008/08/11 04:27:26  leeten
-
-[2008/08/11]
-1. [ADD] Combine with GLUI.
-2. [ADD] Declare new routine to enable GLUI subwin/win and return the GLUI pointers.
-3. [ADD] Add enums as GLUI options.
-
-Revision 1.1  2008/08/10 05:00:27  leeten
-
-[2008/08/10]
-1. First time checkin. Now we use the static member methods to add windows.
-
-Revision 1.1.1.1  2008/08/09 13:50:10  leeten
-
-[2008/08/09]
-1. First time checkin. LIBGW is a OO-based library to create GLUT window. In each window, there is a 3D coordinate for the object and mouse countrol to manipulate the coordinate and viewpoint.
-
-
-*/
