@@ -5,13 +5,11 @@
 	#ifdef WIN32	
 	#include <GL/wglew.h>
 
-	// ADD-BY-LEETEN 04/05/2012-BEGIN
 	#if	defined(WITH_STATIC_LINK)
 		#pragma comment (lib, "glew32s.lib")      
 	#else	// #if	defined(WITH_STATIC_LINK)
-	// ADD-BY-LEETEN 04/05/2012-END
 	#pragma comment (lib, "glew32.lib")      
-	#endif	// #if	defined(WITH_STATIC_LINK)	// ADD-BY-LEETEN 04/05/2012
+	#endif	// #if	defined(WITH_STATIC_LINK)	
 	#endif
 
 	#include <time.h>
@@ -86,9 +84,7 @@ CGlutWin::_RotateCamera()
 		pdAxis[1] = pdBeginPos[2] * pdCurPos[0] - pdBeginPos[0] * pdCurPos[2];
 		pdAxis[2] = pdBeginPos[0] * pdCurPos[1] - pdBeginPos[1] * pdCurPos[0];
 
-		// ADD-BY-LEETEN 03/31/2008-BEGIN
 		_AlignRotate(pdAxis);
-		// ADD-BY-LEETEN 03/31/2008-END
 
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
@@ -253,7 +249,6 @@ CGlutWin::_ZoomModel()
 	glutPostRedisplay();
 }
 
-// ADD-BY-LEETEN 08/12/2008-BEGIN
 char *
 CGlutWin::SZSprintf
 (
@@ -268,7 +263,6 @@ CGlutWin::SZSprintf
 	return szBuffer;
 }
 
-// ADD-BY-LEETEN 2008/12/21-BEGIN
 			// draw a string in the origin of current 3D coordinate
 void 
 CGlutWin::_DrawString3D(char *szString, float fX, float fY, float fZ)		
@@ -287,7 +281,6 @@ _Begin();
 	glPopMatrix();
 _End();
 }
-// ADD-BY-LEETEN 2008/12/21-END
 
 				// draw a string on the screen. It will be drawn in the origin in current coordinate
 void
@@ -332,7 +325,6 @@ CGlutWin::_AddToLog(char *szString, FILE* fpOutput)
 {
 	fprintf(fpOutput, "[GLUTWIN-%s]: %s\n", szTitle, szString);
 }
-// ADD-BY-LEETEN 08/12/2008-END
 
 void 
 CGlutWin::_DisplayCB()
@@ -349,7 +341,6 @@ CGlutWin::_DisplayCB()
 
 	_DisplayFunc();
 
-	// ADD-BY-LEETEN 08/12/2008-BEGIN
 						// update the FPS
 	cFps.Update();
 
@@ -369,14 +360,11 @@ CGlutWin::_DisplayCB()
 		_DrawString(SZSprintf("FPS = %.2f", fFps));
 	}
 
-	// ADD-BY-TLEE 2008/08/18-BEGIN
 	if( iGluiEnum | GLUI_WIN || iGluiEnum | GLUI_SUBWIN  )
 		GLUI_Master.sync_live_all();
-	// ADD-BY-TLEE 2008/08/18-END
 
 	if( CGlutWin::bSwapBuffer )
 		glutSwapBuffers();	
-	// ADD-BY-LEETEN 08/12/2008-END
 
 	CHECK_OPENGL_ERROR(szDisplay, true);
 }
@@ -384,17 +372,13 @@ CGlutWin::_DisplayCB()
 void 
 CGlutWin::_ReshapeCB(int w, int h)
 {
-	// ADD-BY-LEETEN 02/17/2012-BEGIN
 	iGlutWindowWidth = w;
 	iGlutWindowHeight = h;
-	// ADD-BY-LEETEN 02/17/2012-END
 
 	int tx, ty, tw, th;
 	GLUI_Master.get_viewport_area( &tx, &ty, &tw, &th );
 	glViewport(tx, ty, tw, th);
-	// ADD-BY-LEETEN 08/13/2008-BEGIN
 	glGetIntegerv(GL_VIEWPORT, piViewport);
-	// ADD-BY-LEETEN 08/13/2008-END
 
 	if( tw && th )
 	{
@@ -409,7 +393,6 @@ CGlutWin::_ReshapeCB(int w, int h)
 	CHECK_OPENGL_ERROR(szReshape, true);
 }
 
-// ADD-BY-LEETEN 08/13/2008-BEGIN
 void 
 CGlutWin::_UpdateWinCoord(int *piX, int *piY, bool bFlipY)
 {
@@ -418,23 +401,17 @@ CGlutWin::_UpdateWinCoord(int *piX, int *piY, bool bFlipY)
 		*piY = iGlutWindowHeight - *piY;
 	*piY -= piViewport[1];
 }
-// ADD-BY-LEETEN 08/13/2008-END
 
 void 
 CGlutWin::_KeyboardCB(unsigned char key, int x, int y)
 {
-	// ADD-BY-LEETEN 08/13/2008-BEGIN
 	_UpdateWinCoord(&x, &y);
-	// ADD-BY-LEETEN 08/13/2008-END
 
 	switch(key) {
-		// ADD-BY-LEETEN 2008/11/29-BEGIN
 		case 's':
 			_SaveSnapshot();
 			break;
-		// ADD-BY-LEETEN 2008/11/29-END
 
-		// ADD-BY-LEETEN 08/20/2008-BEGIN
 		case 'm':		// load matrix
 			_OpenMatrix(szMatrixFilename);
 			break;
@@ -442,7 +419,6 @@ CGlutWin::_KeyboardCB(unsigned char key, int x, int y)
 		case 'M':		// save matrix
 			_SaveMatrix(szMatrixFilename);
 			break;
-		// ADD-BY-LEETEN 08/20/2008-END
 
 		case 'x':	case 'X':
 			memcpy(tViewMatrix, tInitViewMatrix, sizeof(tViewMatrix));;
@@ -491,7 +467,6 @@ CGlutWin::_KeyboardCB(unsigned char key, int x, int y)
 			glutPostRedisplay();
 			break;
 
-		// ADD-BY-LEETEN 08/05/2010-BEGIN
 		case 'F': case 'f':
 			{
 				static int piPrevViewport[4]; // the viewport beforethe 
@@ -513,21 +488,15 @@ CGlutWin::_KeyboardCB(unsigned char key, int x, int y)
 				}
 			}
 			break;
-		// ADD-BY-LEETEN 08/05/2010-END
 
-		// ADD-BY-LEETEN 01/04/2010-BEGIN
 		case '0':
 			// reset the model matrix
 			glMatrixMode(GL_MODELVIEW);
 			glLoadIdentity();
 			glGetDoublev(GL_MODELVIEW_MATRIX, tModelMatrix);
-			// ADD-BY-LEETEN 01/31/2010-BEGIN
 			glutPostRedisplay();
-			// ADD-BY-LEETEN 01/31/2010-END
 			break;
-		// ADD-BY-LEETEN 01/04/2010-END
 
-		// ADD-BY-LEETEN 01/02/2010-BEGIN
 		case '1':	case '2':	case '3':
 		case '4':				case '6':
 		case '7':	case '8':	case '9':
@@ -569,24 +538,17 @@ CGlutWin::_KeyboardCB(unsigned char key, int x, int y)
 				glMultMatrixd(tNormalMatrix);
 				glGetDoublev(GL_MODELVIEW_MATRIX, tModelMatrix);
 			}
-			// ADD-BY-LEETEN 01/31/2010-BEGIN
 			glutPostRedisplay();
-			// ADD-BY-LEETEN 01/31/2010-END
 			break;
-		// ADD-BY-LEETEN 01/02/2010-END
 	}
 
-	// ADD-BY-LEETEN 2009/11/04-BEGIN
 	_KeyboardFunc(key, x, y);
-	// ADD-BY-LEETEN 2009/11/04-END
 }
 
 void 
 CGlutWin::_SpecialCB(int skey, int x, int y)
 {
-	// ADD-BY-LEETEN 08/13/2008-BEGIN
 	_UpdateWinCoord(&x, &y);
-	// ADD-BY-LEETEN 08/13/2008-END
 
 	switch(skey) {
 		case GLUT_KEY_LEFT:
@@ -623,9 +585,7 @@ CGlutWin::_SpecialCB(int skey, int x, int y)
 			glMultMatrixd(tNormalMatrix);
 			glGetDoublev(GL_MODELVIEW_MATRIX, tModelMatrix);
 			}
-			// ADD-BY-LEETEN 01/31/2010-BEGIN
 			glutPostRedisplay();
-			// ADD-BY-LEETEN 01/31/2010-END
 			break;
 
 		default:
@@ -633,7 +593,6 @@ CGlutWin::_SpecialCB(int skey, int x, int y)
 	}
 }
 
-// ADD-BY-LEETEN 2009/03/04-BEGIN
 void 
 CGlutWin::_PassiveMotionCB(int x, int y)
 {
@@ -644,7 +603,6 @@ CGlutWin::_PassiveMotionCB(int x, int y)
 
 	_PassiveMotionFunc(x, y);
 }
-// ADD-BY-LEETEN 2009/03/04-END
 
 void 
 CGlutWin::_MotionCB(int x, int y)
@@ -654,9 +612,7 @@ CGlutWin::_MotionCB(int x, int y)
 	iCursorX = x;
 	iCursorY = y;
 
-	// ADD-BY-LEETEN 2009/01/22-BEGIN
 	_MotionFunc(x, y);
-	// ADD-BY-LEETEN 2009/01/22-END
 }
 
 void 
@@ -681,9 +637,7 @@ CGlutWin::_MouseCB(int button, int state, int x, int y)
 	dXDiffOnScreen = pdCurrentModelCenterOnScreen[0] - (double)iCursorX;
 	dYDiffOnScreen = pdCurrentModelCenterOnScreen[1] - (double)iCursorY;
 
-	// ADD-BY-LEETEN 2009/01/22-BEGIN
 	_MouseFunc(button, state, x, y);
-	// ADD-BY-LEETEN 2009/01/22-END
 }
 
 void 
@@ -737,13 +691,10 @@ CGlutWin::_IdleCB()
 
 	_IdleFunc();
 
-	// ADD-BY-LEETEN 08/12/2008-BEGIN
 	if( bKeepUpdate )
 		_Redisplay();
-	// ADD-BY-LEETEN 08/12/2008-END
 }
 
-// ADD-BY-LEETEN 2009/01/22-BEGIN
 void 
 CGlutWin::_MotionFunc(int x, int y)
 {
@@ -753,14 +704,11 @@ void
 CGlutWin::_MouseFunc(int button, int state, int x, int y)
 {
 }
-// ADD-BY-LEETEN 2009/01/22-END
 
-// ADD-BY-LEETEN 2009/03/04-BEGIN
 void 
 CGlutWin::_PassiveMotionFunc(int x, int y)
 {
 }
-// ADD-BY-LEETEN 2009/03/04-END
 
 void 
 CGlutWin::_DisplayFunc()
@@ -803,46 +751,32 @@ CGlutWin::CGlutWin()
 	eModifier = 0;
 	bMoving = false;
 
-	// ADD-BY-LEETEN 08/11/2008-BEGIN
 	iGluiEnum = GLUI_NONE;	// by default there is no GLUI control
 	pcGluiWin = NULL;		// by default there is no GLUI window
 	pcGluiSubwin = NULL;	// by default there is no GLUI sub-window
 	iSubwinPosistion = 0;	
-	// ADD-BY-LEETEN 08/11/2008-END
 
-	// ADD-BY-LEETEN 08/12/2008-BEGIN
 	bDisplayFps = false;	// by default the FPS is not shown
 	bKeepUpdate = false;	// by default the frame is not keep updating
-	// ADD-BY-LEETEN 08/12/2008-END
 
-	// ADD-BY-TLEE 2008/08/20-BEGIN
 	szMatrixFilename[0] = '\0';
-	// ADD-BY-TLEE 2008/08/20-END
 
-	#if				WITH_OPENCV	// ADD-BY-LEETEN 01/19/2013
-	// ADD-BY-LEETEN 08/25/2008-BEGIN
+	#if				WITH_OPENCV	
 	pcSnapshot = NULL;
-	// ADD-BY-LEETEN 08/25/2008-END
-	#endif	// #if	WITH_OPENCV	// ADD-BY-LEETEN 01/19/2013
+	#endif	// #if	WITH_OPENCV	
 
-	// ADD-BY-LEETEN 12/05/2008-BEGIN
 	iSnapshotIndex = 0;
-	// ADD-BY-LEETEN 12/05/2008-END
-
 }
 
 // destructor
 CGlutWin::~CGlutWin()
 {
-	#if			WITH_OPENCV	// ADD-BY-LEETEN 01/19/2013
-	// ADD-BY-LEETEN 08/25/2008-BEGIN
+	#if			WITH_OPENCV	
 	if( pcSnapshot )
 		cvReleaseImage(&pcSnapshot);
-	// ADD-BY-LEETEN 08/25/2008-END
-	#endif	// #if	WITH_OPENCV	// ADD-BY-LEETEN 01/19/2013
+	#endif	// #if	WITH_OPENCV	
 }
 
-// ADD-BY-TLEE 2008/08/20-BEGIN
 void 
 CGlutWin::_SaveMatrix(char *szMatrixFilename)
 {
@@ -913,7 +847,6 @@ CGlutWin::_LoadSavedMatrix(char *szMatrixFilename)
 		strcpy(this->szMatrixFilename, szMatrixFilename);
 	_OpenMatrix(this->szMatrixFilename);
 }
-// ADD-BY-TLEE 2008/08/20-END
 
 int 
 CGlutWin::IGetId()
@@ -921,7 +854,6 @@ CGlutWin::IGetId()
 	return iId;
 }
 
-// ADD-BY-LEETEN 08/12/2008-BEGIN
 
 			// enabling keeping sending redisplay event
 void 
@@ -958,7 +890,6 @@ CGlutWin::_DisplayFpsOff()
 	bDisplayFps = false;
 }
 
-// ADD-BY-LEETEN 08/12/2008-END
 
 int 
 CGlutWin::ICreate(
@@ -971,11 +902,9 @@ CGlutWin::ICreate(
 	sprintf(szDisplay,	"%s: _Display() ", szTitle);
 	sprintf(szInit,		"%s: _Init() ",	szTitle);
 
-	// ADD-BY-TLEE 2008/08/20-BEGIN
 	sprintf(szMatrixFilename, "%s.matrix.txt", szTitle);
 	for(char *cp = NULL; NULL != (cp = strchr(szMatrixFilename, ' ')); *cp = '-')
 		;
-	// ADD-BY-TLEE 2008/08/20-END
 
 	iId = glutCreateWindow(szTitle);
 
@@ -997,7 +926,6 @@ CGlutWin::ICreate(
 	glGetDoublev(GL_MODELVIEW_MATRIX, tModelMatrix);
 	memcpy(tInitModelMatrix, tModelMatrix, sizeof(tModelMatrix));
 
-	// ADD-BY-TLEE 08/16/2008-BEGIN
 										// move the creation of GLUI win/subwin from the static method CGlutWin::_AddWin to here
 	if( iGluiEnum & GLUI_SUBWIN )
 	{
@@ -1016,14 +944,12 @@ CGlutWin::ICreate(
 	_InitFunc();
 
 	_AddWin(this);
-	// ADD-BY-TLEE 08/16/2008-END
 
 	CHECK_OPENGL_ERROR(szInit, true);
 
 	return iId;
 }
 
-// ADD-BY-LEETEN 08/09/2008-BEGIN
 void 
 CGlutWin::_Set()
 {
@@ -1036,10 +962,6 @@ CGlutWin::_Set()
 		fprintf(stderr, "Warning in CGlutWin::_Set(): the window has ben not created yet.\n");
 	}
 }
-
-// ADD-BY-LEETEN 08/09/2008-END
-
-// ADD-BY-LEETEN 08/11/2008-BEGIN
 
 // add a GLUI window 
 void 
@@ -1072,9 +994,6 @@ CGlutWin::PCGetGluiSubwin()
 	return pcGluiSubwin;
 }
 
-// ADD-BY-LEETEN 08/11/2008-END
-
-// ADD-BY-LEETEN 08/11/2008-BEGIN
 void 
 CGlutWin::_Redisplay()
 {
@@ -1105,9 +1024,7 @@ CGlutWin::_AddTimer(unsigned int msecs, unsigned short value)
 
 	CGlutWin::_AddTimer(this, msecs, value);
 }
-// ADD-BY-LEETEN 08/11/2008-END
 
-// ADD-BY-LEETEN 08/13/2008-BEGIN
 void
 CGlutWin::_GluiFunc(unsigned short usValue)
 {
@@ -1118,8 +1035,6 @@ CGlutWin::_GluiCB(unsigned short usValue)
 {
 	_GluiFunc(usValue);
 }
-
-// ADD-BY-LEETEN 08/13/2008-END
 
 		// push this window
 void 
@@ -1172,14 +1087,11 @@ CGlutWin::_End()
 	_PopWid();
 }
 
-// ADD-BY-LEETEN 08/25/2008-BEGIN
 void 
 CGlutWin::_SaveSnapshot(char *szSnapshotFilename)
 {
-	#if			WITH_OPENCV	// ADD-BY-LEETEN 01/19/2013
-	// ADD-BY-LEETEN 12/05/2008-BEGIN
+	#if			WITH_OPENCV	
 _Begin();
-	// ADD-BY-LEETEN 12/05/2008-END
 	if( !piViewport[2] || !piViewport[3] )
 	{
 		_AddToLog("Warning: the size of the viewport is zero.");
@@ -1206,29 +1118,21 @@ _Begin();
 		sprintf(szTempSnapshotFilename, "%s_snapshot.%d.png", typeid(*this).name(), iSnapshotIndex++);
 		szSnapshotFilename  = szTempSnapshotFilename;
 	}
-	#if	1	// ADD-BY-LEETEN 2009/01/09-BEGIN
+
 	for(char *pc = strchr(szTempSnapshotFilename, ' '); pc; pc = strchr(pc, ' '))
 		*pc = '_';
 
 	for(char *pc = strchr(szTempSnapshotFilename, ':'); pc; pc = strchr(pc, ':'))
 		*pc = '_';
-	#endif	// ADD-BY-LEETEN 2009/01/09-END
 
 	glReadPixels(piViewport[0], piViewport[1], piViewport[2], piViewport[3], GL_BGR, GL_UNSIGNED_BYTE, pcSnapshot->imageData);
 
-	#if	1	// ADD-BY-LEETEN 2009/01/09-BEGIN
 	cvFlip(pcSnapshot);
-	#endif	// END
 	cvSaveImage(szSnapshotFilename, pcSnapshot);
 
-	// ADD-BY-LEETEN 2008/11/29-BEGIN
 	_AddToLog(SZSprintf("Snapshot %s was saved\n", szSnapshotFilename));
-	// ADD-BY-LEETEN 2008/11/29-END
 
-// ADD-BY-LEETEN 12/05/2008-BEGIN
 _End();
-// ADD-BY-LEETEN 12/05/2008-END
-// ADD-BY-LEETEN 01/26/2008-BEGIN
 	#else
 _Begin();
 	if( !piViewport[2] || !piViewport[3] )
@@ -1273,13 +1177,9 @@ _Begin();
 	lodepng::encode(szSnapshotFilename, vubFlipped, piViewport[2], piViewport[3]);
 	_AddToLog(SZSprintf("Snapshot %s was saved\n", szSnapshotFilename));
 _End();
-// ADD-BY-LEETEN 01/26/2008-END
-	#endif	// #if	WITH_OPENCV	// ADD-BY-LEETEN 01/19/2013
+	#endif	// #if	WITH_OPENCV	
 }
 
-// ADD-BY-LEETEN 08/25/2008-END
-
-// ADD-BY-LEETEN 11/17/2008-BEGIN
 void 
 CGlutWin::_DisableVerticalSync()
 {
@@ -1295,176 +1195,4 @@ CGlutWin::_DisableVerticalSync()
 	;
 #endif
 }
-// ADD-BY-LEETEN 11/17/2008-END
 
-
-
-/*
-
-$Log: not supported by cvs2svn $
-Revision 1.26  2010/08/05 19:25:01  leeten
-
-[08/05/2010]
-1. [ADD] Add the hotkey' f' to toggle full screen mode.
-
-Revision 1.25  2010/02/01 05:54:30  leeten
-
-[01/30/2010]
-1. [ADD] Add glutPostRedisplay() after the hot keys are pressed.
-2. [DEL] Remove the undefined hotkey '5.'
-
-Revision 1.24  2010/01/19 21:05:17  leeten
-
-[01/19/2010]
-1. [MOD] Change the rotation angle of hotkey '1' and '3'  from 45 degree to 5 degree.
-2. [MOD] Change the rotation angle of hotkey '7' and '9'  from 135 degree to 45 degree.
-
-Revision 1.23  2010/01/04 18:47:55  leeten
-
-[01/04/2010]
-1. [MOD] Switch the behavior of the hotkeys '2' and '8'.
-2. [MOD] Switch the behavior of the hotkeys '4' and '6'.
-3. [ADD] Define the behavior for the arrow keys UP, DOWN, LEFT and RIGHT.
-
-Revision 1.22  2010/01/01 18:40:06  leeten
-
-[01/01/2010]
-1. [ADD] Define new hotkeys to control the orientation of the object.
-
-Revision 1.21  2009/11/04 20:51:37  leeten
-
-[2009/11/04]
-1. [MOD] Call the _Keyboardfunc() after the switch-case statement.
-
-Revision 1.20  2009/06/01 21:34:47  leeten
-
-[2009/06/01]
-1. [ADD] Include the header typeinfo.
-2. [MOD] Only include wglew when the preprocessor WIN32 is defined.
-
-Revision 1.19  2009/03/04 22:21:04  leeten
-
-[2009/03/04]
-1. [ADD] Support the handling of the passive mouse motion. The cursor coordinates will be stored in two variabel iPassiveCursorX and iPassiveCursorY. The subclass of CGlutWin can overload the callback _PassiveMotionFunc() (recommended) or _PassiveMotionCB().
-
-Revision 1.18  2009/01/22 17:13:49  leeten
-
-[2009/01/22]
-1. [ADD] Define a new constant CB_MANUAL for user-defined events.
-2. [ADD] Define new methods _MouseFunc and _MotionFunc to track the location of trhe cursor.
-
-Revision 1.17  2009/01/10 05:04:54  leeten
-
-[2009/01/09]
-1. [DEBUG] Sovle the bug In the member method _AddString
-2. [ADD] In the method _SaveSnapshot, flip the obtained framebuffer before saving to the specified file.
-
-Revision 1.16  2008/12/21 21:59:29  leeten
-
-[2008/12/21]
-1. [ADD] Define a new method _DrawString3D() to draw a string in the local coordinate.
-
-Revision 1.15  2008/12/06 21:36:59  leeten
-
-[2008/12/05]
-1. [ADD] When saving the snapshot, the filename is determined by the new-adeed member variabel iSnapshotIndex.
-
-Revision 1.14  2008/11/30 04:18:10  leeten
-
-[2008/11/29]
-1. [ADD] Add a hotkey 's' to save the snapshot.
-2. [ADD] Implicitly Include the glew32.lib.
-3. [ADD] Change thje naming rule of the the snapshotot.
-4. [ADD] Define a new method _DisableVerticalSync().
-
-Revision 1.13  2008/08/25 20:39:23  leeten
-
-[2008/08/25]
-1. [ADD] Declare a new method _SaveSnapshot() to save current frame.
-
-Revision 1.12  2008/08/21 14:44:19  leeten
-
-[2008/08/21]
-1. [ADD] Define methods to open/save the modelview matrixs
-2. [ADD] Add hotkey 'm' to load the modelveiw matrix from the file and hotkey 'M' to store current modelview matrix to a file.
-
-Revision 1.11  2008/08/20 19:33:58  leeten
-
-[2008/08/20]
-1. [CHANGE] Use three variables fAngle_degree, fNear and fFar to specify the view frustrum.
-
-Revision 1.10  2008/08/18 21:28:31  leeten
-
-[2008/08/18]
-1. [CHANGE] Change the far distance of the view spectrum from 20..0f to 1000.0f.
-2. [DEBUG] Change the condition check in _ReshapeCB from if( tw & th ) to if( tw && th ).
-3. [ADD] Sync all GLUI live varables at the end of _DisplayCB().
-
-Revision 1.9  2008/08/17 23:57:49  leeten
-
-[2008/08/17]
-1. [CHANGE] Redefined the method _DrawString such that the user can control the position of the string.
-2. [CHANGE] Change the fraction digits to 2 when displaying FPS.
-
-Revision 1.8  2008/08/16 21:20:25  leeten
-
-[2008/08/16]
-1. [CHANGE] Change the type of the value for timer event from int to unsigned short.
-
-Revision 1.7  2008/08/16 15:58:44  leeten
-
-[2008/08/16]
-1. [DEL] Remove old deleted code segments.
-2. [CHANGE] Add the initialization of GLUI win/subwin in and the invokation of _InitFunc in the method ICreate().
-
-Revision 1.6  2008/08/15 14:36:18  leeten
-
-[2008/08/15]
-1. [CHANGE] Add a new parameter to method _AddButton to specify the panel.
-
-Revision 1.5  2008/08/13 20:55:36  leeten
-
-[2008/08/13]
-1. [ADD] Define a new method SZSprint to format string.
-2. [ADD] Define a new method _DrawString() to draw a string in the left bottom corner.
-3. [ADD] Define a new method _AddToLog to add a string to specifed file (by default STDERR). When printing this string, a prefix will be added to indicate which window display this string, and a new line will be automatically appended at the end.
-4. [ADD] Add code to measure FPS. FPS can be shown on screen via another new method _DisplayFpsOn();
-5. [CHANGE] Since GLUI subwindow can change the both location and size of the viewport, the viewport is recorded, and a new method _UpdateWinCoord is defined to adjust the passed coordinate.
-6. [ADD] Add a new method _KeepUpdateOn() to keep displaying the screen. It can be disabled via another method _KeepUpdateOff().
-7. [CHANGE] Change the order of _InitFunc() s.t. it is called after the GLUI win/subwindows have been created.
-8. [ADD] Add a new callback _GluiCB() to handle event from GLUI control. It will call another method _GluiFunc().
-9. [ADD] Add a new method _AddButton() to add a button to the GLUI windows/subwindows.
-
-Revision 1.4  2008/08/12 16:38:34  leeten
-
-[2008/08/12]
-1. [CHANGE] In _Set, if the windows is not created yet, send a warning other than terminating the application.
-2. [ADD] Define new methods to similar GLUT APIs: _Push(), _Pop() and _Redisplay().
-3. [ADD] Support the timer event. To trigger a timer event, the application can call a static method _AddTimer(). to process the timer event, a new callback _TimerCB() is defined. This callback will invoke another method _TimerFunc().
-4. [ADD] Define methods _Begin(), _End(), _PushWid(), _PopWid() to avoid the misorder of active windows since the timer event can shuffle the order among the GLUT windows.
-5. [ADD] Define a new method _GetWin() to conver a GLUT window ID to the order in the vector vcWins.
-
-Revision 1.3  2008/08/11 04:26:32  leeten
-
-[2008/08/11]
-1. [ADD] Combine with GLUI.
-2. [ADD] Modify the reshape func. s.t. the final viewport is decided via GLUI_Master.get_viewport_area().
-3. [ADD] Add new routine to enable GLUI subwin/win and return the GLUI pointers.
-
-Revision 1.2  2008/08/10 18:50:53  leeten
-
-[2008/08/10]
-1. [DEL] Remove the header gw_api.h.
-
-Revision 1.1  2008/08/10 05:00:27  leeten
-
-[2008/08/10]
-1. First time checkin. Now we use the static member methods to add windows.
-
-Revision 1.1.1.1  2008/08/09 13:50:10  leeten
-
-[2008/08/09]
-1. First time checkin. LIBGW is a OO-based library to create GLUT window. In each window, there is a 3D coordinate for the object and mouse countrol to manipulate the coordinate and viewpoint.
-
-
-*/
