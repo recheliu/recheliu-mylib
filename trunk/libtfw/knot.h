@@ -21,8 +21,3 @@ struct CKnot {
 	}
 };
 
-/*
-
-$Log: not supported by cvs2svn $
-
-*/

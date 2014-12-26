@@ -17,7 +17,6 @@ class CTfWin :
 	TBuffer<float> pfColorMap;
 	int iNrOfEntries;
 
-	// ADD-BY-LEETEN 2009/08/16-BEGIN
 	struct CHistogram{
 		TBuffer<float> pfBins;
 		CFloatValue cMin, cMax;
@@ -33,38 +32,19 @@ class CTfWin :
 		}
 	};
 	CHistogram cHistogram;
-	// ADD-BY-LEETEN 2009/08/16-END
 
 public:
 	void _SetTransFunc(CTransFunc *pcTransFunc);
 	void _SetNrOfEntries(int iNrOfEntries);
 
-	// ADD-BY-LEETEN 2009/08/16-BEGIN
 	void _SetHistogram(float *pfHistogram, int iNrOfHistBins, float fMaxCount, float fMin, float fMax)
 	{
 		cHistogram._SetHistogram(pfHistogram, iNrOfHistBins, fMaxCount, fMin, fMax);
 	}
-	// ADD-BY-LEETEN 2009/08/16-END
 
 public:
 	CTfWin(void);
 public:
 	~CTfWin(void);
 };
-
-/*
-
-$Log: not supported by cvs2svn $
-Revision 1.1.1.1  2008/08/14 14:44:02  leeten
-
-[2008/08/14]
-1. [FIRST TIME CHECKIN]. This library defines classes for trasnfer functions, including editing and displaying.
-
-Revision 1.1.1.1  2008/08/12 16:58:49  leeten
-
-[2008/08/12]
-1. First time checkin. This is my DVR renderer for 3D regular volume. For testing, the dataset HIPIP is checkin too.
-
-
-*/
 

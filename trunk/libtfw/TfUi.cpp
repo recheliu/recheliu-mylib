@@ -1,15 +1,12 @@
 							// include the header for accessing file system to obtain current path
-	// ADD-BY-LEETEN 08/15/2008-BEGIN
 	#if defined(WIN32)
 		#include <windows.h>
 	#else
 		#include <unistd.h>
 	#endif
-	// ADD-BY-LEETEN 08/15/2008-END
 
 #include "TfUi.h"
 
-// ADD-BY-LEETEN 02/06/2013-BEGIN
 void
 CTfUi::_SetReceiver(
 	CReceiver *pcReceiver
@@ -17,7 +14,6 @@ CTfUi::_SetReceiver(
 {
 	this->pcReceiver = pcReceiver;
 }
-// ADD-BY-LEETEN 02/06/2013-END
 
 void 
 CTfUi::_Undo(int c)
@@ -45,9 +41,7 @@ CTfUi::_Undo(int c)
 			break;
 		}
 	}
-	// ADD-BY-LEETEN 2008/08/17-BEGIN
 	_ClearSelectedKnots(c);
-	// ADD-BY-LEETEN 2008/08/17-END
 }
 
 void 
@@ -76,9 +70,7 @@ CTfUi::_Redo(int c)
 			break;
 		}
 	}
-	// ADD-BY-LEETEN 2008/08/17-BEGIN
 	_ClearSelectedKnots(c);
-	// ADD-BY-LEETEN 2008/08/17-END
 }
 
 /////////////////////////////////////////////////////////////////////////
@@ -105,7 +97,6 @@ CTfUi::_DeleteSelectedKnots(int c)
 	{		
 		list<CKnot>::iterator viKnot = *viiCKnot;
 
-		// ADD-BY-TLEE 2008/06/16-BEGIN
 											// get next node
 		list<CKnot>::iterator viNextKnot = viKnot;
 		viNextKnot++;
@@ -121,7 +112,6 @@ CTfUi::_DeleteSelectedKnots(int c)
 
 			continue;
 		}
-		// ADD-BY-TLEE 2008/06/16-END
 
 									// save thie operation to the history
 		plcEditHistorys[c]._AddAction(CEditHistory::EDIT_ACTION_DEL, *viKnot);
@@ -169,14 +159,12 @@ CTfUi::_DelKnot(int c, float x, float y, bool bAddToHistory)
 				plcEditHistorys[c]._AddAction(CEditHistory::EDIT_ACTION_DEL, *viKnot);
 			}
 
-			// ADD-BY-LEETEN 2008/08/14-BEGIN
 											// if this knot is the begining or ending of this spline, 
 											// instead of erase this node, reset thie height to zero
 			if( x == 0.0f || x == 1.0f )
 				viKnot->fY = y;
 			else
 
-			// ADD-BY-LEETEN 2008/08/14-END
 			pcTransFunc->plSplines[c].erase(viKnot);
 			break;
 		}
@@ -238,12 +226,9 @@ _Begin();
 	case 3:	glColor4f(0.3, 0.3f, 0.3f, 1.0f);	break;
 	}
 
-	// ADD-BY-LEETEN 08/14/2008-BEGIN
 	glPushAttrib(GL_LINE_BIT);
 	if( true == bEnhance )
 		glLineWidth(3.0f);
-	// ADD-BY-LEETEN 08/14/2008-END
-
 	glBegin(GL_LINE_STRIP);
 		for(list<CKnot>::iterator 
 				viKnot	= pcTransFunc->plSplines[c].begin();
@@ -252,9 +237,7 @@ _Begin();
 			glVertex2f(viKnot->fX, viKnot->fY);
 	glEnd();
 
-	// ADD-BY-LEETEN 08/14/2008-BEGIN
 	glPopAttrib();	//	glPushAttrib(GL_LINE_BIT);
-	// ADD-BY-LEETEN 08/14/2008-END
 
 	if( false == bEnhance )
 		return;
@@ -349,9 +332,7 @@ CTfUi::_KeyboardCB(unsigned char key, int x, int y)
 		this->_GluiFunc(EDIT_REDO);
 		break;
 
-	// ADD-BY-LEETEN 2008/08/17-BEGIN
 	case 'D': case 'd':	// D for 'delete'
-	// ADD-BY-LEETEN 2008/08/17-END
 	case 127:	// DEL
 		this->_GluiFunc(EDIT_DELETE);
 		break;
@@ -440,9 +421,7 @@ CTfUi::_ClearChannel(int channel)
 	pcTransFunc->plSplines[channel].push_back(cBegin);
 	pcTransFunc->plSplines[channel].push_back(cEnd);
 
-	// ADD-By-TLEE 08/14/2008-BEGIN
 	_ClearSelectedKnots(channel);
-	// ADD-By-TLEE 08/14/2008-END
 }
 
 void
@@ -450,12 +429,10 @@ CTfUi::_GluiFunc(unsigned short usValue)
 {
 	switch(usValue)
 	{
-	// ADD-BY-LEETEN 2008/08/17-BEGIN
 	case EDIT_DELETE:
 		_DeleteSelectedKnots(iEditingChannel);
 		_Redisplay();
 		break;
-	// ADD-BY-LEETEN 2008/08/17-END
 
 	case EDIT_REDO:
 		_Redo(iEditingChannel);
@@ -473,18 +450,15 @@ CTfUi::_GluiFunc(unsigned short usValue)
 		else
 			_AddToLog("_UpdateFunc is not given yet.");
 
-		pcReceiver->_Receive(pcTransFunc);	// ADD-BY-LEETEN 02/06/2013
+		pcReceiver->_Receive(pcTransFunc);	
 		break;
 
-	// ADD-BY-LEETEN 08/14/2008-BEGIN
 	case EDIT_CLEAR:
 							// save all current knots to the history
 		_ClearChannel(iEditingChannel);
 		_Redisplay();
 		break;
-	// ADD-BY-LEETEN 08/14/2008-END
 
-	// ADD-BY-LEETEN 08/15/2008-BEGIN
 	case FILE_OPEN:			// load TF from a file
 		{
 			_GetPath();
@@ -521,8 +495,6 @@ CTfUi::_GluiFunc(unsigned short usValue)
 		}
 		break;
 
-	// ADD-BY-LEETEN 08/15/2008-END
-
 	case EDIT_EXIT:
 		exit(0);
 	}
@@ -534,7 +506,6 @@ CTfUi::_InitFunc()
 	assert(pcTransFunc);
 
 											// move the File panel to above the Edit panel
-	// ADD-BY-LEETEN 08/15/2008-BEGIN
 											// add new control for accessing TF as files
 	GLUI_Rollout* pcFilePanel = PCGetGluiSubwin()->add_rollout("File", false);
 		pcEditText_Dir		= PCGetGluiSubwin()->add_edittext_to_panel(pcFilePanel, "Dir",		GLUI_EDITTEXT_TEXT, szDir,		IAddWid(FILE_DIR),		&CGlutWin::_GluiCB_static);
@@ -552,8 +523,6 @@ CTfUi::_InitFunc()
 	_SetDir(szDir);
 	_SetFilename("*.*");
 
-	// ADD-BY-LEETEN 08/15/2008-END
-
 											// add a panel to group the radio group and buttons
 	GLUI_Rollout* pcEditPanel  = PCGetGluiSubwin()->add_rollout("Edit");
 
@@ -570,7 +539,6 @@ CTfUi::_InitFunc()
 		PCGetGluiSubwin()->add_button_to_panel(pcEditPanel, "Clear",	IAddWid(EDIT_CLEAR),	&CGlutWin::_GluiCB_static);
 		PCGetGluiSubwin()->add_button_to_panel(pcEditPanel, "Delete",	IAddWid(EDIT_DELETE),	&CGlutWin::_GluiCB_static);
 
-	// ADD-BY-TLEE 2008/08/21-BEGIN
 	GLUI_Rollout* pcTfPanel = PCGetGluiSubwin()->add_rollout("TF Setting", false);
 	GLUI_Panel* pcPanel;
 	GLUI_Spinner *pcSpinner;
@@ -592,16 +560,13 @@ CTfUi::_InitFunc()
 
 			PCGetGluiSubwin()->add_spinner_to_panel(pcPanel, "Max (Significand)",	GLUI_SPINNER_FLOAT, &pcTransFunc->cDomainMax.fSignificand);	
 			PCGetGluiSubwin()->add_spinner_to_panel(pcPanel, "Max (Exponent)",		GLUI_SPINNER_FLOAT, &pcTransFunc->cDomainMax.fExponent);	
-	// ADD-BY-TLEE 2008/08/21-END
 
 											// move the File panel to above the Edit panel
 	PCGetGluiSubwin()->add_button("Update",	IAddWid(EDIT_UPDATE),	&CGlutWin::_GluiCB_static);
 	PCGetGluiSubwin()->add_button("Exit",	IAddWid(EDIT_EXIT),		&CGlutWin::_GluiCB_static);
 
 							// specify a default window size for the TF editor
-	// ADD-BY-LEETEN 08/15/2008-BEGIN
 	_Reshape(512, 384);
-	// ADD-BY-LEETEN 08/15/2008-END
 }
 
 void 
@@ -697,89 +662,20 @@ CTfUi::_DisplayFunc()
 //////////////////////////////////////////////////////////////////////////
 CTfUi::CTfUi()
 {
-	pcReceiver = &cDefaultReceiver;	// ADD-BY-LEETEN 02/06/2013
+	pcReceiver = &cDefaultReceiver;	
 	iEditingChannel = CTransFunc::COLOR_A;
 	pcTransFunc = NULL;
 	_UpdateFunc = NULL;
 	_AddGluiSubwin(GLUI_SUBWINDOW_LEFT);
 
-	// ADD-BY-LEETEN 08/15/2008-BEGIN
 	szFilename[0] = '\0';
 	szDir[0] = '\0';
 	szPath[0] = '\0'; 
 	pcEditText_Filename = NULL;
 	pcEditText_Dir = NULL;
-	// ADD-BY-LEETEN 08/15/2008-END
 }
 
 CTfUi::~CTfUi(void)
 {
 }
 
-/*
-
-$Log: not supported by cvs2svn $
-Revision 1.10  2008/08/24 15:35:19  leeten
-
-[2008/08/22]
-1. [DEBUG] When get current directory, pass the  size of array via sizeof other  than strlen().
-
-Revision 1.9  2008/08/24 14:52:14  leeten
-
-[2008/08/22]
-1. [DEBUG] When get current directory, pass the  size of array via sizeof other  than strlen().
-
-Revision 1.8  2008/08/21 14:53:47  leeten
-
-[2008/08/21]
-1. [ADD] Display the range of the data value as disabled spinners
-2. [ADD] Add two spinners to control the TF domain.
-3. [CHANGE] When plot the TF, draw the support of TF other than data range.
-
-Revision 1.7  2008/08/20 19:55:20  leeten
-
-[2008/08/20]
-1. [CHANGE] Use GLUI::add_button to replace CGlutWin::_AddButton.
-2. [CHANGE] Change the precision of the printed data range.
-
-Revision 1.6  2008/08/18 00:41:59  leeten
-
-[2008/08/17]
-1. [DEBUG] Clear the selected knots after any of the edit buttons are pressed.
-
-Revision 1.5  2008/08/17 23:53:28  leeten
-
-[2008/08/17]
-1. [ADD] Add a button to delete selected knots. To handle this event, a new event index EDIT_DELETE is defined.
-2. [ADD] Add a hotkey 'D' to delete selected knots.
-3. [CHANGE] Use rollouts other than panels to group user control.
-4. [ADD] When plot the histogram, also display the range of the histogram. Two variables fHistogramMin and fHistogramMax are thus defined.
-
-Revision 1.4  2008/08/16 16:36:34  leeten
-
-[2008/08/14]
-1. [ADD] When the window is created, use current directory and *.* as the path, and initialize thw window size as 512x384.
-2. [ADD] When select the knots, the first and last knots can be selected too.
-
-Revision 1.3  2008/08/15 14:47:44  leeten
-
-[2008/08/15]
-1. [ADD] Add new functionalities to open/save the TF as files. The use can specify the dir. and path of the file via edit texts, and tow button are added to load/save the TF.
-
-Revision 1.2  2008/08/14 23:00:25  leeten
-
-[2008/08/14]
-1. [DEBUG] Clear the selected knots after the spline has been cleared.
-
-Revision 1.1.1.1  2008/08/14 14:44:02  leeten
-
-[2008/08/14]
-1. [FIRST TIME CHECKIN]. This library defines classes for trasnfer functions, including editing and displaying.
-
-Revision 1.1  2008/08/13 21:17:21  leeten
-
-[2008/08/13]
-1. First time checkin. This class can create a GLUT window for editing transfer function.
-
-
-*/

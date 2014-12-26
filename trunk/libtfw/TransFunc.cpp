@@ -1,6 +1,4 @@
-// ADD-BY-LEETEN 01/05/2010-BEGIN
 #include <assert.h>
-// ADD-BY-LEETEN 01/05/2010-END
 
 #include "TransFunc.h"
 
@@ -49,11 +47,9 @@ CTransFunc::BCheckFile(const char szFilename[])
 
 	list<CKnot> plTempSplines[NR_OF_COLORS];
 
-	// ADD-BY-TLEE 08/21/2008-BEGIN
 	float fTempMin, fTempMax;
 	fscanf(fpTf, "%f\n", &fTempMin);
 	fscanf(fpTf, "%f\n", &fTempMax);
-	// ADD-BY-TLEE 08/21/2008-END
 
 	for(int c = 0; c < NR_OF_COLORS; c++)
 	{
@@ -89,19 +85,13 @@ CTransFunc::BOpenFile(const char szFilename[])
 
 	FILE *fpTf = fopen(szFilename, "rt");
 
-	// ADD-BY-LEETEN 08/12/2009-BEGIN
 	float fDomainMin, fDomainMax;
-	// ADD-BY-LEETEN 08/12/2009-END
 
-	// ADD-BY-TLEE 08/21/2008-BEGIN
 	fscanf(fpTf, "%f\n", &fDomainMin);
 	fscanf(fpTf, "%f\n", &fDomainMax);
-	// ADD-BY-TLEE 08/21/2008-END
 
-	// ADD-BY-LEETEN 08/12/2009-BEGIN
 	cDomainMin._SetValue(fDomainMin);
 	cDomainMax._SetValue(fDomainMax);
-	// ADD-BY-LEETEN 08/12/2009-END
 
 	for(int c = 0; c < NR_OF_COLORS; c++)
 	{
@@ -192,7 +182,6 @@ CTransFunc::_ExportColorMap(float pfColorMap[], int iNrOfEntries)
 	}
 }
 
-// ADD-BY-LEETEN 01/05/2010-BEGIN
 CTransFunc::CTransFunc()
 {
 	CKnot cBegin(0.0f, 0.0f), cEnd(1.0f, 0.0f);
@@ -216,57 +205,3 @@ CTransFunc::~CTransFunc()
 {
 }
 
-// ADD-BY-LEETEN 01/05/2010-END
-
-/*
-
-$Log: not supported by cvs2svn $
-Revision 1.9  2010/03/18 16:04:33  leeten
-
-[03/18/2010]
-1. [MOD] Change the rainbow color mapping such that the value from low to high is mapped from blue to red.
-
-Revision 1.8  2010/01/06 16:44:56  leeten
-
-[01/06/2010]
-1. [ADD] Add the constructor and destructor of the class CTransFunc.
-2. [ADD] Output the content of the fragment shader 'tf1d_frag_func.frag' to file 'tf1d_frag_func.frag.h' in the constructor.
-
-Revision 1.7  2009/08/13 17:26:36  leeten
-
-[2009/08/13]
-1. [MOD] Output the range of the transfer function to significand and exponent.
-
-Revision 1.6  2009/08/12 22:11:48  leeten
-
-[2009/08/12]
-1. [MOD] Change the range of transfer function's domain and the data's domain from floating point numbers to the structure CFloatValue.
-
-Revision 1.5  2008/08/21 14:50:10  leeten
-
-[2008/08/21]
-1. [CHANGE] Add the domain of the TF to the .tf file format.
-
-Revision 1.4  2008/08/17 23:55:58  leeten
-
-[2008/08/17]
-1[CHANGE] Fix the typo in the output message when file cannot be opened.
-
-Revision 1.3  2008/08/16 16:39:56  leeten
-
-[2008/08/14]
-1. [CHANGE] Set the alpha value of the rainbow TF from 0.2 to 0.5.
-
-Revision 1.2  2008/08/15 14:52:38  leeten
-
-[2008/08/15]
-1. [ADD] Add new functionalities to open/save the TF as files.
-2. [ADD] Define a new methods BCheckFile to check the validabilty of a file. It is used to prevent from loading wrong TF and destroying the current TF because calling another method BOpenFile can immediately destroy the TF.
-
-Revision 1.1.1.1  2008/08/14 14:44:02  leeten
-
-[2008/08/14]
-1. [FIRST TIME CHECKIN]. This library defines classes for trasnfer functions, including editing and displaying.
-
-
-*/
