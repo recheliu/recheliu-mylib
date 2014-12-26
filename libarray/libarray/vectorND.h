@@ -27,11 +27,13 @@ public:
 		return vuDimLengths[d];
 	}
 
+	#if	0	// DEL-BY-LEETEN 2014/12/25-BEGIN
 	TVectorND():
 		vector<t>(),
 		vuDimLengths(NDIMS)
 	{
 	}
+	#endif	// DEL-BY-LEETEN 2014/12/25-END
 	
 	void resize(const vector<size_t>& vuNewDimLengths) 
 	{
@@ -67,6 +69,14 @@ public:
 		va_end(vaDimLengths);	
 	}
 	
+	// ADD-BY-LEETEN 2014/12/25-BEGIN
+	TVectorND():
+		vector<t>(),
+		vuDimLengths(NDIMS)
+	{
+	}
+	// ADD-BY-LEETEN 2014/12/25-END
+	
 	TVectorND(size_t l, ...):
 		vector<t>()
 	{
@@ -82,6 +92,7 @@ public:
 		resize(vuNewDimLengths);
 	}
 
+	#if	0	// MOD-BY-LEETEN 2014/12/25-FROM:	
 	const size_t uGetIndex(size_t i, va_list vaDimIndices) const
 	{
 		size_t uSliceSize = vuDimLengths[0];
@@ -96,11 +107,62 @@ public:
 		return uIndex;
 	}
 
+	#else	// MOD-BY-LEETEN 2014/12/25-TO:
+	size_t 
+	UGetIndex
+	(
+		const vector<size_t>& vuSubscripts
+	) 
+	const
+	{
+		size_t uSliceSize = 1;
+		size_t uIndex = 0;
+		for(size_t d = 0; d < NDIMS; d++) 
+		{	
+			size_t uDimSub = vuSubscripts[d];
+			ASSERT_OR_LOG(uDimSub < vuDimLengths[d], "");
+			uIndex += uDimSub * uSliceSize;
+			uSliceSize *= vuDimLengths[d];
+		}	
+		return uIndex;
+	}
+
+	size_t 
+	UGetIndex
+	(
+		size_t i, 
+		va_list vaDimIndices
+	) 
+	const
+	{
+		size_t uSliceSize = vuDimLengths[0];
+		static vector<size_t> vuSubs(NDIMS);
+		vuSubs[0] = i;
+		for(size_t d = 1; d < NDIMS; d++) 
+		{	
+			vuSubs[d] = va_arg(vaDimIndices, size_t);
+		}	
+		return UGetIndex(vuSubs);
+	}
+
+	t& _Get(const vector<size_t>& vuSub)
+	{
+		return data()[UGetIndex(vuSub)];
+	}
+
+	const t& _Get(const vector<size_t>& vuSub) const
+	{
+		return data()[UGetIndex(vuSub)];
+	}
+	#endif	// MOD-BY-LEETEN 2014/12/25-END
+
 	t& _Get(size_t i, ...)
 	{
 		va_list vaDimIndices;	
 		va_start(vaDimIndices, i);	
-		size_t uIndex = uGetIndex(i, vaDimIndices);
+		// MOD-BY-LEETEN 2014/12/25:	size_t uIndex = uGetIndex(i, vaDimIndices);
+		size_t uIndex = UGetIndex(i, vaDimIndices);
+		// MOD-BY-LEETEN 2014/12/25-END
 		va_end(vaDimIndices);	
 		return data()[uIndex];
 	}
@@ -109,7 +171,9 @@ public:
 	{
 		va_list vaDimIndices;	
 		va_start(vaDimIndices, i);	
-		size_t uIndex = uGetIndex(i, vaDimIndices);
+		// MOD-BY-LEETEN 2014/12/25:	size_t uIndex = uGetIndex(i, vaDimIndices);
+		size_t uIndex = UGetIndex(i, vaDimIndices);
+		// MOD-BY-LEETEN 2014/12/25-END
 		va_end(vaDimIndices);	
 		return data()[uIndex];
 	}
