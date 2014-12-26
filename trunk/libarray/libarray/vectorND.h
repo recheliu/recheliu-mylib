@@ -9,6 +9,10 @@ using namespace std;
 
 #include "liblog.h"
 
+// ADD-BY-LEETEN 2014/12/25-BEGIN
+namespace NDArray {
+// ADD-BY-LEETEN 2014/12/25-END
+
 // a template for N-dimensional array.
 template <typename t, size_t NDIMS=1> 
 class TVectorND: public vector<t>
@@ -170,4 +174,7 @@ public:
 	}
 };
 
+// ADD-BY-LEETEN 2014/12/25-BEGIN
+}	// namespace NDArray
+// ADD-BY-LEETEN 2014/12/25-END
 
