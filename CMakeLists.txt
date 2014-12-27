@@ -134,6 +134,15 @@ add_definitions(
 	-DGLUT_BUILDING_LIB
 )
 
+# ADD-BY-LEETEN 2014/12/26-BEGIN
+if(DEFINED WIN32)
+	add_definitions(
+		-D_CRT_SECURE_NO_WARNINGS
+		-Dstrdup=_strdup
+	)
+endif()
+# ADD-BY-LEETEN 2014/12/26-END
+
 # ADD-BY-LEETEN 2014/12/25-BEGIN
 add_subdirectory(contourspectrum)
 add_subdirectory(libarray)
