@@ -71,6 +71,13 @@ public:
 		pData = NULL;
 	}
 
+	// ADD-BY-LEETEN 2014/12/26-BEGIN
+	void resize(const vector<size_t>& vuNewDimLengths) 
+	{
+		resize(vuNewDimLengths.data());
+	}
+	// ADD-BY-LEETEN 2014/12/26-END
+
 	void resize(const size_t puNewDimLengths[NDIMS]) 
 	{
 		uNrOfPoints = 1;
@@ -130,6 +137,12 @@ public:
 		free();
 	}
 
+	// ADD-BY-LEETEN 2014/12/26-BEGIN
+	const size_t UGetIndex(const vector<size_t> vuIndices) const
+	{
+		return UGetIndex(vuIndices.data());
+	}
+	// ADD-BY-LEETEN 2014/12/26-END
 
 	const size_t UGetIndex(const size_t puIndices[NDIMS]) const
 	{
@@ -138,7 +151,9 @@ public:
 		for(size_t d = 0; d < NDIMS; d++) 
 		{	
 			size_t uDimIndex = puIndices[d];
-			ASSERT_OR_LOG(uIndex < puDimLengths[d], "");
+			// MOD-BY-LEETEN 2014/12/26:			ASSERT_OR_LOG(uIndex < puDimLengths[d], "");
+			ASSERT_OR_LOG(uDimIndex < puDimLengths[d], "");
+			// MOD-BY-LEETEN 2014/12/26-END
 			uIndex += uDimIndex * uSliceSize;
 			uSliceSize *= puDimLengths[d];
 		}	
@@ -167,6 +182,28 @@ public:
 		return data()[uIndex];
 	}
 	
+	// ADD-BY-LEETEN 2014/12/26-BEGIN
+	t& _Get(const vector<size_t>& vuIndices) 
+	{
+		return _Get(vuIndices.data());
+	}
+
+	const t& _Get(const vector<size_t>& vuIndices)  const
+	{
+		return data()[UGetIndex(puIndices)];
+	}
+
+	t& _Get(const size_t puIndices[NDIMS]) 
+	{
+		return data()[UGetIndex(puIndices)];
+	}
+
+	const t& _Get(const size_t puIndices[NDIMS]) const
+	{
+		return data()[UGetIndex(puIndices)];
+	}
+	// ADD-BY-LEETEN 2014/12/26-END
+
 	string
 	STRGetFilename(const string& strFilenamePrefix)
 	{
