@@ -21,6 +21,16 @@ protected:
 	vector<size_t> vuDimLengths;
 
 public:
+	// ADD-BY-LEETEN 2014/12/28-BEGIN
+	const 
+	vector<size_t>& 
+	VUGetDimLengths()
+	const
+	{
+		return vuDimLengths;
+	}
+	// ADD-BY-LEETEN 2014/12/28-END
+
 	size_t UGetDimLength(size_t d)
 	{
 		ASSERT_OR_LOG(d < NDIMS, "");
