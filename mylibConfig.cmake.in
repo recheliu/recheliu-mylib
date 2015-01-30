@@ -27,6 +27,40 @@ if( WITH_FREEGLUT )
 	endif()
 endif() 
 
+# ADD-BY-LEETEN 2015/01/29-BEGIN
+# The macro to convert a list of shaders to header files.
+# 
+# Usage:
+# 
+# 	CONVERT_SHADER_TO_HEADER(
+#		${PROJECT_SOURCE_DIR} 
+#		"${SHADER_FILES}" 
+#		SHADER_HEADERS)
+#
+# Then ${SHADER_HEADERS} can be included as the source codes too.
+macro (CONVERT_SHADER_TO_HEADER SHADER_DIR SHADER_FILES SHADER_HEADERS)
+	foreach(SHADER ${SHADER_FILES})
+		list(APPEND SHADER_PATHS	
+			${SHADER_DIR}/${SHADER}
+		)
+	endforeach()
+		
+	foreach(SHADER ${SHADER_PATHS})
+		list(APPEND SHADER_HEADERS
+			${SHADER}.h
+		)
+		file(TO_NATIVE_PATH ${SHADER} SHADER_NATIVE_PATH)
+		set(SHADER_OUTPUT_NATIVE_PATH ${SHADER_NATIVE_PATH}.h)
+		add_custom_command (
+			OUTPUT ${SHADER}.h
+			MAIN_DEPENDENCY ${SHADER}
+			DEPENDS ${SHADER}
+			COMMAND ${mylib_DIR}/bin/shader2string ${SHADER_NATIVE_PATH} ${SHADER_OUTPUT_NATIVE_PATH}
+		)
+	endforeach()
+endmacro()
+# ADD-BY-LEETEN 2015/01/29-END
+
 # ADD-BY-LEETEN 2014/10/26-BEGIN
 LIST(APPEND mylib_INCLUDE_DIRS	"${mylib_DIR}/include")
 LIST(APPEND mylib_LIBRARY_DIRS	"${mylib_DIR}/lib")
