@@ -31,7 +31,10 @@ public:
 	}
 	// ADD-BY-LEETEN 2014/12/28-END
 
-	size_t UGetDimLength(size_t d)
+	// MOD-BY-LEETEN 2015/03/29:	size_t UGetDimLength(size_t d)
+	size_t 
+	UGetDimLength(size_t d) const 
+	// MOD-BY-LEETEN 2015/03/29-END
 	{
 		ASSERT_OR_LOG(d < NDIMS, "");
 		return vuDimLengths[d];
@@ -67,6 +70,11 @@ public:
 		for(size_t d = 0; d < NDIMS - 1; d++) 
 		{	
 			vuNewDimLengths.push_back(va_arg(vaDimLengths, size_t));
+			#if	0	// DEL-BY-LEETEN 2015/03/29-BEGIN
+			ASSERT_NETCDF(
+				nc_get_vara_double(iNcId, ncVarSAT, puStarts, puCounts, pdSums) );
+			#endif	// DEL-BY-LEETEN 2015/03/29-END
+
 		}	
 		resize(vuNewDimLengths);
 	}
@@ -202,6 +210,7 @@ public:
 		string& strFilename = STRGetFilename(strFilenamePrefix);
 
 		FILE *fp;
+		#if	0	// MOD-BY-LEETEN 2015/03/29-FROM:
 		fp = fopen(strFilename.c_str(), "wb");
 		ASSERT_OR_LOG(fp, perror(strFilename.c_str()));
 		
@@ -219,6 +228,34 @@ public:
 		fwrite(data(), sizeof(t), size(), fp);
 
 		fclose(fp);
+		#else	// MOD-BY-LEETEN 2015/03/29-TO:
+		string strHeaderFilepath= strFilename + ".txt";
+		string strRawFilepath = strFilename + ".raw";
+
+		fp = fopen(strHeaderFilepath.c_str(), "wt");
+		ASSERT_OR_LOG(fp, perror(strHeaderFilepath.c_str()));
+		fprintf(fp, "%d\n", NDIMS);
+		for(size_t d = 0; d < NDIMS; d++) 
+		{
+			fprintf(fp, "%d\n", vuDimLengths[d]);
+		}
+
+		size_t uLastIndexOfSlash = strRawFilepath.find_last_of("/");
+		#if	defined(WIN32)
+		if( string::npos == uLastIndexOfSlash ) 
+			uLastIndexOfSlash = strRawFilepath.find_last_of("\\");
+		#endif	// #if	defined(WIN32)
+		string strRawFilename = strRawFilepath;
+		if( string::npos != uLastIndexOfSlash ) 
+			strRawFilename = strRawFilepath.substr(uLastIndexOfSlash + 1);
+		fprintf(fp, "%s\n", strRawFilename.c_str());
+		fclose(fp);
+
+		fp = fopen(strRawFilepath.c_str(), "wb");
+		ASSERT_OR_LOG(fp, perror(strRawFilename.c_str()));
+		fwrite(data(), sizeof(t), size(), fp);
+		fclose(fp);
+		#endif	// MOD-BY-LEETEN 2015/03/29-END
 	}
 	
 	void _Load(const string& strFilenamePrefix)
