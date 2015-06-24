@@ -1,6 +1,6 @@
 #include "ClipWin.h"
 
-#include <glm/glm.hpp>	// ADD-BY-LEETEN 02/04/2013
+#include <glm/glm.hpp>	
 
 #include <iostream>
 #include "liblog.h"

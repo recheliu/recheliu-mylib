@@ -1,17 +1,15 @@
 	#include <vector>
-	#include <iostream>	// ADD-BY-LEETEN 01/05/2011
+	#include <iostream>	
 
 	using namespace std;
 
 	#include <assert.h>
 	#include <stdarg.h>
 
-	// ADD-BY-LEETEN 01/28/2011-BEGIN
 	#include <stdio.h>
 	#include <stdlib.h>
 	#include <memory.h>
 	#include <string.h>
-	// ADD-BY-LEETEN 01/28/2011-END
 
 	#include "libopt.h"
 
@@ -57,7 +55,6 @@
 		add_entry_func(arg_name, nr_of_parameters, parameter_list);	\
 	}
 
-	// ADD-BY-LEETEN 01/05/2011-BEGIN
 	#define ADD_VECTOR_PARAM_WITH_NAMES(arg_name, addr_type, value_type, nr_of_parameters, add_entry_func)	\
 	{	\
 		addr_type **parameter_list;									\
@@ -93,8 +90,6 @@
 		rivcOptEntry->pszParamNames = name_list;					\
 	}
 
-	// ADD-BY-LEETEN 01/05/2011-END
-
 //////////////////////////////////////////////////////////////////////////
 // typedef enum {OPT_TYPE_FLAG, OPT_TYPE_INT, OPT_TYPE_FLOAT, OPT_TYPE_STRING, OPT_TYPE_BOOL} EOptType;
 typedef enum {
@@ -106,21 +101,18 @@ typedef enum {
 	OPT_TYPE_ENUM,
 } EOptType;
 
-// ADD-BY-LEETEN 07/02/2008-BEGIN
 typedef struct CEnumEntry 
 {
 	const char *szEnumName;
 	int iEnumValue;
 }CEnumEntry ;
 
-// ADD-BY-LEETEN 07/02/2008-END
-
 typedef struct COptEntry 
 {
 	const char* szArgName;
 	EOptType eType;
 	int iNrOfParameters;
-	char* *pszParamNames;	// ADD-BY-LEETEN 01/05/2011
+	char* *pszParamNames;
 	void **ppParameters;
 	int *piFlagParameter;
 	int iFlagValue;
@@ -133,7 +125,7 @@ typedef struct COptEntry
 	COptEntry()
 	{
 		iNrOfParameters = 0;
-		pszParamNames = NULL;	// ADD-BY-LEETEN 01/05/2011
+		pszParamNames = NULL;
 		ppParameters = NULL;
 		piFlagParameter = NULL;
 		iFlagValue = OPT_FALSE;
@@ -175,18 +167,15 @@ int my_stricmp(const char* sz1, const char* sz2)
 			break;
 	}
 
-	// ADD-BY-LEETEN 03/31/2008-BEGIN
 	if( *cp1 < *cp2 )
 		return -1;
 
 	if( *cp1 > *cp2 )
 		return 1;
-	// ADD-BY-LEETEN 03/31/2008-END
 
 	return 0;
 }
 
-// ADD-BY-LEETEN 01/05/2011-BEGIN
 void
 _AddParamName(
   char* pszNames[]
@@ -204,9 +193,7 @@ _AddParamName(
 		rivcOptEntry->pszParamNames = pszNames;
 	}
 }
-// ADD-BY-LEETEN 01/05/2011-END
 
-// ADD-BY-LEETEN 04/11/2007-BEGIN
 // declare a boolean variable
 void 
 _OPTAddBoolean(const char* szArgName, int *piParameter, int iDefaultValue)
@@ -222,10 +209,6 @@ _OPTAddBoolean(const char* szArgName, int *piParameter, int iDefaultValue)
 	rivcOptEntry->eType = OPT_TYPE_BOOL;
 }
 	
-
-// ADD-BY-LEETEN 04/11/2007-END
-
-// ADD-BY-LEETEN 01/05/2011-BEGIN
 void 
 _OPTAddNames(const char* szArgName, int iNrOfParameters, ...)
 {
@@ -257,9 +240,7 @@ _OPTAddNames(const char* szArgName, int iNrOfParameters, ...)
 		fprintf(stderr, "%s: argument %s does not exist.\n", __FUNCTION__, szArgName);
 	}
 }
-// ADD-BY-LEETEN 01/05/2011-END
 
-// ADD-BY-LEETEN 02/22/2008-BEGIN
 void 
 _OPTAlign(const char* szArgName, const char* szNewArgName)
 {
@@ -279,9 +260,7 @@ _OPTAlign(const char* szArgName, const char* szNewArgName)
 		cEntry.ppParameters = (void**)calloc(sizeof(void*), cEntry.iNrOfParameters);
 		assert(cEntry.ppParameters);
 		memcpy(cEntry.ppParameters, pvcOptEntry->ppParameters, sizeof(void*) * cEntry.iNrOfParameters);
-		// ADD-BY-TLEE 07/02/2008-BEGIN
 		cEntry.szComment = pvcOptEntry->szComment;
-		// ADD-BY-TLEE 07/02/2008-END
 		vcOptTable.push_back(cEntry);	
 	} 
 	else 
@@ -289,7 +268,6 @@ _OPTAlign(const char* szArgName, const char* szNewArgName)
 		fprintf(stderr, "LIBOPT:_OPTAlign(): argument %s does not exist\n", szArgName);
 	}
 }
-// ADD-BY-LEETEN 02/22/2008-END
 
 ////////////////////////////////////////////////////////////////////////////////////////////
 void 
@@ -361,7 +339,6 @@ _OPTAddStringVector(const char *szArgName, int iNrOfParameters, ...)
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
-// ADD-BY-TLEE 07/02/2008-BEGIN
 void 
 _OPTAddEnum(const char* szArgName, int *piParameter, int iDefault, int iNrOfEnumValues, ...)
 {
@@ -477,10 +454,8 @@ _OptPrintComment()
 		fprintf(stderr, "\n");
 	}
 }
-// ADD-BY-TLEE 07/02/2008-END
 
 ///////////////////////////////////////////////////////////////////////////////////
-// ADD-BY-TLEE 07/02/2008-BEGIN
 void
 _OPTAddComment(
 	const char* szArgName, 
@@ -496,7 +471,6 @@ _OPTAddComment(
 
 	fprintf(stderr, "Warning in _OPTAddComment(): unrecognized option %s\n", szArgName);
 }
-// ADD-BY-TLEE 07/02/2008-END
 
 ///////////////////////////////////////////////////////////////////////////////////
 // initialize the data structure
@@ -516,7 +490,6 @@ bool BOPTParse(char* argv[], int argc, int iBegin, int *piEnd)
 	bool bResult;
 	int iA;
 
-	// ADD-BY-LEETEN 01/06/2011-BEGIN
 	// check whether --help is specified. This check is applied first such that --help can always show the 
 	// default value.
 	for(iA = iBegin; iA<argc; iA++)
@@ -527,13 +500,10 @@ bool BOPTParse(char* argv[], int argc, int iBegin, int *piEnd)
 				exit(0);
 			}
 
-	// ADD-BY-LEETEN 01/06/2011-END
-
 	bResult = true;
 	for(iA = iBegin; iA<argc; iA++)
 	{
 		for(pvcOptEntry=vcOptTable.begin(); pvcOptEntry != vcOptTable.end(); pvcOptEntry++) 
-			// ADD-BY-LEETEN 07/02/2008-BEGIN
 			if( 0 == strcmp_func(argv[iA], "--help") )
 			{
 				_OptPrintComment();
@@ -541,7 +511,6 @@ bool BOPTParse(char* argv[], int argc, int iBegin, int *piEnd)
 				break;
 			}
 			else
-			// ADD-BY-LEETEN 07/02/2008-END
 			if( 0 == strcmp_func(argv[iA], pvcOptEntry->szArgName) )
 			{
 				// check the number of parameters
@@ -564,7 +533,6 @@ bool BOPTParse(char* argv[], int argc, int iBegin, int *piEnd)
 						*(char**)pvcOptEntry->ppParameters[iP] = argv[++iA];
 						break;
 
-					// ADD-BY-LEETEN 07/02/2008-END
 					case OPT_TYPE_ENUM:	
 					case OPT_TYPE_BOOL:
 						{
@@ -581,7 +549,6 @@ bool BOPTParse(char* argv[], int argc, int iBegin, int *piEnd)
 								}
 						}
 						break;
-					// ADD-BY-LEETEN 07/02/2008-BEGIN
 
 					}
 
@@ -605,63 +572,13 @@ bool BOPTParse(char* argv[], int argc, int iBegin, int *piEnd)
 		{
 			delete [] pvcOptEntry->ppParameters;
 			pvcOptEntry->ppParameters = NULL;
-			// ADD-BY-LEETEN 01/05/2011-BEGIN
 			// clear the names
 			for(int p = 0; p < pvcOptEntry->iNrOfParameters; p++)	
 				free(pvcOptEntry->pszParamNames[p]);
 			free(pvcOptEntry->pszParamNames);
-			// ADD-BY-LEETEN 01/05/2011-END
 		}
 	}
 
 	return bResult;
 }
 
-/*
-
-$Log: not supported by cvs2svn $
-Revision 1.9  2010/08/05 19:19:25  leeten
-
-[08/05/2010]
-1. [MOD] Change the usage of assert.
-
-Revision 1.8  2008/11/03 15:29:58  leeten
-
-[2008/11/03]
-1. [ADD] Print the argument for parameters as flags.
-
-Revision 1.7  2008/07/08 18:36:03  leeten
-
-[2008/07/07]
-1. Move the required header from stdafx.h to here.
-
-Revision 1.6  2008/07/07 15:06:14  leeten
-
-[07/07/2008]
-1. [ADD] Define new function _OPTAddEnum() to parse a command argument from string to predefined constants. Besdies, new data structure CEnumEntry as the table of enum. entries.
-2. [CHANGE] Wrap _OPTAddBool to use the function _OPTAddEnum().
-3. [ADD] Define new function _OPTAddComment() to define comment with the arguments.
-4. [ADD] Define new function _OptPrintComment() to print out comments. Besides, if the argument "--help" is given, the comment will be displayed and then the program will be terminated.
-
-Revision 1.5  2008/04/02 18:14:25  leeten
-
-[04/02/2008]
-1. Modify my_Strcmp such that the strings with the same prefix will be treated differently.
-
-Revision 1.4  2008/02/23 05:16:50  leeten
-
-[02/23/2008]
-1. Define a new function _OPTAlign() to align an argument to an existed one.
-
-Revision 1.3  2007/04/12 19:03:02  leeten
-
-[04/12/2007]
-1. [ADDED] Define new type of option: OPT_TYPE_BOOLEAN and new function OptAddBoolean().
-
-Revision 1.2  2007/02/20 18:01:35  leeten
-
-[02/20/2007]
-1. Debug the error to comparte the string.
-
-
-*/

@@ -25,13 +25,3 @@ public:
 	~CDvrSampleWin(void);
 };
 
-/*
-
-$Log: not supported by cvs2svn $
-Revision 1.1  2010/04/06 20:01:15  leeten
-
-[04/06/2010]
-1. [1ST] First time checkin.
-
-
-*/

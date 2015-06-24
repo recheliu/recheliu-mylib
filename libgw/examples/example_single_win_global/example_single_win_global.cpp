@@ -38,18 +38,3 @@ main(int argn, char *argv[])
 	return 0;
 }
 
-/*
-
-$Log: not supported by cvs2svn $
-Revision 1.2  2009/06/01 21:40:54  leeten
-
-[2009/06/01]
-1. [MOD] Change the path of TestWin.h to ../include/TestWin.h.
-
-Revision 1.1  2009/01/16 14:42:45  leeten
-
-[2009/01/16]
-1. [FIRST TIME CHECKIN] This is an example to test how the global function can work in single window environment.
-
-
-*/

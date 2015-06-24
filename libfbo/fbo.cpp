@@ -45,18 +45,3 @@ EGetFboStatus(bool bPrint)
 	return eStatus;
 }
 
-/*
-
-  $Log: not supported by cvs2svn $
-  Revision 1.1.1.1  2006/11/09 19:22:31  leeten
-
-  [11/09/2006]
-  1. First time checkin.
-
-  Revision 1.1.1.1  2006/09/13 19:49:26  leeten
-
-  [09/13/2006]
-  1. First time checkin. It is a new version renderere which simulate 4 slices at the same time.
-
-
-*/

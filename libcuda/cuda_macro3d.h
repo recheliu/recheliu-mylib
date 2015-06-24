@@ -14,17 +14,8 @@ _Malloc3D(cudaExtent cExtent3D, cudaPitchedPtr *pPtr)
 //////////////////////////////////////////////////////////////
 template<typename T>
 void
-// MOD-BY-LEETEN 02/26/2011-FROM:
-	// _Malloc3DArray(cudaExtent cExtent3D, cudaArray **ppArray)
-// TO:
 	_Malloc3DArray(cudaExtent cExtent3D, cudaArray **ppArray, bool bIsPrecisionHalf = false)
-// MOD-BY-LEETEN 02/26/2011-END
 {
-	#if	0	// MOD-BY-LEETEN 02/26/2011-FROM:
-		// TMP-FROM:	cudaChannelFormatDesc cChannelDesc = cudaCreateChannelDesc<T>();
-		// TO:
-		cudaChannelFormatDesc cChannelDesc = cudaCreateChannelDesc<T>();
-	#else	// MOD-BY-LEETEN 02/26/2011-TO:
 	cudaChannelFormatDesc cChannelDesc;
 	if( bIsPrecisionHalf )
 		switch( sizeof(T) / sizeof(float) )
@@ -35,7 +26,6 @@ void
 		}
 	else
 		cChannelDesc = cudaCreateChannelDesc<T>();
-	#endif	// MOD-BY-LEETEN 02/26/2011-END
 
 	CUDA_SAFE_CALL_NO_SYNC( 
 		cudaMalloc3DArray(
@@ -150,18 +140,3 @@ _Memcpy3DToHost
 
 //////////////////////////////////////////////////////////////
 
-/*
-
-$Log: not supported by cvs2svn $
-Revision 1.2  2011/02/27 07:43:42  leeten
-
-[02/27/2011]
-1. [ADD] Add a parameter bIsPrecisionHalf  to thr function _Malloc3DArray() to decide whether the 16 bits floating point will be used.
-
-Revision 1.1  2011/02/26 18:46:02  leeten
-
-[02/26/2011]
-1. [1ST] First time checkin. This file defines the function to allocate 3D buffers/arrays on the device side and to configure the textrues.
-
-
-*/

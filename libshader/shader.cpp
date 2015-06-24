@@ -5,12 +5,10 @@
 #include <memory.h>
 #include <string.h>
 
-#include "libfilestr.h"	// ADD-BY-LEETEN 01/26/2013
+#include "libfilestr.h"
 
-// ADD-BY-LEETEN 08/14/2008-BEGIN
 #include "shader.h"
 
-// ADD-BY-LEETEN 01/10/2010-BEGIN
 GLhandleARB 
 HCreateProgramHandle
 (
@@ -49,7 +47,6 @@ _LinkPrograms
 	bool bIsObjectChecked = BCheckObject(hProgramHandle);
 	assert( true == bIsObjectChecked );
 }
-// ADD-BY-LEETEN 01/10/2010-END
 
 GLhandleARB 
 CSetShadersByString(
@@ -62,7 +59,6 @@ CSetShadersByString(
 	_LinkPrograms(hProgramHandle);
 	return hProgramHandle;
 }	
-// ADD-BY-LEETEN 08/14/2008-END
 
 bool
 BCheckObject(GLhandleARB obj)
@@ -161,64 +157,3 @@ CSetShaders(const char* szVertex, const char* szFragment)
 	return hProgramHandle;
 }
 
-/*
-
-  $Log: not supported by cvs2svn $
-  Revision 1.9  2010/08/05 19:19:54  leeten
-
-  [08/05/2010]
-  1. [MOD] Change the usage of assert.
-
-  Revision 1.8  2010/01/13 00:03:01  leeten
-
-  [01/12/2010]
-  1. [MOD] Change the definition of CSetShadersByString so it only accepts 2 inputs, which are strings of the vertex shader program and the fragment shader program.
-
-  Revision 1.7  2010/01/11 18:58:35  leeten
-
-  [01/10/2010]
-  1. [ADD] Define a new function HCreateProgramHandle to obtain the program handle.
-  2. [ADD] Defien a new function _AddShaderProgram to add a shader program to the program handle.
-  3. [ADD] Defien a new function _LinkPrograms to link and create the final program handle.
-  4. [MOD] Change the content of CSetShadersByString by using the new defined functions.
-
-  Revision 1.6  2010/01/11 18:54:25  leeten
-
-  [01/10/2010]
-  1. [ADD] Define a new function HCreateProgramHandle to obtain the program handle.
-  2. [ADD] Defien a new function _AddShaderProgram to add a shader program to the program handle.
-  3. [ADD] Defien a new function _LinkPrograms to link and create the final program handle.
-  4. [MOD] Change the content of CSetShadersByString by using the new defined functions.
-
-  Revision 1.5  2008/08/15 02:17:50  leeten
-
-  [2008/08/14]
-  1. [ADD] Define a new function CSetShadersByString to compile shader progoams as long strings.
-
-  Revision 1.4  2007/09/18 16:17:38  leeten
-
-  [09/18/2007]
-  1. Changed the code to free the buffer for the shader programs.
-
-  Revision 1.3  2007/03/12 23:40:37  leeten
-
-  [03/12/2007]
-  1. Add macro SET_3FV_VALUE_BY_NAME.
-
-  Revision 1.2  2007/02/20 18:04:36  leeten
-
-  [02/20/2007]
-  1. Output the path of the shader program during parsing.
-
-  Revision 1.1.1.1  2006/11/09 19:20:04  leeten
-
-  [11/09/2006]
-  1. First time checkin.
-
-  Revision 1.1.1.1  2006/09/13 19:49:26  leeten
-
-  [09/13/2006]
-  1. First time checkin. It is a new version renderere which simulate 4 slices at the same time.
-
-
-*/

@@ -49,7 +49,6 @@
 
 #else	// #ifdef WIN32
 	#include <time.h>
-	// ADD-BY-LEETEN 09/13/2011-BEGIN
 	#if defined(__APPLE__) && defined(__MACH__)
 	#include <sys/time.h>
 	#include <mach/mach.h>
@@ -67,17 +66,16 @@
 		ts->tv_nsec = mts.tv_nsec;
 	}
 	#else	// #if defined(__APPLE__) && defined(__MACH__)
-	// ADD-BY-LEETEN 09/13/2011-END
 
 	#pragma message("Remerber to add the argument '-l rt' to the linker options.")
-	#endif	// #if defined(__APPLE__) && defined(__MACH__)		// ADD-BY-LEETEN 09/13/2011
+	#endif	// #if defined(__APPLE__) && defined(__MACH__)		
 
 	#define LIBCLOCK_INIT(flag, header)							\
 		{																\
 			static struct timespec _pcBeginTimers[MAX_NR_OF_TIMERS];	\
 			static struct timespec _pcEndTimers[MAX_NR_OF_TIMERS];		\
 			size_t _t = 0;												\
-			const char* szHeader = header;									// MOD-BY-LEETEN 04/09/2012-FROM:	char* szHeader = header;									
+			const char* szHeader = header;									
 
 
 	#define LIBCLOCK_BEGIN(flag)								\
@@ -113,18 +111,3 @@
 #endif	// #ifdef WIN32
 
 
-/*
-
-$Log: not supported by cvs2svn $
-Revision 1.2  2011-02-25 02:30:08  leeten
-
-[02/20/2011]
-1. [MOD] Delay the printing of header until LIBCLOCK_PRINT is called.
-
-Revision 1.1  2011/01/10 19:35:45  leeten
-
-[01/09/2010]
-1. [1ST] First time checkin.
-
-
-*/

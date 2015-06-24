@@ -7,18 +7,11 @@ This file defines several important macros for CUDA.
 #ifndef __CUDA__MACRO__H__
 #define __CUDA__MACRO__H__
 
-// ADD-BY-LEETEN 2014/10/19-BEGIN
 #include <vector>
 using namespace std;
-// ADD-BY-LEETEN 2014/10/19-END
 
-#include <stdlib.h> // ADD-BY-LEETEN 04/11/2013
-	// ADD-BY-TLEE 2008/08/29-BEGIN
+#include <stdlib.h> 
 	#include <cuda_runtime_api.h>
-	// ADD-BY-TLEE 2008/08/29-END
-
-	// MOD-BY-LEETEN 12/10/2012-FROM:	#include <cutil.h>
-	// TO:
 
 	#  define CUDA_SAFE_CALL_NO_SYNC( call) do {                                 \
 	    cudaError err = call;                                                    \
@@ -65,10 +58,8 @@ using namespace std;
 	}
 
 	#endif	//	#ifdef _DEBUG
-	// MOD-BY-LEETEN 12/10/2012-END
 
 
-// ADD-BY-LEETEN 2009/06/02-BEGIN
 #include <math.h>
 
 #ifndef __DEVICE_EMULATION__
@@ -81,9 +72,6 @@ using namespace std;
 
 #endif	// __DEVICE_EMULATION__
 
-// ADD-BY-LEETEN 2009/06/02-END
-
-// ADD-BY-TLEE 07/30/2008-BEGIN
 #if CUDART_VERSION <= 1010
 
 	#define CUDA_INIT(argc, argv)	CUT_DEVICE_INIT()
@@ -92,7 +80,6 @@ using namespace std;
 	#define CUDA_INIT(argc, argv)	CUT_DEVICE_INIT(argc, argv)
 
 #endif
-// ADD-BY-TLEE 07/30/2008-END
 
 #define ADDRESS_2D(type, base, eb, wb, w, h)	\
 	((type*)((unsigned char*)(base) + (wb) * (h) + (w) * (eb)))
@@ -156,51 +143,6 @@ using namespace std;
 #define FREE_MEMORY(p)	FREE_KERNEL_MEMORY(p, cudaFree)
 #define FREE_MEMORY_ON_HOST(p)	FREE_KERNEL_MEMORY(p, cudaFreeHost)
 
-#if	0	// MOD-BY-LEETEN 2014/10/19-FROM:
-#define CLOCK_INIT(flag, header)									\
-	{														\
-		static unsigned int _uTimer = 0;					\
-		static float _pfTimers[64];							\
-		size_t _t = 0;										\
-		if( (flag)	)										\
-		{													\
-			if( !_uTimer )									\
-				CUT_SAFE_CALL( cutCreateTimer(&_uTimer) );	\
-			printf("%s", header);							\
-		}
-
-
-#define CLOCK_BEGIN(flag)								\
-	if( (flag)	)										\
-	{													\
-		CUT_SAFE_CALL( cutStartTimer(_uTimer) );		\
-		CUT_SAFE_CALL( cutResetTimer(_uTimer) );		\
-	}
-
-#define CLOCK_END(flag, syn)							\
-	if( (flag)	)										\
-	{													\
-		if( syn )										\
-			CUDA_SAFE_CALL(cudaThreadSynchronize() );	\
-		CUT_SAFE_CALL( cutStopTimer(_uTimer));			\
-		_pfTimers[_t++] = cutGetTimerValue(_uTimer);	\
-	}
-
-#define CLOCK_PRINT(flag)									\
-		if( (flag)	)										\
-		{													\
-			float fTotalTime = 0;							\
-			for(size_t i=0; i<_t; i++)						\
-			{												\
-				fTotalTime += _pfTimers[i];					\
-				printf("%.2f,", _pfTimers[i]);				\
-			}												\
-			printf("%.2f\n", fTotalTime);					\
-		}													\
-	}
-
-#else	// MOD-BY-LEETEN 2014/10/19-TO:
-
 #define GPUCLOCK_INIT(flag, header)									\
 	{														\
 		const char* szHeader = header;								\
@@ -244,7 +186,6 @@ using namespace std;
 		}													\
 	}
 
-#endif	// MOD-BY-LEETEN 2014/10/19-END
 
 template<typename T>
 struct CBuffer2D 
@@ -289,7 +230,6 @@ struct CBuffer2D
 	*/
 };
 
-// ADD-BY-LEETEN 2014/10/09-BEGIN
 template<typename T>
 struct CBufferPitch: public cudaPitchedPtr
 {
@@ -312,62 +252,6 @@ struct CBufferPitch: public cudaPitchedPtr
 		return ptr;
 	}
 };
-// ADD-BY-LEETEN 2014/10/09-END
 
 #endif	// __CUDA__MACRO__H__
-
-/*
-
-$Log: not supported by cvs2svn $
-Revision 1.3  2008/08/30 00:23:21  leeten
-
-[2008/08/29]
-1. [ADD] Include the header cuda_runtime_api.h
-
-Revision 1.2  2008/08/10 18:40:50  leeten
-
-[2008/08/10]
-1. [CHANGE] Redefine CUDA_INIT for consistency among version 1 and version 2.
-
-Revision 1.1.1.1  2008/06/12 22:37:55  leeten
-
-[06/12/2008]
-1. Frist time checkin.
-
-Revision 1.1.1.1  2008/05/02 19:05:10  leeten
-
-[05/02/2008]
-1. First time checkin.
-
-Revision 1.1.1.1  2007/09/07 14:47:47  leeten
-
-[09/07/2007]
-1. Frist time checkin.
-
-Revision 1.2  2007/08/23 22:43:02  leeten
-
-[08/23/2007]
-1. Add call to make sure CBuffer2D's member function PAlloc successfully allocate the memory buffer.
-2. Add new member uSize to CBuffer2D to record the total size of allocated buffer.
-
-Revision 1.1.1.1  2007/07/24 13:41:08  leeten
-
-[07/24/2007]
-1. First time checkin.
-
-Revision 1.2  2007/07/13 15:15:52  leeten
-
-[07/13/2007]
-1. Let macros CLOCK_INIT and CLOCK_PRINT form a new scope.
-2. Remove the header parameter in macro CLOCK_INIT.
-
-Revision 1.1  2007/07/11 16:20:30  leeten
-
-[07/11/2007]
-1. First time checkin.
-
-
-*/
-
-
 

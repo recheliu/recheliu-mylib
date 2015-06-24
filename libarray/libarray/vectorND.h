@@ -9,9 +9,7 @@ using namespace std;
 
 #include "liblog.h"
 
-// ADD-BY-LEETEN 2014/12/25-BEGIN
 namespace NDArray {
-// ADD-BY-LEETEN 2014/12/25-END
 
 // a template for N-dimensional array.
 template <typename t, size_t NDIMS=1> 
@@ -21,7 +19,6 @@ protected:
 	vector<size_t> vuDimLengths;
 
 public:
-	// ADD-BY-LEETEN 2014/12/28-BEGIN
 	const 
 	vector<size_t>& 
 	VUGetDimLengths()
@@ -29,25 +26,14 @@ public:
 	{
 		return vuDimLengths;
 	}
-	// ADD-BY-LEETEN 2014/12/28-END
 
-	// MOD-BY-LEETEN 2015/03/29:	size_t UGetDimLength(size_t d)
 	size_t 
 	UGetDimLength(size_t d) const 
-	// MOD-BY-LEETEN 2015/03/29-END
 	{
 		ASSERT_OR_LOG(d < NDIMS, "");
 		return vuDimLengths[d];
 	}
 
-	#if	0	// DEL-BY-LEETEN 2014/12/25-BEGIN
-	TVectorND():
-		vector<t>(),
-		vuDimLengths(NDIMS)
-	{
-	}
-	#endif	// DEL-BY-LEETEN 2014/12/25-END
-	
 	void resize(const vector<size_t>& vuNewDimLengths) 
 	{
 		ASSERT_OR_LOG(NDIMS == vuNewDimLengths.size(), "");
@@ -70,11 +56,6 @@ public:
 		for(size_t d = 0; d < NDIMS - 1; d++) 
 		{	
 			vuNewDimLengths.push_back(va_arg(vaDimLengths, size_t));
-			#if	0	// DEL-BY-LEETEN 2015/03/29-BEGIN
-			ASSERT_NETCDF(
-				nc_get_vara_double(iNcId, ncVarSAT, puStarts, puCounts, pdSums) );
-			#endif	// DEL-BY-LEETEN 2015/03/29-END
-
 		}	
 		resize(vuNewDimLengths);
 	}
@@ -87,13 +68,11 @@ public:
 		va_end(vaDimLengths);	
 	}
 	
-	// ADD-BY-LEETEN 2014/12/25-BEGIN
 	TVectorND():
 		vector<t>(),
 		vuDimLengths(NDIMS)
 	{
 	}
-	// ADD-BY-LEETEN 2014/12/25-END
 	
 	TVectorND(size_t l, ...):
 		vector<t>()
@@ -110,22 +89,6 @@ public:
 		resize(vuNewDimLengths);
 	}
 
-	#if	0	// MOD-BY-LEETEN 2014/12/25-FROM:	
-	const size_t uGetIndex(size_t i, va_list vaDimIndices) const
-	{
-		size_t uSliceSize = vuDimLengths[0];
-		size_t uIndex = i;
-		for(size_t d = 1; d < NDIMS; d++) 
-		{	
-			size_t uDimIndex = va_arg(vaDimIndices, size_t);
-			ASSERT_OR_LOG(uIndex < vuDimLengths[d], "");
-			uIndex += uDimIndex * uSliceSize;
-			uSliceSize *= vuDimLengths[d];
-		}	
-		return uIndex;
-	}
-
-	#else	// MOD-BY-LEETEN 2014/12/25-TO:
 	size_t 
 	UGetIndex
 	(
@@ -172,15 +135,12 @@ public:
 	{
 		return data()[UGetIndex(vuSub)];
 	}
-	#endif	// MOD-BY-LEETEN 2014/12/25-END
 
 	t& _Get(size_t i, ...)
 	{
 		va_list vaDimIndices;	
 		va_start(vaDimIndices, i);	
-		// MOD-BY-LEETEN 2014/12/25:	size_t uIndex = uGetIndex(i, vaDimIndices);
 		size_t uIndex = UGetIndex(i, vaDimIndices);
-		// MOD-BY-LEETEN 2014/12/25-END
 		va_end(vaDimIndices);	
 		return data()[uIndex];
 	}
@@ -189,9 +149,7 @@ public:
 	{
 		va_list vaDimIndices;	
 		va_start(vaDimIndices, i);	
-		// MOD-BY-LEETEN 2014/12/25:	size_t uIndex = uGetIndex(i, vaDimIndices);
 		size_t uIndex = UGetIndex(i, vaDimIndices);
-		// MOD-BY-LEETEN 2014/12/25-END
 		va_end(vaDimIndices);	
 		return data()[uIndex];
 	}
@@ -210,25 +168,6 @@ public:
 		string& strFilename = STRGetFilename(strFilenamePrefix);
 
 		FILE *fp;
-		#if	0	// MOD-BY-LEETEN 2015/03/29-FROM:
-		fp = fopen(strFilename.c_str(), "wb");
-		ASSERT_OR_LOG(fp, perror(strFilename.c_str()));
-		
-		unsigned long long ullTemp;
-		
-		ullTemp = NDIMS;
-		fwrite(&ullTemp, sizeof(ullTemp), 1, fp);
-
-		for(size_t d = 0; d < NDIMS; d++) 
-		{
-			ullTemp = vuDimLengths[d];
-			fwrite(&ullTemp, sizeof(ullTemp), 1, fp);
-		}
-
-		fwrite(data(), sizeof(t), size(), fp);
-
-		fclose(fp);
-		#else	// MOD-BY-LEETEN 2015/03/29-TO:
 		string strHeaderFilepath= strFilename + ".txt";
 		string strRawFilepath = strFilename + ".raw";
 
@@ -255,7 +194,6 @@ public:
 		ASSERT_OR_LOG(fp, perror(strRawFilename.c_str()));
 		fwrite(data(), sizeof(t), size(), fp);
 		fclose(fp);
-		#endif	// MOD-BY-LEETEN 2015/03/29-END
 	}
 	
 	void _Load(const string& strFilenamePrefix)
@@ -285,7 +223,5 @@ public:
 	}
 };
 
-// ADD-BY-LEETEN 2014/12/25-BEGIN
 }	// namespace NDArray
-// ADD-BY-LEETEN 2014/12/25-END
 

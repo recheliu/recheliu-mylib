@@ -69,9 +69,7 @@ namespace NrrdIOUtil
       char pathNhdr[FILENAME_MAX_LENGTH];
       strcpy(pathNhdr, szFilepath);
       char *szExtension = strrchr(pathNhdr, '.');
-		// MOD-BY-LEETEN 2014/12/29:	if( 0 != strcmp(szExtension, ".nhdr" ) )
 		if( NULL == szExtension || 0 != strcmp(szExtension, ".nhdr" ) )
-		// MOD-BY-LEETEN 2014/12/29-END
         strcat(pathNhdr, ".nhdr");
 
       // generate the corresponding .raw filename

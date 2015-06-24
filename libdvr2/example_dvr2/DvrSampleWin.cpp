@@ -20,9 +20,7 @@ CDvrSampleWin::_BeginDisplay()
 		iYDim / fMaxDim,
 		iZDim / fMaxDim);
 
-	// ADD-BY-LEETEN 09/10/2010-BEGIN
 	glutWireCube(2.0);
-	// ADD-BY-LEETEN 09/10/2010-END
 
 	CClipVolume::_Create();
 
@@ -101,9 +99,7 @@ CDvrSampleWin::_RenderSlab(
 void 
 CDvrSampleWin::_ReshapeFunc(int w, int h)
 {
-	// ADD-BY-LEETEN 01/05/2010-BEGIN
 	CClipVolume::_ReshapeFunc(w, h);
-	// ADD-BY-LEETEN 01/05/2010-END
 	CDvrWin2::_ReshapeFunc(w, h);
 }
 
@@ -114,13 +110,11 @@ CDvrSampleWin::_InitFunc()
 	////////////////////////////////////////////////////////////////
 	CDvrWin2::_InitFunc();
 
-	// ADD-BY-LEETEN 09/10/2010-BEGIN
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	_DisableVerticalSync();
 	_DisplayFpsOn();		// the FPS will be displayed 
 	_KeepUpdateOn();		// the frame will be keep updating
-	// ADD-BY-LEETEN 09/10/2010-END
 
 	pidRayIntegral = CSetShadersByString(
 		NULL
@@ -161,19 +155,3 @@ CDvrSampleWin::~CDvrSampleWin(void)
 {
 }
 
-/*
-
-$Log: not supported by cvs2svn $
-Revision 1.2  2010/09/10 14:07:15  leeten
-
-[09/10/2010]
-1. [ADD] Draw a 3D cube as the bounding box.
-2. [ADD] Explictly enable the depth test and blending.
-
-Revision 1.1  2010/04/06 20:01:15  leeten
-
-[04/06/2010]
-1. [1ST] First time checkin.
-
-
-*/

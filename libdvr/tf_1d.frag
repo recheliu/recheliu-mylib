@@ -13,7 +13,6 @@ This is the shader program for direct volume rendering
 	uniform float fWindowWidth;
 	uniform float fWindowHeight;
 
-	// ADD-BY-TLEE 08/21/2008-BEGIN
 	// range of the data
 	uniform float fDataValueMin;
 	uniform float fDataValueMax;
@@ -21,7 +20,6 @@ This is the shader program for direct volume rendering
 	// range of the TF's support 
 	uniform float fTfDomainMin;
 	uniform float fTfDomainMax;
-	// ADD-BY-TLEE 08/21/2008-END
 
 void 
 main()
@@ -30,9 +28,6 @@ main()
 	float fV = texture3D(t3dVol, gl_TexCoord[0].xyz).x;
 
 				// convert the value into color via the transfer function
-	// MOD-BY-TLEE 08/21/2008-FROM:
-		// vec4 v4Color = texture1D(t1dTf, fV);
-	// TO:
 	vec4 v4Color;
 	fV = fDataValueMin + fV * (fDataValueMax - fDataValueMin);
 	fV = (fV - fTfDomainMin) / (fTfDomainMax - fTfDomainMin);
@@ -40,7 +35,6 @@ main()
 		v4Color = vec4(0.0);
 	else
 		v4Color = texture1D(t1dTf, fV);
-	// MOD-BY-TLEE 08/21/2008-END
 
 
 				// calcualte the distance between this fragment and the previous fragment in the object space 
@@ -60,37 +54,8 @@ main()
 
 	float fThickness_obj = distance(v4Coord_obj, v4PrevCoord_obj);
 
-	// MOD-BY-LEETEN 2010/05/13-FROM:
-		// v4Color.a = 1.0 - pow(1.0 - v4Color.a, fThickness_obj);
-	// TO:
 	v4Color.a = 1.0 - exp(-v4Color.a * fThickness_obj);
-	// MOD-BY-LEETEN 2010/05/13-END
 
 	gl_FragColor = v4Color;
 }
 
-/*
-
-$Log: not supported by cvs2svn $
-Revision 1.3  2008/08/21 14:57:28  leeten
-
-[2008/08/21]
-1. [ADD] Before applying transfer function, convert the range of the data by considering the TF domain and data range.
-
-Revision 1.2  2008/08/15 14:34:49  leeten
-
-[2008/08/15]
-1. [Change] change the comments.
-
-Revision 1.1.1.1  2008/08/14 22:54:48  leeten
-
-[2008/08/14]
-1. [FIRST TIME CHECKIN] This is a library to create a GLUTWIN window for direct volume rendering (DVR).
-
-Revision 1.1.1.1  2008/08/12 16:58:49  leeten
-
-[2008/08/12]
-1. First time checkin. This is my DVR renderer for 3D regular volume. For testing, the dataset HIPIP is checkin too.
-
-
-*/

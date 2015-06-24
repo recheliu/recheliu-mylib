@@ -19,9 +19,7 @@ SzTextFileRead
 		if (fp != NULL) 
 		{
 			fseek(fp, 0, SEEK_END);
-			// MOD-BY-LEETEN 2014/12/26:	int count = ftell(fp);
 			size_t count = (size_t)ftell(fp);
-			// MOD-BY-LEETEN 2014/12/26-END
 			rewind(fp);
 
 			if (count > 0) {

@@ -1,6 +1,6 @@
 #pragma once
 
-	#include <vector_types.h>	// ADD-BY-LEETEN 2013/07/31
+	#include <vector_types.h>	
 
 	#include "GlutWin.h"
 	#include "ClipPlanes.h"
@@ -103,13 +103,3 @@ public:
 	virtual ~CClipWin(void);
 };
 
-/*
-
-$Log: not supported by cvs2svn $
-Revision 1.1  2009/08/26 16:01:12  leeten
-
-[2009/08/26]
-1. [1ST] First time checkin.
-
-
-*/

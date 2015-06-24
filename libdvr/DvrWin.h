@@ -17,19 +17,12 @@ The proecduer to use this class is as below:
 **************************************************/
 
 										// remove the libraries
-// ADD-BY-LEETEN 2008/08/16-BEGIN
-	// ADD-BY-LEETEN 04/05/2012-BEGIN
 	#ifdef WITH_STATIC_LINK
 	#pragma comment (lib, "glew32s.lib")      
 	#else	// #ifdef WITH_STATIC_LINK
-	// ADD-BY-LEETEN 04/05/2012-END
 	#pragma comment (lib, "glew32.lib")      
-	#endif	// #ifdef WITH_STATIC_LINK		// ADD-BY-LEETEN 04/05/2012
+	#endif	// #ifdef WITH_STATIC_LINK		
 
-	#if	0	// MOD-BY-LEETEN 08/05/2010-FROM:
-		#pragma comment (lib, "libfbo.lib")      
-		#pragma comment (lib, "libshader.lib")      
-	#else	// MOD-BY-LEETEN 08/05/2010-TO:
 	#ifdef _DEBUG
 		#pragma comment (lib, "libfbo_d.lib")
 		#pragma comment (lib, "libshader_d.lib")
@@ -37,9 +30,6 @@ The proecduer to use this class is as below:
 		#pragma comment (lib, "libfbo_r.lib")
 		#pragma comment (lib, "libshader_r.lib")
 	#endif
-	#endif	// MOD-BY-LEETEN 08/05/2010-END
-
-// ADD-BY-LEETEN 2008/08/16-END
 
 #pragma once
 #include "GlutWin.h"
@@ -47,7 +37,6 @@ The proecduer to use this class is as below:
 class CDvrWin :
 	public CGlutWin
 {
-	// ADD-BY-TLEE 08/21/2008-BEGIN
 protected:
 	float fTfDomainMin, fTfDomainMax;
 	float fDataValueMin, fDataValueMax;
@@ -62,17 +51,12 @@ public:
 		fDataValueMin = fMin;
 		fDataValueMax = fMax;
 	}
-	// ADD-BY-TLEE 08/21/2008-END
 
-// ADD-BY-TLEE 08/21/2008-BEGIN
 protected:
-// ADD-BY-TLEE 08/21/2008-END
 
-	// ADD-BY-TLEE 2008/08/17-BEGIN
 	enum {
 		WINDOW_SIZE	= 0x10
 	};
-	// ADD-BY-TLEE 2008/08/17-END
 
 	// inhered interfaces
 	void _DisplayFunc();
@@ -80,23 +64,17 @@ protected:
 	void _KeyboardFunc(unsigned char, int, int);
 	void _SpecialFunc(int, int, int);
 
-	#if	0	// DEL-BY-LEETEN 08/14/2008-BEGIN
-		void _IdleFunc();
-	#endif	// DEL-BY-LEETEN 08/14/2008-END
-
 	void _InitFunc();
 
 	// new methods
 	void _DisplayVolume();
 
-	// ADD-BY-TLEE 2008/08/17-BEGIN
 	void _GluiFunc(unsigned short usValue);
 							// variable for setting the window resolution
 	GLUI_Spinner *pcWidth_spinner;
 	GLUI_Spinner *pcHeight_spinner;
 	int iWindowWidth;	
 	int iWindowHeight;	
-	// ADD-BY-TLEE 2008/08/17-END
 
 public:
 	// texture handle
@@ -126,11 +104,7 @@ public:
 	// a flag to indicate if FBO is used
 	int ibRenderToFbo;
 
-	// MOD-BY-TLEE 2008/08/20-FROM:
-		// void _SetVolume(const void *pVol, GLenum eType, GLenum eFormat, int iXDim, int iYDim, int iZDim);
-	// TO:
 	void _SetVolume(GLenum eInternalFormat, const void *pVol, GLenum eType, GLenum eFormat, int iXDim, int iYDim, int iZDim);
-	// MOD-BY-TLEE 2008/08/20-END
 	void _SetTransferFunc(const void *pTf, GLenum eType, GLenum eFormat, int iNrOfTfEntries);
 
 public:
@@ -138,46 +112,4 @@ public:
 public:
 	~CDvrWin(void);
 };
-
-/*
-
-$Log: not supported by cvs2svn $
-Revision 1.6  2008/08/21 14:56:06  leeten
-
-[2008/08/21]
-1. [ADD] Declare the variables for TF domain and data range, and add methods to specify them.
-2. [ADD] Declare all private members as protected members.
-
-Revision 1.5  2008/08/20 19:53:24  leeten
-
-[2008/08/20]
-1. [CHNAGE] Add a new parameter eInternalFormat to the method _SetVolume to decide the texture format in the graphic hardware.
-
-Revision 1.4  2008/08/17 23:48:31  leeten
-
-[2008/08/17]
-1. [ADD] Add 2 spinners to control the window size. To handle this event, the method _Gluifunc is thus overloaded, and a new event index WINDOW_SIZE is added.
-
-Revision 1.3  2008/08/16 21:32:23  leeten
-
-[2008/08/16]
-1. [Add] implictly link the following libs: glew32.lib, libfbo.lib and libshader.lib.
-
-Revision 1.2  2008/08/15 14:31:19  leeten
-
-[2008/08/15]
-1. [DEL] Remove the pragma to implictly link the libraries in mylib since it can cause VC not to check the dependency for those library.
-
-Revision 1.1.1.1  2008/08/14 22:54:48  leeten
-
-[2008/08/14]
-1. [FIRST TIME CHECKIN] This is a library to create a GLUTWIN window for direct volume rendering (DVR).
-
-Revision 1.1.1.1  2008/08/12 16:58:49  leeten
-
-[2008/08/12]
-1. First time checkin. This is my DVR renderer for 3D regular volume. For testing, the dataset HIPIP is checkin too.
-
-
-*/
 

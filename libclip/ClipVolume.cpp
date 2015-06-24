@@ -49,7 +49,6 @@ CClipVolume::_Create()
 	for(int cp = 0; cp < iNrOfClipPlanes; cp++)
 		glClipPlane(GL_CLIP_PLANE0 + cp, ppdClipPlanes[cp]);
 
-	// ADD-BY-LEETEN 2009/08/31-BEGIN
 	static double pdModelview[16];
 	static double pdProjection[16];
 	static int piViewport[4];
@@ -83,7 +82,6 @@ CClipVolume::_Create()
 
 CClipVolume::CClipVolume(void)
 {
-	// ADD-BY-LEETEN 01/05/2010-BEGIN
 	FILE *fpFragShader;
 	fpFragShader = fopen("clip_frag_func.frag.h", "wt");
 	assert(fpFragShader);
@@ -92,25 +90,9 @@ CClipVolume::CClipVolume(void)
 		,
 		fpFragShader);
 	fclose(fpFragShader);
-	// ADD-BY-LEETEN 01/05/2010-END
 }
 
 CClipVolume::~CClipVolume(void)
 {
 }
 
-/*
-
-$Log: not supported by cvs2svn $
-Revision 1.2  2010/01/06 16:39:57  leeten
-
-[01/06/2010]
-1. [ADD] Output the content of the fragment shader 'clip_frag_func.frag' to file 'clip_frag_func.frag.h' in the constructor.
-
-Revision 1.1  2009/11/09 20:16:38  leeten
-
-[2009/11/09]
-1. [1ST] First time checkin.
-
-
-*/

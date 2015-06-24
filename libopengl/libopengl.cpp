@@ -55,13 +55,3 @@ EGetFboStatus(bool bPrint)
 	return eStatus;
 }
 
-/*
-
-$Log: not supported by cvs2svn $
-Revision 1.1  2006/11/26 00:08:55  leeten
-
-[11/25/2006]
-1. First time checkin.
-
-
-*/

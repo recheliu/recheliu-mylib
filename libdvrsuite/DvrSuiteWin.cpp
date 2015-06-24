@@ -5,7 +5,6 @@
 
 #include "DvrSuiteWin.h"
 
-// ADD-BY-LEETEN 02/06/2013-BEGIN
 void
 CDvrSuiteWin::
 _Receive
@@ -58,9 +57,7 @@ CDvrSuiteWin::
 	for(size_t v = 0; v < uNrOfElements; v++)
 	{
 		size_t uBin = (size_t)floor((double)(uNrOfBins - 1) * ((double)data[v] - dValueMin) / (double)(dValueMax - dValueMin));
-		// MOD-BY-LEETEN 04/11/2013:		uBin = min(max(uBin, 0), uNrOfBins - 1);	
 		uBin = min(max(uBin, (size_t)0), uNrOfBins - 1);	
-		// MOD-BY-LEETEN 04/11/2013-END
 		vfHist[uBin] += 1.0f;
 	}
 
@@ -137,9 +134,7 @@ CDvrSuiteWin::
 		(int)vf4TransFunc.size());
 	cTransFunc._SetTfDomain((float)dValueMin, (float)dValueMax);
 }
-// ADD-BY-LEETEN 02/05/2013-END
 
-// ADD-BY-LEETEN 02/05/2013-BEGIN
 void 
 CDvrSuiteWin::
 	_CreateTfWins()
@@ -178,7 +173,6 @@ CDvrSuiteWin::_InitFunc()
 
 	_KeepUpdateOn();
 
-	// ADD-BY-LEETEN 02/05/2013-BEGIN
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	_DisableVerticalSync();
@@ -308,7 +302,6 @@ CDvrSuiteWin::
 	glBindTexture(CDvrWin2::cDepth.eTarget, CDvrWin2::cDepth.t2d);
 
 	glActiveTexture(GL_TEXTURE0);
-	// ADD-BY-LEETEN 02/05/2013-END
 }
 
 void 

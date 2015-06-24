@@ -72,23 +72,3 @@ main()
 	gl_FragData[1] = v4Data;
 }
 
-/*
-
-$Log: not supported by cvs2svn $
-Revision 1.3  2010/09/10 14:08:40  leeten
-
-[09/10/2010]
-1. [MOD] Treat the sampler t2dsDepth as a regular 2D texture.
-
-Revision 1.2  2010/05/15 16:06:23  leeten
-
-[05/15/2010]
-1. [MOD] Change the ray integral equation from A = 1 - (1 - A)^D to A = 1 - exp(-AD).
-
-Revision 1.1  2010/04/06 20:01:15  leeten
-
-[04/06/2010]
-1. [1ST] First time checkin.
-
-
-*/

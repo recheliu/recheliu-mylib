@@ -1,12 +1,6 @@
 #include <GL/glew.h>
 #include "shader.h"
-// DEL-BY-TLEE 2008/08/20-BEGIN
-	// #include "libtf2.h"
-// DEL-BY-TLEE 2008/08/20-END
-
-// ADD-BY-LEETEN 2009/11/05-BEGIN
 #include "fbo.h"
-// ADD-BY-LEETEN 2009/11/05-END
 
 #include "DvrWin.h"
 
@@ -37,22 +31,16 @@ CDvrWin::CDvrWin(void)
 						// not used FBO by default
 	ibRenderToFbo = false;
 
-	// ADD-BY-TLEE 2008/08/14-BEGIN
 	_AddGluiWin();				// there is a sub GLUI window
-	// ADD-BY-TLEE 2008/08/14-END
 
-	// ADD-BY-TLEE 2008/08/17-BEGIN
 							// variable for setting the window resolution
 	pcWidth_spinner  = NULL;
 	pcHeight_spinner = NULL;
-	// ADD-BY-TLEE 2008/08/17-END
 
-	// ADD-BY-TLEE 08/21/2008-BEGIN
 	fTfDomainMin = 0.0f;
 	fTfDomainMax = 1.0f;
 	fDataValueMin = 0.0f;
 	fDataValueMax = 1.0f;
-	// ADD-BY-TLEE 08/21/2008-END
 }
 
 CDvrWin::~CDvrWin(void)
@@ -163,7 +151,6 @@ CDvrWin::_DisplayVolume()
 	SET_1F_VALUE_BY_NAME(uPidTf1d, "fWindowWidth", (float)piViewport[2]);
 	SET_1F_VALUE_BY_NAME(uPidTf1d, "fWindowHeight", (float)piViewport[3]);
 
-	// ADD-BY-TLEE 08/21/2008-BEGIN
 						// setup the range of the data
 	SET_1F_VALUE_BY_NAME(uPidTf1d, "fDataValueMin", fDataValueMin);
 	SET_1F_VALUE_BY_NAME(uPidTf1d, "fDataValueMax", fDataValueMax);
@@ -171,7 +158,6 @@ CDvrWin::_DisplayVolume()
 						// setup the range of the TF's support 
 	SET_1F_VALUE_BY_NAME(uPidTf1d, "fTfDomainMin", fTfDomainMin);
 	SET_1F_VALUE_BY_NAME(uPidTf1d, "fTfDomainMax", fTfDomainMax);
-	// ADD-BY-TLEE 08/21/2008-END
 
 	glColor4d(1.0, 1.0, 1.0, 1.0 / (double)iNrOfSlices);
 	for(int z=0; z<=iNrOfSlices; z++)
@@ -263,28 +249,13 @@ CDvrWin::_DisplayFunc()
 
 		glDisable(GL_TEXTURE_2D);
 	}
-
-	// DEL-BY-LEETEN 08/12/2008-BEGIN
-		// glutSwapBuffers();
-	// DEL-BY-LEETEN 08/12/2008-END
 }
 
-#if	0	// DEL-BY-LEETEN 08/14/2008-BEGIN
-	void
-	CDvrWin::_IdleFunc()
-	{
-	}
-#endif	// DEL-BY-LEETEN 08/12/2008-END
-
-// ADD-BY-LEETEN 02/25/2008-BEGIN
 void
 CDvrWin::_ReshapeFunc(int w, int h)
 {
 									// since the viewport has been decided in _ReshapeCB, 
 									// this one is not needed
-	// DEL-BY-LEETEN 08/18/2008
-		// glViewport(0, 0, w, h);
-
 	// allocate new FBO
 	if( w && h )
 	{
@@ -313,19 +284,11 @@ CDvrWin::_ReshapeFunc(int w, int h)
 		}
 	}
 
-	// ADD-BY-TLEE 2008/08/17-BEGIN
 							// variable for setting the window resolution
 	iWindowWidth = w;
 	iWindowHeight = h;
-
-	#if	0	// DEL-BY-TLEE 2008/08/18-BEGIN
-		pcWidth_spinner->set_int_val(iWindowWidth);
-		pcHeight_spinner->set_int_val(iWindowHeight);
-	#endif	// DEL-BY-TLEE 2008/08/18-END
-	// ADD-BY-TLEE 2008/08/17-END
 }
 
-// ADD-BY-TLEE 2008/08/17-BEGIN
 void 
 CDvrWin::_GluiFunc(unsigned short usValue)
 {
@@ -410,26 +373,14 @@ void
 CDvrWin::_InitFunc()
 {
 	// initialize GLEW and check required OpenGL extension
-	#if	0	// MOD-BY-LEETEN 08/06/2010-FROM:
-		assert( GLEW_OK == glewInit() );
-		assert( GLEW_ARB_vertex_shader && GLEW_ARB_fragment_shader );
-		assert( GLEW_ARB_texture_non_power_of_two );
-		assert( GL_EXT_texture3D );
-		assert( GL_EXT_framebuffer_object );
-	#else	// MOD-BY-LEETEN 08/06/2010-TO:
 	int iGlewInit = glewInit();
 	assert(GLEW_OK == iGlewInit);
-	#endif	// MOD-BY-LEETEN 08/06/2010-END
 
 	// load the shader
-	// MOD-BY-LEETEN 08/14/2008-FROM:
-		// uPidTf1d = CSetShaders(NULL, "tf_1d.frag");
-	// TO:
 	uPidTf1d = CSetShadersByString(
 		NULL, 
 		#include "tf_1d.frag.h"
 	);
-	// MOD-BY-LEETEN 08/14/2008-END
 
 	assert( uPidTf1d );
 
@@ -461,27 +412,16 @@ CDvrWin::_InitFunc()
 	}
 	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 
-	// ADD-BY-TLEE 2008/08/14-BEGIN
-
 	_DisplayFpsOn();		// the FPS will be displayed 
 	_KeepUpdateOn();		// the frame will be keep updating
 
-							// a spinner to control the #slices
-	// MOD-BY-TLEE 2008/08/15-FROM:
-		// PCGetGluiWin()->add_spinner("#Slices = ", GLUI_SPINNER_INT, &iNrOfSlices);	
-	// TO:
 							// set the lower/upper limits of #slices
 	GLUI_Spinner *pcSpinner = PCGetGluiWin()->add_spinner("#Slices", GLUI_SPINNER_INT, &iNrOfSlices);	
 	pcSpinner->set_int_limits(1, iMaxNrOfSlices);
-	// MOD-BY-TLEE 2008/08/15-END
-	// ADD-BY-TLEE 2008/08/14-END
 
-	// ADD-BY-TLEE 2008/11/17-BEGIN
 							// set the thickness ratio for DVR
 	GLUI_Spinner *pcSpinner_ThicknessRatio = PCGetGluiWin()->add_spinner("Thickness Gain", GLUI_SPINNER_FLOAT, &fThicknessRatio);	
-	// ADD-BY-TLEE 2008/11/17-END
 
-	// ADD-BY-TLEE 2008/08/17-BEGIN
 							// create two spinners to specify the window resolution
 	GLUI_Rollout* pcWindowPaenl = PCGetGluiWin()->add_rollout("Window", false);
 	pcWidth_spinner = 
@@ -490,28 +430,20 @@ CDvrWin::_InitFunc()
 	pcHeight_spinner = 
 		PCGetGluiWin()->add_spinner_to_panel(pcWindowPaenl, "Height", GLUI_SPINNER_INT, &iWindowHeight, IAddWid(WINDOW_SIZE), &CGlutWin::_GluiCB_static);
 	pcHeight_spinner->set_int_limits(1, 1024);
-	// ADD-BY-TLEE 2008/08/17-END
 
-	// ADD-BY-TLEE 2008/08/18-BEGIN
 		// get the size of this window
 		// since it is assumed to be w/o subwindow, 
 		// just call glutGet to obtain the size
 	iWindowWidth	= glutGet(GLUT_WINDOW_WIDTH);
 	iWindowHeight	= glutGet(GLUT_WINDOW_HEIGHT);
-	// ADD-BY-TLEE 2008/08/18-END
 
-	// ADD-BY-LEETEN 2008/11/17-BEGIN
 	_DisableVerticalSync();
-	// ADD-BY-LEETEN 2008/11/17-END
-
 }
 
 // load the volume and upload it as a 3D texture 
 void 
 CDvrWin::_SetVolume(
-	// ADD-BY-TLEE 2008/08/20-BEGIN
 	GLenum eInternalFormat,
-	// ADD-BY-TLEE 2008/08/20-END
 	const void *pVol, 
 	GLenum eType, 
 	GLenum eFormat, 
@@ -536,12 +468,8 @@ _Begin();
 	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);	
 	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);	
 	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);	
-	// MOD-BY-TLEE 2008/08/20-FROM:
-		// glTexImage3D(GL_TEXTURE_3D, 0, GL_LUMINANCE16F_ARB,	
-	// TO:
 	glTexImage3D(GL_TEXTURE_3D, 0, eInternalFormat,	
 		(GLsizei)iXDim, (GLsizei)iYDim, (GLsizei)iZDim, 0, eType, eFormat, pVol);
-	// MOD-BY-TLEE 2008/08/20-END
 
 _End();
 }
@@ -569,65 +497,4 @@ _Begin();
 
 _End();
 }
-
-/*
-
-$Log: not supported by cvs2svn $
-Revision 1.8  2009/11/09 20:20:26  leeten
-
-[2009/11/09]
-1. [ADD] Include the header fbo.h.
-
-Revision 1.7  2008/11/30 04:21:14  leeten
-
-[2008/11/29]
-1. [ADD] Add control the modify the gain for ray integral.
-2. [ADD] Call CGlutWin::_DisableVerticalSync().
-
-Revision 1.6  2008/08/21 14:56:54  leeten
-
-[2008/08/21]
-1. [ADD] Pass the the variables for TF domain and data range to the shader program
-2. [DEL] Remove old useless code in the method _KeyboardFunc().
-
-Revision 1.5  2008/08/20 19:53:32  leeten
-
-[2008/08/20]
-1. [CHNAGE] Add a new parameter eInternalFormat to the method _SetVolume to decide the texture format in the graphic hardware.
-
-Revision 1.4  2008/08/18 21:31:56  leeten
-
-[2008/08/18]
-1. [DEL] Remove the code to set viewport since it has been done in _ReshapeCB.
-2. [DEBUG] Remove the code that call GLUI_Spinner::set_int_val in _ReshapeFunc since it can cause the GLUI window lose the display event.
-3. [ADD] Assign the initial window size to the variables iWindowWidth and iWindowHeight.
-
-Revision 1.3  2008/08/17 23:48:42  leeten
-
-[2008/08/17]
-1. [ADD] Add 2 spinners to control the window size. To handle this event, the method _Gluifunc is thus overloaded, and a new event index WINDOW_SIZE is added.
-
-Revision 1.2  2008/08/15 14:27:31  leeten
-
-[2008/08/15]
-1. [CHANGE] Load the shader as string other than files.
-2. [ADD] Set the lower and upper limit to the spinner that controls #slices.
-
-Revision 1.1.1.1  2008/08/14 22:54:48  leeten
-
-[2008/08/14]
-1. [FIRST TIME CHECKIN] This is a library to create a GLUTWIN window for direct volume rendering (DVR).
-
-Revision 1.2  2008/08/13 21:16:31  leeten
-
-[2008/08/13]
-1. [DEL] Remove glutSwapBuffers();
-
-Revision 1.1.1.1  2008/08/12 16:58:49  leeten
-
-[2008/08/12]
-1. First time checkin. This is my DVR renderer for 3D regular volume. For testing, the dataset HIPIP is checkin too.
-
-
-*/
 

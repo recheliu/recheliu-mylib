@@ -10,9 +10,7 @@
 #ifndef FPS_COUNTER_H
 #define FPS_COUNTER_H
 
-// ADD-BY-LEETEN 01/23/2011-BEGIN
 #ifdef WIN32
-	// DEL-BY-LEETEN 2014/12/25:	#define WIN32_LEAN_AND_MEAN
 	#include <windows.h>
 	#include <mmsystem.h>
 	#pragma comment (lib, "winmm.lib")      // link with my own library libfps
@@ -20,7 +18,6 @@
 	#include <time.h>
 	#pragma message("Remerber to add the argument '-l rt' to the linker options.")
 #endif
-// ADD-BY-LEETEN 01/23/2011-END
 
 class FPS_COUNTER
 {

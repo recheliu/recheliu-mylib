@@ -4,7 +4,6 @@
 
 	#include <stdio.h>
 
-	// ADD-By-LEETEN 10/21/2011-BEGIN
 	#if		WITH_NRRD
 	#include "NrrdIO.h"
 	#ifdef WIN32
@@ -17,7 +16,6 @@
 		#endif	// #if	defined(_DEBUG)
 	#endif	// #ifdef	WIN32
 	#endif	// #if		WITH_NRRD
-	// ADD-By-LEETEN 10/21/2011-END
 
 	
 	// my own program argument parser

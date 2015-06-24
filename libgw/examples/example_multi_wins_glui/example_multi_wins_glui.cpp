@@ -52,13 +52,3 @@ main(int argn, char *argv[])
 	return 0;
 }
 
-/*
-
-$Log: not supported by cvs2svn $
-Revision 1.1.1.1  2008/08/16 16:25:37  leeten
-
-[2008/08/16]
-1. [FIRST TIME CHECKIN].
-
-
-*/

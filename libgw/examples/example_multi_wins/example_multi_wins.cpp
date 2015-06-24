@@ -29,18 +29,3 @@ main(int argn, char *argv[])
 	return 0;
 }
 
-/*
-
-$Log: not supported by cvs2svn $
-Revision 1.2  2009/06/01 21:38:45  leeten
-
-[2009/06/01]
-1. [MOD] Change the path of TestWin.h to ../include/TestWin.h.
-
-Revision 1.1.1.1  2008/08/16 16:25:22  leeten
-
-[2008/08/16]
-1. [FIRST TIME CHECKIN].
-
-
-*/

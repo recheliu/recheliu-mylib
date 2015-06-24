@@ -1,10 +1,8 @@
 #pragma once
 #include "GlutWin.h"
 
-	// ADD-BY-TLEE 08/14/2008-BEGIN
 	#include "TransFunc.h"
 	#include "libbuf.h"
-	// ADD-BY-TLEE 08/14/2008-END
 
 class CTfWin :
 	public CGlutWin
