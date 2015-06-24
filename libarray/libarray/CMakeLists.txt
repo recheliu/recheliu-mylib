@@ -3,7 +3,7 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
 #The name of the project
 PROJECT(libarray_src)
 
-find_package(mylib REQUIRED)
+# DEL-BY-LEETEN 2015/06/23:	find_package(mylib REQUIRED)
 
 set(HEADER_FILES
 	# This one is used to troubleshoot a performance isseu,

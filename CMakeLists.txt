@@ -145,6 +145,10 @@ endif()
 
 # ADD-BY-LEETEN 2014/12/25-BEGIN
 add_subdirectory(contourspectrum)
+# ADD-BY-LEETEN 2015/06/23-BEGIN
+add_subdirectory(liblog)
+include_directories(liblog)
+# ADD-BY-LEETEN 2015/06/23-END
 add_subdirectory(libarray)
 include_directories(libarray)
 add_subdirectory(liboptpp)
@@ -288,7 +292,7 @@ build_executable(shader2string ${PROJECT_SOURCE_DIR}/libfilestr/shader2string)
 foreach(LIB_NAME 
 			libbuf 
 			libclock 
-			liblog 
+			# DEL-BY-LEETEN 2015/06/23: liblog 
 			libopt 
 			libfps 
 			libfilestr

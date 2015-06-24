@@ -3,9 +3,11 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
 #The name of the project
 PROJECT(liboptpp_src)
 
-# TEST-ADD-BEGIN
-find_package(mylib REQUIRED)
-# TEST-ADD-END
+# DEL-BY-LEETEN 2015/06/23-BEGIN
+# # TEST-ADD-BEGIN
+# find_package(mylib REQUIRED)
+# # TEST-ADD-END
+# DEL-BY-LEETEN 2015/06/23-END
 
 set(HEADER_FILES
 	OptEntry.h
