@@ -216,6 +216,12 @@ function(build_library libname src_subdir dst_subdir)
 			DEPENDS ${SHADER}
 			COMMAND shader2string ${SHADER_NATIVE_PATH} ${SHADER_OUTPUT_NATIVE_PATH}
 		)
+        # TEST-ADD-BEGIN
+        install(
+            FILES ${SHADER}.h
+            DESTINATION "include/${dst_subdir}")
+        # TEST-ADD-END
+        
 		# Add dependecy to the shader file to force the genration of their .h in priori to the compilation
 		SET_SOURCE_FILES_PROPERTIES(${SRC_FILES} 
 			OBJECT_DEPENDS ${SHADER}.h)

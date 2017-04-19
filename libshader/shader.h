@@ -3,6 +3,9 @@
 
 #include <GL/glew.h>
 
+#if 1	// TEST-ADD
+#include <string>
+#endif
 #include <stdlib.h>
 #include <assert.h>
 
@@ -16,6 +19,10 @@ GLhandleARB CSetShaders(const char* szVertex, const char* szFragment);
 GLhandleARB HCreateProgramHandle();
 void _AddShaderProgram(GLhandleARB hProgramHandle, int iShader, const char* szProgSrc);
 void _LinkPrograms(GLhandleARB hProgramHandle);
+
+#if 1	// TEST-ADD
+void _NameStringAsInclude(const std::string& strName, const std::string& strContent);
+#endif
 
 #define PRINT_WARNING_INVALID_LOC(loc)	\
 	{	\

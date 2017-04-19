@@ -5,6 +5,9 @@
 #include "GlutWin_config.h"	
 #endif	// #if	WITH_OPENCV	
 
+#if 1    // TEST-ADD
+#include <algorithm>
+#endif
 #include <vector>
 #include <stack>
 using namespace std;
