@@ -83,16 +83,6 @@ CClipVolume::_Create()
 
 CClipVolume::CClipVolume(void)
 {
-#if 0	// TEST-DEL
-	FILE *fpFragShader;
-	fpFragShader = fopen("clip_frag_func.frag.h", "wt");
-	assert(fpFragShader);
-	fputs(
-		#include "clip_frag_func.frag.h"
-		,
-		fpFragShader);
-	fclose(fpFragShader);
-#endif
 }
 
 CClipVolume::~CClipVolume(void)

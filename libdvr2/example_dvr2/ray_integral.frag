@@ -10,12 +10,8 @@ This is the shader program for direct volume rendering
 	uniform float fWindowWidth;
 	uniform float fWindowHeight;
 
-	// TESt-MOD:	#include "clip_frag_func.frag.h"
 	#include "/clip_frag_func.frag.h"
-	// TEST-MOD-END
-	// TEST-MOD:	#include "tf1d_frag_func.frag.h"
 	#include "/tf1d_frag_func.frag.h"
-	// TEST-MOD-END
 
 void 
 main()

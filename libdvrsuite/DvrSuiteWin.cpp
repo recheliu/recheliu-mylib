@@ -178,7 +178,6 @@ CDvrSuiteWin::_InitFunc()
 	_DisableVerticalSync();
 	_DisplayFpsOn();		// the FPS will be displayed 
 
-#if 1	// TEST-ADD
 	_NameStringAsInclude(
 		"/clip_frag_func.frag.h",
 #include "libclip/clip_frag_func.frag.h"
@@ -187,7 +186,6 @@ CDvrSuiteWin::_InitFunc()
 		"/tf1d_frag_func.frag.h",
 #include "libtfw/tf1d_frag_func.frag.h"
 	);
-#endif
 
 	pidRayIntegral = CSetShadersByString(
 		NULL

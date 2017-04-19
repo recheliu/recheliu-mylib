@@ -19,7 +19,6 @@ HCreateProgramHandle
 	return hProgramHandle;
 }
 
-#if 1	// TEST-ADD
 void 
 _NameStringAsInclude
 (
@@ -29,8 +28,6 @@ _NameStringAsInclude
 {
 	glNamedStringARB(GL_SHADER_INCLUDE_ARB, strName.length(), strName.c_str(), strContent.length(), strContent.c_str());
 }
-
-#endif
 
 void
 _AddShaderProgram

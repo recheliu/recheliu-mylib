@@ -190,17 +190,6 @@ CTransFunc::CTransFunc()
 		plSplines[c].push_back(cBegin);
 		plSplines[c].push_back(cEnd);
 	}
-
-#if 0	// TEST-DEL
-	FILE *fpFragShader;
-	fpFragShader = fopen("tf1d_frag_func.frag.h", "wt");
-	assert(fpFragShader);
-	fputs(
-		#include "tf1d_frag_func.frag.h"
-		,
-		fpFragShader);
-	fclose(fpFragShader);
-#endif
 }
 
 CTransFunc::~CTransFunc()
