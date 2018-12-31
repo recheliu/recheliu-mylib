@@ -17,15 +17,6 @@ using namespace std;
 		cout<<"["<<__FUNCTION__<<"()@"<<szFile<<"("<<__LINE__<<")]: ";			\
 	}
 
-#if 0 // TEST-DEL
-#define	LOG_VAR(var)					\
-	{									\
-		PRINT_HEADER;					\
-		cout<<#var<<": "<<(var)<<endl;	\
-	}									\
-
-#endif
-
 #define LOG(printf_stmt)	\
 	{						\
 		PRINT_HEADER;		\
@@ -77,9 +68,7 @@ using namespace std;
 		}					\
 	}						\
 
-#if 1	// TEST-ADD
 #include "logvar.h"
-#endif
 
 #endif	// __LIB_LOG_H__
 

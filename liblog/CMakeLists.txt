@@ -3,9 +3,7 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
 PROJECT(liblog)
 
 set(HEADER_FILES
-    # TEST-ADD-BEGIN
     logvar.h
-    # TEST-ADD-END
 	liblog.h
     logmpi.h
     lognc.h
