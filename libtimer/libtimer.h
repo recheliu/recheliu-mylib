@@ -31,7 +31,13 @@ using namespace std;
 	#endif	// #if defined(__APPLE__) && defined(__MACH__)		
 #endif	// #if defined(WIN32)
 
+// TEST-ADD-BEGIN
+#if !defined(GOOGLE_LOG_INFO)
+// TEST-ADD-END
 #include "liblog.h"
+// TEST-ADD-BEGIN
+#endif	// #if !defined(GOOGLE_LOG_INFO)
+// TEST-ADD-END
 
 class CTimer
 {
@@ -100,7 +106,9 @@ public:
 		{
 			os<<"L"<<vpairTimes.size();
 		}
-		vpairTimes.push_back(make_pair<string, CLOCK>(os.str(), c));
+		// TEST-MOD:	vpairTimes.push_back(make_pair<string, CLOCK>(os.str(), c));
+		vpairTimes.push_back(make_pair(os.str(), c));
+		// TEST-MOD-END
 	}
 	
 	void 
