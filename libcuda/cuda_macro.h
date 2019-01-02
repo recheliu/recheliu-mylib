@@ -10,11 +10,9 @@ This file defines several important macros for CUDA.
 #include <vector>
 #include <string>
 #include <sstream>
-// TEST-MOD: using namespace std;
 using std::ios;
 using std::pair;
 using std::string;
-// TEST-MOD-END
 
 #include "logvar.h"
 
@@ -151,76 +149,6 @@ using std::string;
 #define FREE_MEMORY(p)	FREE_KERNEL_MEMORY(p, cudaFree)
 #define FREE_MEMORY_ON_HOST(p)	FREE_KERNEL_MEMORY(p, cudaFreeHost)
 
-#if 0 // TEST-MOD-FROM:
-
-#define GPUCLOCK_INIT(flag, header)									\
-	{														\
-		std::string strHeader(header);								\
-		vector<pair<std::string, float>> vstrTimers;							\
-		cudaEvent_t _start, _stop;							\
-		cudaEventCreate(&_start);							\
-		cudaEventCreate(&_stop); 
-
-
-#define GPUCLOCK_BEGIN(flag, name)								\
-	if( (flag)	)										\
-	{													\
-		vstrTimers.push_back(make_pair(std::string(name), 0.0f));	\
-		cudaEventRecord(_start, 0);						\
-	}
-
-#define GPUCLOCK_END(flag)							\
-	if( (flag)	)										\
-	{													\
-		cudaEventRecord(_stop, 0);						\
-		cudaEventSynchronize(_stop);						\
-		cudaEventElapsedTime(&vstrTimers.rbegin()->second, _start, _stop);	\
-	}
-
-	inline std::string STRSummarizeTimers(
-		const std::string& strHeader, 
-		const std::vector<pair<std::string, float>>& vstrTimers)
-	{
-		std::ostringstream osBuffer;
-		osBuffer 
-			<< strHeader
-			<< "("
-			;
-		for (vector<pair<std::string, float>>::const_iterator 
-				itimer = vstrTimers.begin(); itimer != vstrTimers.end(); itimer++)
-		{
-			osBuffer
-				<< itimer->first
-				<< ","
-				;
-		}
-		osBuffer << "TOTAL):  ";
-		osBuffer.setf(ios::fixed);
-		osBuffer.precision(2);
-		float fTotalTime  = 0.0f;
-		for (vector<pair<std::string, float>>::const_iterator
-			itimer = vstrTimers.begin(); itimer != vstrTimers.end(); itimer++)
-		{
-			fTotalTime += itimer->second;
-			osBuffer
-				<< itimer->second
-				<< ","
-				;
-		}
-		osBuffer << fTotalTime;
-		return osBuffer.str();
-	}
-
-#define GPUCLOCK_PRINT(flag)									\
-		if( (flag) )										\
-		{													\
-			std::string strSummary = STRSummarizeTimers(strHeader, vstrTimers);	\
-			LOG_VAR(strSummary);	\
-		}	\
-	}
-
-#else	// #if 0 // TEST-MOD-TO:
-
 #define GPUCLOCK_INIT(flag, header)									\
 	{														\
 		const char* szHeader = header;								\
@@ -285,8 +213,6 @@ inline std::string STRSummarizeTimers(
 	}
 
 
-
-#endif	// #if 0 // TEST-MOD-END
 
 template<typename T>
 struct CBuffer2D 

@@ -1,16 +1,12 @@
 #pragma once
 
-#if	1	// TEST-ADD
 #include <chrono>
-#endif
 #include <sstream>
 #include <vector>
-// TEST-MOD: using namespace std;
 using std::ostringstream;
 using std::pair;
 using std::string;
 using std::vector;
-// TEST-MOD-END
 
 #if defined(WIN32)
 	#include <windows.h>
@@ -47,45 +43,6 @@ class CTimer
 {
 public:
 
-#if 0 // TEST-MOD
-#if defined(WIN32)
-	typedef DWORD CLOCK;
-
-	static
-	void _GetTime(CLOCK *pClock)
-	{
-		*pClock = timeGetTime();
-	}
-
-	static
-	double
-	DGetMsec
-	(
-		const CLOCK& time
-	)
-	{
-		return (double)time;
-	}
-#else	// #if	defined(WIN32)
-	typedef timespec CLOCK;
-	static
-	void _GetTime(CLOCK *pClock)
-	{
-		clock_gettime(CLOCK_REALTIME, pClock);
-	}
-
-	static
-	double
-	DGetMsec
-	(
-		const CLOCK& clock
-	)
-	{
-		return ((double)clock.tv_sec * 1.0e+3 + (double)clock.tv_nsec/1.0e+6);
-	}
-#endif	// #if	defined(WIN32)
-
-#else
 	typedef std::chrono::system_clock::duration CLOCK;
 
 	static
@@ -105,7 +62,6 @@ public:
 	{
 		return std::chrono::duration_cast<std::chrono::milliseconds>(clock).count();
 	}
-#endif
 
 protected:
     vector<pair<string, CLOCK>> vpairTimes;
