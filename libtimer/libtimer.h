@@ -1,8 +1,16 @@
 #pragma once
 
+#if	1	// TEST-ADD
+#include <chrono>
+#endif
 #include <sstream>
 #include <vector>
-using namespace std;
+// TEST-MOD: using namespace std;
+using std::ostringstream;
+using std::pair;
+using std::string;
+using std::vector;
+// TEST-MOD-END
 
 #if defined(WIN32)
 	#include <windows.h>
@@ -38,6 +46,8 @@ using namespace std;
 class CTimer
 {
 public:
+
+#if 0 // TEST-MOD
 #if defined(WIN32)
 	typedef DWORD CLOCK;
 
@@ -74,6 +84,28 @@ public:
 		return ((double)clock.tv_sec * 1.0e+3 + (double)clock.tv_nsec/1.0e+6);
 	}
 #endif	// #if	defined(WIN32)
+
+#else
+	typedef std::chrono::system_clock::duration CLOCK;
+
+	static
+		void _GetTime(CLOCK *pClock)
+	{
+		// REF: https://stackoverflow.com/questions/9089842/c-chrono-system-time-in-milliseconds-time-operations
+		auto now = std::chrono::system_clock::now();
+		*pClock = now.time_since_epoch();
+	}
+
+	static
+		double
+		DGetMsec
+		(
+			const CLOCK& clock
+		)
+	{
+		return std::chrono::duration_cast<std::chrono::milliseconds>(clock).count();
+	}
+#endif
 
 protected:
     vector<pair<string, CLOCK>> vpairTimes;

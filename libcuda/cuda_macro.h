@@ -10,7 +10,11 @@ This file defines several important macros for CUDA.
 #include <vector>
 #include <string>
 #include <sstream>
-using namespace std;
+// TEST-MOD: using namespace std;
+using std::ios;
+using std::pair;
+using std::string;
+// TEST-MOD-END
 
 #include "logvar.h"
 
@@ -147,6 +151,8 @@ using namespace std;
 #define FREE_MEMORY(p)	FREE_KERNEL_MEMORY(p, cudaFree)
 #define FREE_MEMORY_ON_HOST(p)	FREE_KERNEL_MEMORY(p, cudaFreeHost)
 
+#if 0 // TEST-MOD-FROM:
+
 #define GPUCLOCK_INIT(flag, header)									\
 	{														\
 		std::string strHeader(header);								\
@@ -213,6 +219,74 @@ using namespace std;
 		}	\
 	}
 
+#else	// #if 0 // TEST-MOD-TO:
+
+#define GPUCLOCK_INIT(flag, header)									\
+	{														\
+		const char* szHeader = header;								\
+		vector < pair<const char*, float> > timers;							\
+		cudaEvent_t _start, _stop;							\
+		cudaEventCreate(&_start);							\
+		cudaEventCreate(&_stop); 
+
+
+#define GPUCLOCK_BEGIN(flag, name)								\
+	if( (flag) )										\
+	{													\
+		timers.push_back(make_pair(name, 0.0f));	\
+		cudaEventRecord(_start, 0);						\
+	}
+
+#define GPUCLOCK_END(flag)							\
+	if( (flag) )										\
+	{													\
+		cudaEventRecord(_stop, 0);						\
+		cudaEventSynchronize(_stop);						\
+		cudaEventElapsedTime(&timers.rbegin()->second, _start, _stop);	\
+	}
+
+inline std::string STRSummarizeTimers(
+	const char* szHeader,
+	const std::vector< pair<const char*, float> >& vszTimers)
+{
+	std::ostringstream osBuffer;
+	osBuffer
+		<< szHeader
+		<< "("
+		;
+	for (auto itimer = vszTimers.begin(); itimer != vszTimers.end(); itimer++)
+	{
+		osBuffer
+			<< itimer->first
+			<< ","
+			;
+	}
+	osBuffer << "TOTAL):  ";
+	osBuffer.setf(ios::fixed);
+	osBuffer.precision(2);
+	float fTotalTime = 0.0f;
+	for (auto itimer = vszTimers.begin(); itimer != vszTimers.end(); itimer++)
+	{
+		fTotalTime += itimer->second;
+		osBuffer
+			<< itimer->second
+			<< ","
+			;
+	}
+	osBuffer << fTotalTime;
+	return osBuffer.str();
+}
+
+#define GPUCLOCK_PRINT(flag)									\
+		if( (flag) )										\
+		{													\
+			LOG_VAR(STRSummarizeTimers(szHeader, timers));	\
+		}	\
+	}
+
+
+
+#endif	// #if 0 // TEST-MOD-END
 
 template<typename T>
 struct CBuffer2D 
