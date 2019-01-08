@@ -146,12 +146,7 @@ add_subdirectory(liblog)
 include_directories(liblog)
 add_subdirectory(libarray)
 include_directories(libarray)
-# # TEST-MOD-FROM:
-# add_subdirectory(liboptpp)
-# include_directories(liboptpp)
-# # TEST-MOD-TO:
 # TODO: Fix liboptpp.
-# # TEST-MOD-END
 add_subdirectory(libtimer)
 
 ##############################################################
